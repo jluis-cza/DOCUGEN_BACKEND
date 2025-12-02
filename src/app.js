@@ -6,6 +6,7 @@ import asignRoutes from './routes/index.js'
 
 const app = express();
 generalMiddleware(app);
+// securityMiddleware(app);
 asignRoutes(app)
 
 export default app;

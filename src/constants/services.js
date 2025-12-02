@@ -1,6 +1,6 @@
 // A centralized constant configuration file
 
-import dotenv from 'dotenv';
+import dotenv from "dotenv";
 
 dotenv.config();
 
@@ -29,5 +29,3 @@ export const SERVICES = {
   uri: process.env.DB_URI,
  },
 };
-
-// /v/api/auth/register

@@ -7,8 +7,11 @@ const router = express.Router();
 const REGISTER_ACCOUNT_ROUTE =
  SERVICES.backend.routes.docugen_web.admission.register_account;
 
+const LOGIN_USER_ROUTE =
+ SERVICES.backend.routes.docugen_web.admission.start_session;
 //Endpoints definition
 
 router.post(REGISTER_ACCOUNT_ROUTE, admissionController.accountRegister);
+router.post(LOGIN_USER_ROUTE, admissionController.sessionStarter);
 
 export default router;
