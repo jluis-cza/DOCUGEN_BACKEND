@@ -21,14 +21,14 @@ export const accountRegister = async (req, res) => {
   const accountCreatedUpdated3 = await Account.setAccountServices(accountCreated._id, [USERS.services.edition, USERS.services.generation]); //Default both services enabled
 
   if (accountCreated) {
-   res.status(201).json({
+   return res.status(201).json({
     success: true,
     message: "Account created successfully.",
     data: accountCreatedUpdated3,
    });
   }
  } catch (error) {
-  res.status(500).json({
+  return res.status(500).json({
    success: false,
    message: "Error creating the account.",
    error: error.message,
@@ -71,7 +71,7 @@ export const sessionStarter = async (req, res) => {
      .json({ success: false, message: "Error generating the token." });
    }
    // sending response
-   res.status(200).json({
+   return res.status(200).json({
     success: true,
     message: "Welcome",
     token: token,

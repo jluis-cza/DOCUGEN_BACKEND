@@ -29,3 +29,20 @@ export const SERVICES = {
   uri: process.env.DB_URI,
  },
 };
+
+export const NON_AUTH_ROUTES = [
+ SERVICES.backend.routes.version +
+  SERVICES.backend.routes.base +
+  SERVICES.backend.routes.docugen_web.admission.base +
+  SERVICES.backend.routes.docugen_web.admission.register_account,
+ SERVICES.backend.routes.version +
+  SERVICES.backend.routes.base +
+  SERVICES.backend.routes.docugen_web.admission.base +
+  SERVICES.backend.routes.docugen_web.admission.start_session,
+ SERVICES.backend.routes.version +
+  SERVICES.backend.routes.base +
+  SERVICES.backend.routes.docugen_web.default,
+ SERVICES.backend.routes.version +
+  SERVICES.backend.routes.base +
+  SERVICES.backend.routes.docugen_web.health,
+];
