@@ -18,6 +18,7 @@ export const SERVICES = {
      base: "/auth",
      register_account: "/register",
      start_session: "/login",
+     close_session: "/logout",
     },
     default: "/",
     health: "/health",
