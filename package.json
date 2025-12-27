@@ -1,30 +1,37 @@
 {
- "name": "docugen-backend",
- "version": "1.0.0",
- "description": "docugen backend",
- "main": "index.js",
- "type": "module",
- "scripts": {
-  "test": "echo \"Error: no test specified\" && exit 1",
-  "dev": "nodemon server.js",
-  "start": "node server.js"
- },
- "keywords": [
-  "docugen",
-  "backend"
- ],
- "author": "JL",
- "license": "ISC",
- "dependencies": {
-  "bcryptjs": "^3.0.2",
-  "cors": "^2.8.5",
-  "dotenv": "^17.2.0",
-  "express": "^5.1.0",
-  "jsonwebtoken": "^9.0.2",
-  "mongodb": "^6.17.0",
-  "mongoose": "^8.16.4"
- },
- "devDependencies": {
-  "nodemon": "^3.1.10"
- }
+  "name": "docugen-backend",
+  "version": "1.0.0",
+  "description": "docugen backend",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon server.js",
+    "start": "node server.js",
+    "lint": "eslint . --ext js,jsx,ts,tsx",
+    "format": "prettier --write ."
+  },
+  "keywords": [
+    "docugen",
+    "backend"
+  ],
+  "author": "JL",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^3.0.2",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.0",
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongodb": "^6.17.0",
+    "mongoose": "^8.16.4",
+    "node-cron": "^4.2.1"
+  },
+  "devDependencies": {
+    "eslint": "^9.39.2",
+    "eslint-config-prettier": "^10.1.8",
+    "nodemon": "^3.1.10",
+    "prettier": "^3.7.4"
+  }
 }
