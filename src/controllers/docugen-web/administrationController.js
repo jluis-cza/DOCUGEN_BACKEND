@@ -1,16 +1,15 @@
+// ADMINISTRATION CONTROLLER
 import SystemParameter from '../../models/docugen-web/SystemParameter.js';
 import { USERS } from '../../constants/users.js';
 import { MESSAGES } from '../../constants/messages.js';
 
-// ******************************************************************************
-// SYSTEM PARAMETERS MONITOR
-// ******************************************************************************
+// System parameters Monitor
 export const systemParametersGetter = async (req, res) => {
   try {
     // Checking user's role
     const userRole = req.user.role;
-    if (userRole == !USERS.type.server.role.administrator) {
-      return res.status(401).json({
+    if (userRole !== USERS.server.role.administrator) {
+      return res.status(403).json({
         success: false,
         message: MESSAGES.general.access.error.role,
       });
@@ -28,7 +27,7 @@ export const systemParametersGetter = async (req, res) => {
     if (search) {
       filter.$or = [
         { name: { $regex: search, $options: 'i' } },
-        { category: { $regex: search, $options: 'i' } },
+        { alias: { $regex: search, $options: 'i' } },
       ];
     }
 
@@ -46,9 +45,9 @@ export const systemParametersGetter = async (req, res) => {
     const totalPages = Math.ceil(total / limit);
 
     if (total === 0) {
-      return res.status(400).json({
-        success: false,
-        message: 'No system parameter dataset was fetched.',
+      return res.status(200).json({
+        success: true,
+        message: 'No results found.',
       });
     }
     console.log({ systemParameters: systemParameters });
@@ -73,24 +72,21 @@ export const systemParametersGetter = async (req, res) => {
     });
   }
 };
-// ******************************************************************************
 
-// ******************************************************************************
-// SYSTEM PARAMETERS SETTER
-// ******************************************************************************
+// System parameter configuration
 export const systemParameterSetter = async (req, res) => {
   try {
     // Checking user's role
     const userRole = req.user.role;
-    if (userRole == !USERS.type.server.role.administrator) {
-      return res.status(401).json({
+    if (userRole !== USERS.server.role.administrator) {
+      return res.status(403).json({
         success: false,
         message: MESSAGES.general.access.error.role,
       });
     }
     const arrivingParameterStatusConfig = req.body;
     //Finding the Parameter
-    const systemParameterRetrieved = SystemParameter.findSystemParameter(
+    const systemParameterRetrieved = await SystemParameter.findSystemParameter(
       arrivingParameterStatusConfig.parameterId
     );
     if (!systemParameterRetrieved) {
@@ -147,4 +143,3 @@ export const systemParameterSetter = async (req, res) => {
     });
   }
 };
-// ******************************************************************************

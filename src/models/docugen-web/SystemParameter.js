@@ -1,7 +1,9 @@
+// SYSTEM PARAMETERS MODEL
+
 import mongoose from 'mongoose';
 import { LOOKUPS } from '../../constants/lookups.js';
 
-// Subdocuments schemas
+// Subdocuments
 const valuesSchema = new mongoose.Schema(
   {
     //The type of the value depends on the type of system parameter
@@ -16,7 +18,7 @@ const valuesSchema = new mongoose.Schema(
   }
 );
 
-// Main document schema
+// Document
 const SystemParameterSchema = new mongoose.Schema(
   {
     name: {
@@ -24,6 +26,7 @@ const SystemParameterSchema = new mongoose.Schema(
       required: true,
       trim: true,
       unique: true,
+      index: true,
       // minlength: 3,
       // maxlength: 50,
     },
@@ -31,6 +34,8 @@ const SystemParameterSchema = new mongoose.Schema(
       type: String,
       required: true,
       trim: true,
+      index: true,
+
       // minlength: 3,
       // maxlength: 50,
     },
@@ -47,8 +52,7 @@ const SystemParameterSchema = new mongoose.Schema(
   }
 );
 
-// Methods
-// Method to populate (seed) the default or initial system parameters
+// Methods ---
 
 SystemParameterSchema.statics.findSystemParameter = async function (parameter_id) {
   const systemParameters = this;
@@ -140,6 +144,8 @@ SystemParameterSchema.methods.addSystemParameterValue = async function (value, u
   });
   return await systemParameter.save();
 };
+
+// ---
 
 const SystemParameter = mongoose.model('SystemParameter', SystemParameterSchema);
 export default SystemParameter;

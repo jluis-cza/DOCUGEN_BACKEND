@@ -1,8 +1,5 @@
-// ******************************************************************************
-// KEYS
-// Definition of the private key for generating the tokens
-// Timeout sessions specifications
-// ******************************************************************************
+// TOKEN KEYS
+
 import dotenv from 'dotenv';
 dotenv.config();
 
@@ -10,15 +7,15 @@ export const KEYS = {
   access: {
     jwt: process.env.JWT_SECRET_ACCESS,
     session_timeout: {
-      client: '5m',
-      server: '5m',
+      dev: '2m',
+      admin: '5m',
     },
   },
   refresh: {
     jwt: process.env.JWT_SECRET_REFRESH,
     session_timeout: {
-      client: '8h',
-      server: '1h',
+      dev: '5m',
+      admin: '1h',
     },
     cookie_config: {
       httpOnly: true,
@@ -28,4 +25,5 @@ export const KEYS = {
     },
   },
 };
-// ******************************************************************************
+
+// *Refresh tokens are cookies and access tokens are stored in memory

@@ -1,13 +1,15 @@
-// Express app configuration
+// EXPRESS APP CONFIGURATION
+// Wrapping the app in the middlewares and asigning routes.
 
 import express from 'express';
 import generalMiddleware from './middlewares/generalMiddleware.js';
-import securityMiddleware from './middlewares/securityMiddleware.js';
+import errorHandlerMiddleware from './middlewares/errorHandlerMiddleware.js';
 import asignRoutes from './routes/index.js';
 
 const app = express();
+
 generalMiddleware(app);
-securityMiddleware(app);
 asignRoutes(app);
+errorHandlerMiddleware(app);
 
 export default app;

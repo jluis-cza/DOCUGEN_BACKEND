@@ -1,9 +1,7 @@
-import SystemParameter from '../../models/docugen-web/SystemParameter.js';
-import { systemParameterValuesCollector } from '../../helpers/models.js';
-
-// ******************************************************************************
 // SYSTEM PARAMETERS
-// ******************************************************************************
+
+import SystemParameter from '../../models/docugen-web/SystemParameter.js';
+import { systemParameterValuesCollector } from '../../helpers/docugen-web/administrationHelper.js';
 
 // System parameters updater
 export const sampleSystemParameters = async () => {
@@ -12,7 +10,7 @@ export const sampleSystemParameters = async () => {
 
     // Getting the followed parameters
     const followedParameters = await SystemParameter.find({ status: 'followed' });
-    console.log('Parámetros a muestrear:', { followedParameters: followedParameters });
+    console.log('Paremeters to sample:', { followedParameters: followedParameters });
 
     for (const parameter of followedParameters) {
       let newValue = null;
@@ -37,4 +35,3 @@ export const sampleSystemParameters = async () => {
     console.error('Error sampling values. ', error);
   }
 };
-// ******************************************************************************

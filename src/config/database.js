@@ -1,4 +1,5 @@
-// Connection between Express and MongoDB
+// DATABASE CONFIGURATION
+// Configuration of the MongoDB connection through Mongoose.
 
 import mongoose from 'mongoose';
 import { SERVICES } from '../constants/services.js';
@@ -11,9 +12,8 @@ const connectDB = async () => {
     console.log('Data Base connected');
     return response;
   } catch (error) {
-    console.log(error);
+    console.log('Error in connecting the database.' ,error);
     process.exit(1);
-    return error;
   }
 };
 

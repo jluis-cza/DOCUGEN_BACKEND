@@ -1,24 +1,26 @@
+// CRON JOBS
+// Configuration of the automatic cron jobs in the server.
 
-// ******************************************************************************
-// CRON INITIALIZATION
-// ******************************************************************************
 import cron from 'node-cron';
 import { sampleSystemParameters } from '../services/docugen-web/administrationServices.js';
 import { checkActiveSessionDuration } from '../services/docugen-web/admissionServices.js';
+import { MESSAGES } from '../constants/messages.js';
 
-const initCronJobs = async () => {
+const errorMessage = Object.fromEntries(MESSAGES.error.map(e => [e.code, e]))
+const startCJ = async () => {
   try {
-    // System parameters tasks
+    // Sampling system parameters
     cron.schedule('*/30 * * * *', async () => {
-      console.log('Sampling system parameters values.');
+      console.log('Sampling system parameters values...');
       await sampleSystemParameters();
     });
 
-    // Session tasks
+    // Closing inactive sessions
     cron.schedule('*/1 * * * *', async () => {
-      console.log('Checking active session duration.');
+      console.log('Checking active session duration...');
       await checkActiveSessionDuration();
     });
+
     //Example
     // cron.schedule("*/1 * * * *", async () => {
     //  console.log("Testing (cada un minuto)");
@@ -26,12 +28,11 @@ const initCronJobs = async () => {
 
     console.log('Cron jobs started.');
   } catch (error) {
-    console.log('Error starting cron schedule.', error);
+    console.log('Error in starting cron schedule.', error);
+    const code = error.message || "default"
+    const message = errorMessage[code].message
+    console.log('Error message:', message);
+    process.exit(1);
   }
 };
-export default initCronJobs;
-// ******************************************************************************
-// Ejecutar cada 5 minutos: */5 * * * *
-// Ejecutar cada hora: 0 * * * *
-// Ejecutar cada día a medianoche: 0 0 * * *
-// Ejecutar cada 30 segundos: */30 * * * * *
+export default startCJ;

@@ -1,17 +1,16 @@
-import { SERVICES } from '../constants/services.js';
-const ROUTES_INFO = SERVICES.backend.routes;
-
-// ******************************************************************************
-// DIRECT ROUTES RESPONSE
+// DIRECT ROUTES
 // These functions don't interact with models and resolve requests and
 // responses by themselves.
-// ******************************************************************************
+
+import { SERVICES } from '../constants/services.js';
+
+const ROUTES_INFO = SERVICES.backend.routers;
 
 export const infoRoute = (req, res) => {
   res.json({
     success: true,
     message: 'Information of routes',
-    routes: ROUTES_INFO,
+    routers: ROUTES_INFO,
   });
 };
 
@@ -36,4 +35,3 @@ export const notFoundRoute = (req, res) => {
 // export errorHandlerRoute = (err, req, res, next) => {
 
 // }
-// ******************************************************************************
