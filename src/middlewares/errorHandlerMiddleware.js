@@ -1,4 +1,4 @@
-import { MESSAGES } from "../constants/messages.js";
+import { MESSAGES } from '../constants/messages.js';
 
 const errorMessage = Object.fromEntries(MESSAGES.error.map((e) => [e.code, e]));
 

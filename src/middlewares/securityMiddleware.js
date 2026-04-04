@@ -4,9 +4,9 @@
 import { verifyToken } from '../helpers/docugen-web/admissionHelper.js';
 
 const securityMiddleware = async (req, res, next) => {
-
   // Verifying the token bearer payload field
   const tokenBearer = req.get('Authorization');
+  console.log({ tokenBearer });
   if (!tokenBearer) {
     return res.status(401).json({ success: false, message: 'Authorization header missing.' });
   }
@@ -19,7 +19,7 @@ const securityMiddleware = async (req, res, next) => {
       req.user = response.payload; // Saving decoded token
       return next(); // it passed the verification
     } catch (error) {
-      return res.status(500).json({ success: false, message: error.message });
+      return res.status(401).json({ success: false, message: error.message });
     }
   }
   return res.status(401).json({ success: false, message: 'Token error' });

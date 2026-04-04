@@ -3,6 +3,7 @@
 import mongoose from 'mongoose';
 import { LOOKUPS } from '../../constants/lookups.js';
 
+// *************************************************************************************************
 // Subdocuments
 const valuesSchema = new mongoose.Schema(
   {
@@ -52,6 +53,7 @@ const SystemParameterSchema = new mongoose.Schema(
   }
 );
 
+// *************************************************************************************************
 // Methods ---
 
 SystemParameterSchema.statics.findSystemParameter = async function (parameter_id) {
@@ -86,17 +88,11 @@ SystemParameterSchema.statics.getCustomizedSystemParameters = async function (
   limit
 ) {
   const systemParametersModel = this;
-  try {
-    const [systemParameters, total] = await Promise.all([
-      systemParametersModel.find(filter).sort(sort).skip(skip).limit(limit),
-      systemParametersModel.countDocuments(filter),
-    ]);
-
-    return { systemParameters: systemParameters, total: total };
-  } catch (error) {
-    console.log('Error finding the set of custommized params system parameters.', error);
-    throw error;
-  }
+  const [systemParameters, total] = await Promise.all([
+    systemParametersModel.find(filter).sort(sort).skip(skip).limit(limit),
+    systemParametersModel.countDocuments(filter),
+  ]);
+  return { systemParameters, total };
 };
 
 SystemParameterSchema.statics.deleteAllSystemParameters = async function () {
@@ -131,10 +127,21 @@ SystemParameterSchema.statics.seedDefaultSystemParameters = async function () {
 };
 
 SystemParameterSchema.methods.setSystemParameterStatus = async function (status) {
-  const systemParameter = this;
-  systemParameter.status = status;
-  return await systemParameter.save();
+  if (!status) throw new Error('E0505');
+  if (status === 'followed' || status === 'unfollowed') {
+    const systemParameter = this;
+    systemParameter.status = status;
+    return await systemParameter.save();
+  } else {
+    throw new Error('E0506');
+  }
 };
+
+// SystemParameterSchema.methods.setSystemParameterProperty = async function (property, value) {
+//   const systemParameter = this;
+//   systemParameter[property] = value;
+//   return await systemParameter.save();
+// };
 
 SystemParameterSchema.methods.addSystemParameterValue = async function (value, unit) {
   const systemParameter = this;

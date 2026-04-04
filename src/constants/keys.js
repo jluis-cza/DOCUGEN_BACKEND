@@ -8,14 +8,14 @@ export const KEYS = {
     jwt: process.env.JWT_SECRET_ACCESS,
     session_timeout: {
       dev: '2m',
-      admin: '5m',
+      admin: '1m',
     },
   },
   refresh: {
     jwt: process.env.JWT_SECRET_REFRESH,
     session_timeout: {
       dev: '5m',
-      admin: '1h',
+      admin: '2m',
     },
     cookie_config: {
       httpOnly: true,

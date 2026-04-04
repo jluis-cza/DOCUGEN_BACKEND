@@ -29,7 +29,7 @@ const SessionSchema = new mongoose.Schema(
     status: {
       type: String,
       enum: ['active', 'inactive', 'expired'],
-      default: 'active',
+      default: 'inactive',
       required: true,
     },
     token: { type: String, default: '' }, // Refresh token
@@ -87,7 +87,7 @@ SessionSchema.statics.findActiveSessions = async function () {
   const sessions = this;
   const active_sessions = await sessions.find({ status: 'active' }).populate('associated_account');
   if (!active_sessions) throw new Error('E0211');
-  if(active_sessions.length === 0) throw new Error('E0212');
+  if (active_sessions.length === 0) throw new Error('E0212');
   return active_sessions;
 };
 
@@ -140,7 +140,6 @@ SessionSchema.methods.addSessionActivity = async function (activity) {
   });
   return await session.save();
 };
-
 
 const Session = mongoose.model('Session', SessionSchema);
 export default Session;

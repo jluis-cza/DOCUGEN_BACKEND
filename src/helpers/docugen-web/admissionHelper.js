@@ -2,6 +2,8 @@
 import crypto from 'crypto';
 import jwt from 'jsonwebtoken';
 import { KEYS } from '../../constants/keys.js';
+import nodemailer from 'nodemailer';
+import { SERVICES } from '../../constants/services.js';
 
 // Time parser
 // Strings like '1s', '2m', '5h' to their equivalent in minutes
@@ -60,6 +62,9 @@ export const generateToken = (payload, type) => {
     if (!token) throw new Error('E0303');
     console.log(`${type.toUpperCase()} token successfully generated.`);
     return token;
+  } else if (type == 'verification') {
+    const { bytes } = payload;
+    return crypto.randomBytes(bytes).toString('hex');
   } else {
     throw new Error('E0302');
   }
@@ -80,3 +85,56 @@ export const verifyToken = async (token, type) => {
     throw new Error('E0305');
   }
 };
+
+// *************************************************************************************************
+// Email sender
+// *************************************************************************************************
+// Used in email verification (registry process)
+export const sendEmail = async (to, type, config) => {
+
+  if (!to || !type || !config) throw new Error('E0601');
+
+  const name = 'Jorge Callisaya';
+  const service = 'gmail';
+  const auth = { user: SERVICES.smtp.email, pass: SERVICES.smtp.pass };
+  // const host = 'smtp.ethereal.email';
+  // const port = 587;
+
+  const transporter = nodemailer.createTransport({
+    service,
+    auth,
+    // host,
+    // port,
+  });
+
+  let info = {};
+
+  if (type === 1) {
+    //  1: email verification - registration process
+    const { url } = config;
+    const generateHtmlEmail = (url) => {
+      return `
+<div><h1>Bienvenido a DOCUGEN</h1></div>
+<div><p>Para completar su registro, por favor haga click en el siguiente enlace:</p> <a href="${url}" >Verificar</a></div>
+<br>
+<div><p>Atentamente DOCUGEN</p><p>2026</p></div>
+  `;
+    };
+
+    const options = {
+      from: `"${name}" <${auth.user}>`,
+      to: `${to}`,
+      subject: 'Verificación de Email para DOCUGEN',
+      text: `Por favor haga click en el siguiente enlace para la verificación de su cuenta: ${url}`,
+      html: generateHtmlEmail(url),
+    };
+    
+    info = await transporter.sendMail(options);
+  } else {
+    throw new Error('E0602');
+  }
+
+  return info;
+};
+// *************************************************************************************************
+

@@ -2,8 +2,70 @@
 
 import SystemParameter from '../../models/docugen-web/SystemParameter.js';
 import { systemParameterValuesCollector } from '../../helpers/docugen-web/administrationHelper.js';
+// *************************************************************************************************
+// FROM CONTROLLERS
+// *************************************************************************************************
+// ************* System parameters Monitor *************
+export const systemParametersGetter = async (query) => {
+  // Params
+  const page = parseInt(query.page) || 1;
+  const limit = parseInt(query.limit) || 10;
+  const search = query.search || '';
+  const sortBy = query.sortBy || 'name';
+  const sortOrder = query.sortOrder === 'desc' ? -1 : 1;
+  // Filer of search
+  const filter = {};
+  if (search) {
+    filter.$or = [
+      { name: { $regex: search, $options: 'i' } },
+      { alias: { $regex: search, $options: 'i' } },
+    ];
+  }
 
-// System parameters updater
+  const skip = (page - 1) * limit; // Jump
+  const sort = { [sortBy]: sortOrder }; // Order of list
+
+  // Parallel query
+  const { systemParameters, total } = await SystemParameter.getCustomizedSystemParameters(
+    filter,
+    sort,
+    skip,
+    limit
+  );
+
+  const totalPages = Math.ceil(total / limit);
+
+  // Metadata
+  const pagination = {
+    page,
+    limit,
+    total,
+    totalPages,
+    hasNextPage: page < totalPages,
+    hasPrevPage: page > 1,
+  };
+
+  return { systemParameters, pagination, total };
+};
+
+// ************* System parameters Configuration *************
+export const systemParameterSetter = async (config) => {
+  if (!config) throw new Error('E0503');
+  const { id, property, value } = config;
+  const systemParameter = await SystemParameter.findSystemParameter(id);
+  switch (property) {
+    case 'status':
+      await systemParameter.setSystemParameterStatus(value);
+      break;
+    default:
+      throw new Error('E0504');
+  }
+};
+
+// *************************************************************************************************
+// FROM CRON JOBS
+// *************************************************************************************************
+// ************* System parameters updater *************
 export const sampleSystemParameters = async () => {
   try {
     console.log('Starting System Parameters sampling...');

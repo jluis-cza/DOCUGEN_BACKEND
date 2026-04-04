@@ -1,145 +1,50 @@
 // ADMINISTRATION CONTROLLER
-import SystemParameter from '../../models/docugen-web/SystemParameter.js';
 import { USERS } from '../../constants/users.js';
 import { MESSAGES } from '../../constants/messages.js';
+import * as administrationServices from '../../services/docugen-web/administrationServices.js';
 
-// System parameters Monitor
-export const systemParametersGetter = async (req, res) => {
+const successMessage = Object.fromEntries(MESSAGES.success.map((s) => [s.code, s]));
+
+// ************* System parameters Monitor *************
+export const systemParametersGetter = async (req, res, next) => {
+  const query = req.query;
+  const role = req.user.role;
+  if (role !== USERS.server.role.administrator) throw new Error('E0501'); // Checking user's role (admin needed)
   try {
-    // Checking user's role
-    const userRole = req.user.role;
-    if (userRole !== USERS.server.role.administrator) {
-      return res.status(403).json({
-        success: false,
-        message: MESSAGES.general.access.error.role,
-      });
-    }
-
-    // params
-    const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 10;
-    const search = req.query.search || '';
-    const sortBy = req.query.sortBy || 'name';
-    const sortOrder = req.query.sortOrder === 'desc' ? -1 : 1;
-
-    // Filer of search
-    const filter = {};
-    if (search) {
-      filter.$or = [
-        { name: { $regex: search, $options: 'i' } },
-        { alias: { $regex: search, $options: 'i' } },
-      ];
-    }
-
-    const skip = (page - 1) * limit; // Jump
-    const sort = { [sortBy]: sortOrder }; // Order of list
-
-    // Parallel query
-    const { systemParameters, total } = await SystemParameter.getCustomizedSystemParameters(
-      filter,
-      sort,
-      skip,
-      limit
-    );
-
-    const totalPages = Math.ceil(total / limit);
-
-    if (total === 0) {
-      return res.status(200).json({
-        success: true,
-        message: 'No results found.',
-      });
-    }
-    console.log({ systemParameters: systemParameters });
-    return res.status(200).json({
+    const response = await administrationServices.systemParametersGetter(query);
+    let code = '';
+    if (response.total === 0) code = 'S0501';
+    code = 'S0502';
+    const status = successMessage[code]?.status || 200;
+    const message = successMessage[code]?.message || 'OK';
+    return res.status(status).json({
       success: true,
-      message: 'A customized set of system parameters was retrieved successfully.',
-      data: systemParameters,
-      pagination: {
-        page,
-        limit,
-        total,
-        totalPages,
-        hasNextPage: page < totalPages,
-        hasPrevPage: page > 1,
-      },
+      code: code,
+      message: message,
+      data: { systemParameters: response.systemParameters },
+      metadata: { systemParameters: { pagination: response.pagination } },
     });
   } catch (error) {
-    return res.status(500).json({
-      success: false,
-      message: 'Error getting all system parameters.',
-      error: error.message,
-    });
+    next(error);
   }
 };
 
-// System parameter configuration
-export const systemParameterSetter = async (req, res) => {
+// ************* System parameter configuration *************
+export const systemParameterSetter = async (req, res, next) => {
+  const config = req.body;
+  const role = req.user.role;
+  if (role !== USERS.server.role.administrator) throw new Error('E0502'); // Checking user's role (admin needed)
   try {
-    // Checking user's role
-    const userRole = req.user.role;
-    if (userRole !== USERS.server.role.administrator) {
-      return res.status(403).json({
-        success: false,
-        message: MESSAGES.general.access.error.role,
-      });
-    }
-    const arrivingParameterStatusConfig = req.body;
-    //Finding the Parameter
-    const systemParameterRetrieved = await SystemParameter.findSystemParameter(
-      arrivingParameterStatusConfig.parameterId
-    );
-    if (!systemParameterRetrieved) {
-      return res.status(400).json({
-        //Asumming client error preference
-        success: false,
-        message: 'It doesn´t exist a system parameter associated with this id.',
-      });
-    }
-    const affectedFields = req.body.affectedFields;
-    if (affectedFields.length === 0) {
-      return res.status(400).json({
-        success: false,
-        message: 'No fields to operate with were specified.',
-      });
-    }
-    let systemParameterUpdated = null;
-    for (const field of affectedFields) {
-      switch (field) {
-        case 'status': {
-          // Setting the status
-          systemParameterUpdated = await systemParameterRetrieved.setSystemParameterStatus(
-            arrivingParameterStatusConfig.field
-          );
-          if (!systemParameterUpdated) {
-            return res.status(400).json({
-              //Asumming client error preference
-              success: false,
-              message: 'Incorrect status value.',
-            });
-          }
-          break;
-        }
-        default: {
-          return res.status(400).json({
-            success: false,
-            message: 'Incorrect field reference. No field was updated.',
-          });
-        }
-      }
-    }
-
-    //Sending the response
-    return res.status(200).json({
+    await administrationServices.systemParameterSetter(config);
+    const code = 'S0503';
+    const status = successMessage[code]?.status || 200;
+    const message = successMessage[code]?.message || 'OK';
+    return res.status(status).json({
       success: true,
-      message: 'System parameter successfully set.',
-      systemParameterData: systemParameterUpdated,
+      code: code,
+      message: message,
     });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: 'Error in setting system parameter.',
-      error: error.message,
-    });
+    next(error);
   }
 };

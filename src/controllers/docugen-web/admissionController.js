@@ -95,3 +95,22 @@ export const accessRenewer = async (req, res, next) => {
     next(error);
   }
 };
+
+// Email validator
+export const emailValidator = async (req, res, next) =>{
+  const data = req.body
+  try {
+    const {token} = data
+    await admissionServices.emailValidator(token);
+    const code = 'S0601';
+    const status = successMessage[code]?.status || 200;
+    const message = successMessage[code]?.message || 'OK';
+    return res.status(status).json({
+      success: true,
+      code: code,
+      message: message,
+    });
+  } catch (error) {
+    next(error);
+  }
+}

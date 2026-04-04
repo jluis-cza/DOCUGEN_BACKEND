@@ -41,4 +41,8 @@ export const SERVICES = {
   database: {
     uri: process.env.DB_URI,
   },
-}
+  smtp: {
+    email: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
+  },
+};

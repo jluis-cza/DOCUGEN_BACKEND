@@ -6,7 +6,7 @@ import { sampleSystemParameters } from '../services/docugen-web/administrationSe
 import { checkActiveSessionDuration } from '../services/docugen-web/admissionServices.js';
 import { MESSAGES } from '../constants/messages.js';
 
-const errorMessage = Object.fromEntries(MESSAGES.error.map(e => [e.code, e]))
+const errorMessage = Object.fromEntries(MESSAGES.error.map((e) => [e.code, e]));
 const startCJ = async () => {
   try {
     // Sampling system parameters
@@ -29,8 +29,8 @@ const startCJ = async () => {
     console.log('Cron jobs started.');
   } catch (error) {
     console.log('Error in starting cron schedule.', error);
-    const code = error.message || "default"
-    const message = errorMessage[code].message
+    const code = error.message || 'default';
+    const message = errorMessage[code].message;
     console.log('Error message:', message);
     process.exit(1);
   }

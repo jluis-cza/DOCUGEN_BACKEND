@@ -12,7 +12,7 @@ const userSchema = new mongoose.Schema({
   email: { type: String, required: true, unique: true, trim: true },
 });
 const serviceSchema = new mongoose.Schema({
-  name: { type: String , trim: true },
+  name: { type: String, trim: true },
   description: { type: String, trim: true },
 });
 
@@ -30,7 +30,7 @@ const AccountSchema = new mongoose.Schema(
     role: {
       type: String,
       enum: ['dev', 'admin'],
-      default: "dev",
+      default: 'dev',
       // required: true,
       trim: true,
     },
@@ -41,9 +41,15 @@ const AccountSchema = new mongoose.Schema(
     status: {
       type: String,
       enum: ['active', 'suspended', 'inactive'],
-      default: "active",
+      default: 'inactive',
       // required: true,
       trim: true,
+    },
+    token: { // Email validation token
+      type: String,
+      default: '',
+      trim: true,
+      maxlength: 128,
     },
     user: userSchema,
     services: [serviceSchema],
@@ -69,16 +75,17 @@ AccountSchema.pre('save', async function (next) {
 });
 
 // *************************************************************************************************
-// Methods 
-AccountSchema.statics.findAccount = async function (email, username, id) {
+// Methods
+AccountSchema.statics.findAccount = async function (email, username, id, token) {
   const accounts = this;
-  const query = []
-  if(email) query.push({ 'user.email': email })
-  if(username) query.push( { username })
-  if(id) query.push({ _id: id })
-  if(query.length === 0 ) throw new Error('E0101');
+  const query = [];
+  if (email) query.push({ 'user.email': email });
+  if (username) query.push({ username });
+  if (id) query.push({ _id: id });
+  if (id) query.push({ token });
+  if (query.length === 0) throw new Error('E0101');
 
-  // if (!email || !username || !id || !mongoose.Types.ObjectId.isValid(id)) 
+  // if (!email || !username || !id || !mongoose.Types.ObjectId.isValid(id))
   const account = await accounts.findOne({
     $or: query,
   });
@@ -131,11 +138,23 @@ AccountSchema.methods.saveAccount = async function () {
 
 AccountSchema.methods.verifyAccountPassword = async function (password) {
   const account = this;
-  if(!password) throw new Error("E0111")
+  if (!password) throw new Error('E0111');
   const isMatch = await bcrypt.compare(password, account.password);
   return isMatch;
 };
 
+AccountSchema.methods.setAccountToken = async function (token) {
+  if (!token) throw new Error('E0113');
+  const account = this;
+  account.token = token;
+  return await account.save();
+};
+
+AccountSchema.methods.resetAccountToken = async function () {
+  const account = this;
+  account.token = '';
+  return await account.save();
+};
 
 const Account = mongoose.model('Account', AccountSchema);
 export default Account;
