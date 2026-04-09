@@ -5,7 +5,7 @@ import { KEYS } from '../../constants/keys.js';
 
 const successMessage = Object.fromEntries(MESSAGES.success.map((s) => [s.code, s]));
 
-// Sign-up
+// ************* Sign-up *************
 export const accountRegister = async (req, res, next) => {
   const data = req.body;
   try {
@@ -24,7 +24,7 @@ export const accountRegister = async (req, res, next) => {
   }
 };
 
-// Sign-in
+// ************* Sign-in *************
 export const sessionStarter = async (req, res, next) => {
   const data = req.body;
   try {
@@ -51,7 +51,7 @@ export const sessionStarter = async (req, res, next) => {
   }
 };
 
-// Logout
+// ************* Logout *************
 export const sessionCloser = async (req, res, next) => {
   const data = req.body;
   try {
@@ -71,7 +71,7 @@ export const sessionCloser = async (req, res, next) => {
   }
 };
 
-// Renew access
+// ************* Renew access *************
 export const accessRenewer = async (req, res, next) => {
   try {
     const refreshToken = req.cookies.refreshToken;
@@ -96,12 +96,12 @@ export const accessRenewer = async (req, res, next) => {
   }
 };
 
-// Email validator
-export const emailValidator = async (req, res, next) =>{
-  const data = req.body
+// ************* Email verifier *************
+export const emailVerifier = async (req, res, next) => {
+  const data = req.body;
   try {
-    const {token} = data
-    await admissionServices.emailValidator(token);
+    const { token } = data;
+    const response = await admissionServices.emailVerifier(token);
     const code = 'S0601';
     const status = successMessage[code]?.status || 200;
     const message = successMessage[code]?.message || 'OK';
@@ -109,8 +109,9 @@ export const emailValidator = async (req, res, next) =>{
       success: true,
       code: code,
       message: message,
+      data: { email: response.email },
     });
   } catch (error) {
     next(error);
   }
-}
+};

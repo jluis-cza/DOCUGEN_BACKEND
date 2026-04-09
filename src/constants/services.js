@@ -16,11 +16,12 @@ export const SERVICES = {
       version: '/v1',
       docugen_web: {
         admission: {
-          base: '/auth',
+          base: '/adm',
           register_account: '/register',
           start_session: '/login',
           close_session: '/logout',
           renew_access: '/refresh',
+          verify_email: '/verify-email',
         },
         administration: {
           base: '/admin',

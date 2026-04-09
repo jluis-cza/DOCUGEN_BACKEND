@@ -7,15 +7,15 @@ export const KEYS = {
   access: {
     jwt: process.env.JWT_SECRET_ACCESS,
     session_timeout: {
-      dev: '2m',
-      admin: '1m',
+      dev: '30m',
+      admin: '15m',
     },
   },
   refresh: {
     jwt: process.env.JWT_SECRET_REFRESH,
     session_timeout: {
-      dev: '5m',
-      admin: '2m',
+      dev: '6h',
+      admin: '3h',
     },
     cookie_config: {
       httpOnly: true,

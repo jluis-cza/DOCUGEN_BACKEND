@@ -10,11 +10,13 @@ const REGISTER_ACCOUNT_ROUTE = SERVICES.backend.routers.docugen_web.admission.re
 const LOGIN_USER_ROUTE = SERVICES.backend.routers.docugen_web.admission.start_session;
 const LOGOUT_USER_ROUTE = SERVICES.backend.routers.docugen_web.admission.close_session;
 const RENEW_ACCESS_ROUTE = SERVICES.backend.routers.docugen_web.admission.renew_access;
+const VERIFY_EMAIL_ROUTE = SERVICES.backend.routers.docugen_web.admission.verify_email;
 
 // Endpoints definition
 router.post(REGISTER_ACCOUNT_ROUTE, admissionController.accountRegister);
 router.post(LOGIN_USER_ROUTE, admissionController.sessionStarter);
 router.post(LOGOUT_USER_ROUTE, admissionController.sessionCloser);
 router.post(RENEW_ACCESS_ROUTE, admissionController.accessRenewer);
+router.post(VERIFY_EMAIL_ROUTE, admissionController.emailVerifier);
 
 export default router;

@@ -45,7 +45,8 @@ const AccountSchema = new mongoose.Schema(
       // required: true,
       trim: true,
     },
-    token: { // Email validation token
+    token: {
+      // Email validation token
       type: String,
       default: '',
       trim: true,
@@ -82,7 +83,7 @@ AccountSchema.statics.findAccount = async function (email, username, id, token) 
   if (email) query.push({ 'user.email': email });
   if (username) query.push({ username });
   if (id) query.push({ _id: id });
-  if (id) query.push({ token });
+  if (token) query.push({ token });
   if (query.length === 0) throw new Error('E0101');
 
   // if (!email || !username || !id || !mongoose.Types.ObjectId.isValid(id))
@@ -117,6 +118,18 @@ AccountSchema.statics.setAccountStatus = async function (accountId, status) {
   return account;
 };
 
+AccountSchema.statics.setAccountToken = async function (accountId, token) {
+  const accounts = this;
+  if (!accountId) throw new Error('E0113');
+  const account = await accounts.findOneAndUpdate(
+    { _id: accountId },
+    { $set: { token: token } },
+    { new: true }
+  );
+  if (!account) throw new Error('E0114');
+  return account;
+};
+
 AccountSchema.statics.setAccountServices = async function (accountId, services) {
   const accounts = this;
   if (!accountId || !services) throw new Error('E0109');
@@ -127,6 +140,21 @@ AccountSchema.statics.setAccountServices = async function (accountId, services) 
   );
   if (!account) throw new Error('E0110');
   return account;
+};
+
+AccountSchema.statics.findInactiveAccounts = async function () {
+  const accounts = this;
+  const inactive_accounts = await accounts.find({ status: 'inactive' });
+  if (!inactive_accounts) throw new Error('E0115');
+  if (inactive_accounts.length === 0) throw new Error('E0116');
+  return inactive_accounts;
+};
+
+AccountSchema.statics.deleteInactiveAccounts = async function () {
+  const accounts = this;
+  const deletedAccounts = await accounts.deleteMany({ status: 'inactive' });
+  if (!deletedAccounts) throw new Error('E0117');
+  return deletedAccounts;
 };
 
 AccountSchema.methods.saveAccount = async function () {
@@ -141,19 +169,6 @@ AccountSchema.methods.verifyAccountPassword = async function (password) {
   if (!password) throw new Error('E0111');
   const isMatch = await bcrypt.compare(password, account.password);
   return isMatch;
-};
-
-AccountSchema.methods.setAccountToken = async function (token) {
-  if (!token) throw new Error('E0113');
-  const account = this;
-  account.token = token;
-  return await account.save();
-};
-
-AccountSchema.methods.resetAccountToken = async function () {
-  const account = this;
-  account.token = '';
-  return await account.save();
 };
 
 const Account = mongoose.model('Account', AccountSchema);

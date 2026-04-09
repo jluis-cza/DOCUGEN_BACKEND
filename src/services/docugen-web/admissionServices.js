@@ -1,11 +1,11 @@
-// SESSIONS SERVICES
-// This session manages the main business logic of the admission module.
+// ADMISSION SERVICES
+// Manages the main business logic of the admission module.
 
-import Session from '../../models/docugen-web/Session.js';
 import { KEYS } from '../../constants/keys.js';
 import { USERS } from '../../constants/users.js';
 import { SERVICES } from '../../constants/services.js';
 import { jwtTimeoutToMinutesParser } from '../../helpers/docugen-web/admissionHelper.js';
+import Session from '../../models/docugen-web/Session.js';
 import Account from '../../models/docugen-web/Account.js';
 import {
   generateToken,
@@ -35,17 +35,18 @@ export const accountRegister = async (data) => {
   // Email verification
   const payload = { bytes: 64 };
   const token = generateToken(payload, 'verification');
-  const url = SERVICES.frontend.url + `/verification?token=${token}`
-  const config = { url };
-  console.log({VERIFICATION_URL: url})
-  const info = sendEmail(email, 1, config);
-  console.log({ id: info.messageId, accepted: info.accepted, rejected: info.rejected });
-  //  const accountCreatedUpdated = await Account.setAccountRole(accountCreated._id, USERS.server.role.administrator); // Giving the default "developer role"
+  await Account.setAccountToken(accountCreated._id, token);
+  const url = SERVICES.frontend.url + `/verification?token=${token}`;
+  console.log({ VERIFICATION_URL: url });
+
+  // Sending the verification message to the email provided
+  // const info = sendEmail(email, 1, { url });
+  // console.log({ id: info.messageId, accepted: info.accepted, rejected: info.rejected });
+
+  // Admin user registration hardcoded
+  // const accountCreatedUpdated = await Account.setAccountRole(accountCreated._id, USERS.server.role.administrator); // Giving the default "developer role"
   // await Account.setAccountStatus(accountCreated._id, USERS.client.status.active); //Default active
-  // const accountCreatedUpdated = await Account.setAccountServices(accountCreated._id, [
-  //   USERS.client.services.edition,
-  //   USERS.client.services.generation,
-  // ]); //Default: both services enabled
+
   return accountCreated;
 };
 
@@ -124,10 +125,18 @@ export const accessRenewer = async (token) => {
   return response;
 };
 
-// ************* EMAIL VALIDATOR *************
-export const emailValidator = async (token) =>{
-await verifyToken(token, 'verification')
-}
+// ************* EMAIL VERIFIER *************
+export const emailVerifier = async (token) => {
+  if (!token) throw new Error('E0603');
+  const account = await Account.findAccount('', '', '', token);
+  await Account.setAccountToken(account._id, '');
+  await Account.setAccountServices(account._id, [
+    USERS.client.services.edition,
+    USERS.client.services.generation,
+  ]);
+  await Account.setAccountStatus(account._id, USERS.client.status.active); // Activating the account
+  return { email: account.user.email };
+};
 // *************************************************************************************************
 
 // *************************************************************************************************
@@ -148,13 +157,11 @@ export const checkActiveSessionDuration = async () => {
   const adminSessionTimeout = KEYS.refresh.session_timeout.admin;
   const devSessionTimeout = KEYS.refresh.session_timeout.dev;
   // Getting the active sessions
-  console.log('Starting checking active session duration...');
   try {
     activeSessions = await Session.findActiveSessions();
   } catch (error) {
     if (error.message !== 'E0212') throw error;
   }
-  console.log({ activeSessions });
   // Checking session duration
   for (const activeSession of activeSessions) {
     // Checking user's role and assigned timeouts
@@ -168,11 +175,16 @@ export const checkActiveSessionDuration = async () => {
     currentDuration = Math.round((currentTime.getTime() - loginTime) / (1000 * 60)); //minutes
     // Executing closure of session if conditions are met
     if (currentDuration > sessionTimeoutNumber) {
-      console.log('Closing expired sessions.');
       await activeSession.endSession('expired'); // assigns the "expired" status
+      console.log('Expired session found and closed.');
     }
-    console.log('No active sessions with limit duration were found.');
+  }
+};
+// ************* INACTIVE ACCOUNT DELETER *************
+export const checkInactiveAccounts = async () => {
+  const response = await Account.deleteInactiveAccounts();
+  if (response.deletedCount > 0) {
+    console.log(`Deleted ${response.deletedCount} inactive accounts.`);
   }
 };
 // *************************************************************************************************
-

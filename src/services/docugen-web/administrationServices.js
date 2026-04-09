@@ -72,7 +72,7 @@ export const sampleSystemParameters = async () => {
 
     // Getting the followed parameters
     const followedParameters = await SystemParameter.find({ status: 'followed' });
-    console.log('Paremeters to sample:', { followedParameters: followedParameters });
+    // console.log('Parameters to sample:', { followedParameters: followedParameters });
 
     for (const parameter of followedParameters) {
       let newValue = null;
@@ -89,7 +89,7 @@ export const sampleSystemParameters = async () => {
       }
       if (newValue && newValue.value !== null) {
         await parameter.addSystemParameterValue(newValue.value, newValue.unit);
-        console.log(`Sample ${parameter.name}: ${newValue.value} ${newValue.unit}`);
+        // console.log(`Sample ${parameter.name}: ${newValue.value} ${newValue.unit}`);
       }
     }
     console.log('Sampling complete.');

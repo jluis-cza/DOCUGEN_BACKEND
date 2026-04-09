@@ -44,7 +44,8 @@ export const MESSAGES = {
     {
       code: 'E0101',
       status: 500,
-      message: 'Al least one of the parameters (username, email or id) needs to be provided.',
+      message:
+        'Al least one of the parameters (username, email, id or temporary token) needs to be provided.',
     },
     { code: 'E0102', status: 400, message: 'The account was not found.' },
     { code: 'E0103', status: 400, message: 'The username or email already exists.' },
@@ -60,7 +61,27 @@ export const MESSAGES = {
     {
       code: 'E0113',
       status: 500,
-      message: 'No se proporcionó el argumento "token" para la función "setAccountToken".',
+      message: 'Falta el argumento "id" en la función setAccountToken.',
+    },
+    {
+      code: 'E0114',
+      status: 500,
+      message: 'Error en la actualización del token de verificación de la cuenta.',
+    },
+    {
+      code: 'E0115',
+      status: 500,
+      message: 'Sucedió un error encontrando las cuentas inactivas.',
+    },
+    {
+      code: 'E0116',
+      status: 500,
+      message: 'No se encontró ninguna cuenta inactiva.',
+    },
+    {
+      code: 'E0117',
+      status: 500,
+      message: 'Sucedió un error eliminando las cuentas inactivas.',
     },
     { code: 'E0201', status: 400, message: 'Incorrect password.' },
     { code: 'E0202', status: 400, message: 'The account id was not found.' },
@@ -129,6 +150,11 @@ export const MESSAGES = {
       status: 500,
       message: "El 'type' ingresado no coincide con ningun tipo de email.",
     },
+    {
+      code: 'E0603',
+      status: 500,
+      message: "El argumento 'token' para el servicio 'emailValidator' no fue proporcionado.",
+    },
   ],
   warning: [],
   info: [{ code: 'I0101', status: 400, message: 'Account creation was unsuccessful.' }],
@@ -142,5 +168,5 @@ export const MESSAGES = {
 //    03:Token(no model entity)
 //    04:Access(no model entity)
 //    05:SystemParameters
-//    06:Email
+//    06:Email(no model entity)
 // CD: Number of error or success

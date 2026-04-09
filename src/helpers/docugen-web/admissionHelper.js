@@ -72,6 +72,7 @@ export const generateToken = (payload, type) => {
 
 // Token checker
 // "type" parameter must be: "access" or "refresh"
+// The "verification" type is used for email verification tokens.
 export const verifyToken = async (token, type) => {
   // Validation
   if (!token || !type) throw new Error('E0304');
@@ -91,7 +92,6 @@ export const verifyToken = async (token, type) => {
 // *************************************************************************************************
 // Used in email verification (registry process)
 export const sendEmail = async (to, type, config) => {
-
   if (!to || !type || !config) throw new Error('E0601');
 
   const name = 'Jorge Callisaya';
@@ -128,7 +128,7 @@ export const sendEmail = async (to, type, config) => {
       text: `Por favor haga click en el siguiente enlace para la verificación de su cuenta: ${url}`,
       html: generateHtmlEmail(url),
     };
-    
+
     info = await transporter.sendMail(options);
   } else {
     throw new Error('E0602');
@@ -137,4 +137,3 @@ export const sendEmail = async (to, type, config) => {
   return info;
 };
 // *************************************************************************************************
-
