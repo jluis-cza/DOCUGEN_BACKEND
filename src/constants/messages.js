@@ -48,7 +48,7 @@ export const MESSAGES = {
         'Al least one of the parameters (username, email, id or temporary token) needs to be provided.',
     },
     { code: 'E0102', status: 400, message: 'The account was not found.' },
-    { code: 'E0103', status: 400, message: 'The username or email already exists.' },
+    { code: 'E0103', status: 409, message: 'The username or email already exists.' },
     { code: 'E0104', status: 500, message: 'The account was not saved.' },
     { code: 'E0105', status: 500, message: 'Wrong parameters entry.' },
     { code: 'E0106', status: 500, message: "Error in setting the user's role." },

@@ -48,10 +48,10 @@ export const systemParametersGetter = async (query) => {
   return { systemParameters, pagination, total };
 };
 
-// ************* System parameters Configuration *************
-export const systemParameterSetter = async (config) => {
+// ************* System parameter Configuration *************
+export const systemParameterSetter = async (id, config) => {
   if (!config) throw new Error('E0503');
-  const { id, property, value } = config;
+  const { property, value } = config;
   const systemParameter = await SystemParameter.findSystemParameter(id);
   switch (property) {
     case 'status':

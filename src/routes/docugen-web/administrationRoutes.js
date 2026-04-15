@@ -6,7 +6,9 @@ import { SERVICES } from '../../constants/services.js';
 
 const router = express.Router();
 const SYSTEM_PARAMETERS_ROUTE =
-  SERVICES.backend.routers.docugen_web.administration.resource.system_parameters;
+  SERVICES.backend.routers.docugen_web.administration.resource.system_parameters.base;
+const SYSTEM_PARAMETERS_ID =
+  SERVICES.backend.routers.docugen_web.administration.resource.system_parameters.id;
 // const ACCOUNTS_ROUTE = SERVICES.backend.routers.docugen_web.administration.resource.accounts;
 // const SERVICES_ROUTE = SERVICES.backend.routers.docugen_web.administration.resource.services;
 const CONFIGURATION_ROUTE = SERVICES.backend.routers.docugen_web.administration.configuration;
@@ -17,8 +19,12 @@ router.get(
   MONITOR_ROUTE + SYSTEM_PARAMETERS_ROUTE,
   administrationController.systemParametersGetter
 );
+// router.get(
+//   MONITOR_ROUTE + SYSTEM_PARAMETERS_ROUTE + SYSTEM_PARAMETERS_ID  ,
+//   administrationController.systemParameterGetter
+// );
 router.post(
-  CONFIGURATION_ROUTE + SYSTEM_PARAMETERS_ROUTE,
+  CONFIGURATION_ROUTE + SYSTEM_PARAMETERS_ROUTE + SYSTEM_PARAMETERS_ID,
   administrationController.systemParameterSetter
 );
 

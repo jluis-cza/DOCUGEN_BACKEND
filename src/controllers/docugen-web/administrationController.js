@@ -32,10 +32,12 @@ export const systemParametersGetter = async (req, res, next) => {
 // ************* System parameter configuration *************
 export const systemParameterSetter = async (req, res, next) => {
   const config = req.body;
+  const id = req.params['system-parameter-id'];
+  console.log({id})
   const role = req.user.role;
   if (role !== USERS.server.role.administrator) throw new Error('E0502'); // Checking user's role (admin needed)
   try {
-    await administrationServices.systemParameterSetter(config);
+    await administrationServices.systemParameterSetter(id, config);
     const code = 'S0503';
     const status = successMessage[code]?.status || 200;
     const message = successMessage[code]?.message || 'OK';

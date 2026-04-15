@@ -4,11 +4,13 @@
 import express from 'express';
 import generalMiddleware from './middlewares/generalMiddleware.js';
 import errorHandlerMiddleware from './middlewares/errorHandlerMiddleware.js';
+import documentationMiddleware from './middlewares/documentationMiddleware.js';
 import asignRoutes from './routes/index.js';
 
 const app = express();
 
 generalMiddleware(app);
+documentationMiddleware(app);
 asignRoutes(app);
 errorHandlerMiddleware(app);
 

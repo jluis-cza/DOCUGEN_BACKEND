@@ -5,7 +5,6 @@ const errorMessage = Object.fromEntries(MESSAGES.error.map((e) => [e.code, e]));
 const errorHandlerMiddleware = (app) => {
   app.use((error, req, res, next) => {
     console.log('Error:', error);
-
     let code = 'EXXX';
     if (error.message.length === 5 && error.message[0] === 'E') {
       code = error.message;
