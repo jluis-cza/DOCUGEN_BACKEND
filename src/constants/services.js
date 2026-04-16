@@ -30,15 +30,15 @@ export const SERVICES = {
           resource: {
             system_parameters: {
               base: '/system',
-              id: '/:system-parameter-id',
+              id: '/:system_parameter_id',
             },
             accounts: {
               base: '/accounts',
-              id: '/:account-id',
+              id: '/:account_id',
             },
             services: {
               base: '/services',
-              id: '/:service-id',
+              id: '/:service_id',
             },
           },
         },
