@@ -17,7 +17,7 @@ const options = {
       {
         url: `http://localhost:${SERVICES.backend.port}`,
         description: 'Development server',
-      }
+      },
     ],
     components: {
       securitySchemes: {

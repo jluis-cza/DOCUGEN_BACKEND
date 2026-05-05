@@ -1,8 +1,8 @@
 import swaggerUi from 'swagger-ui-express';
-import swaggerSpec from '../config/documentation.js'
+import swaggerSpec from '../config/documentation.js';
 
 const documentationMiddleware = (app) => {
-    app.use(
+  app.use(
     '/api/docs',
     swaggerUi.serve,
     swaggerUi.setup(swaggerSpec, {
@@ -10,6 +10,6 @@ const documentationMiddleware = (app) => {
       customSiteTitle: 'DOCUGEN API Docs',
     })
   );
-}
+};
 
 export default documentationMiddleware;

@@ -10,6 +10,21 @@ export const MESSAGES = {
       message:
         'La cuenta fue creada exitosamente, por favor ingrese al enlace enviado a su correo para completar el registro.',
     },
+    {
+      code: 'S0102',
+      status: 200,
+      message: 'No se encontraron cuentas.',
+    },
+    {
+      code: 'S0103',
+      status: 200,
+      message: 'La consulta se realizó exitosamente , se encontraron cuentas.',
+    },
+    {
+      code: 'S0104',
+      status: 200,
+      message: 'La configuración de la cuenta se realizó exitosamente.',
+    },
     { code: 'S0201', status: 200, message: ' Welcome. Session started.' },
     { code: 'S0202', status: 200, message: ' The session was succesfully closed.' },
     {
@@ -31,13 +46,23 @@ export const MESSAGES = {
     {
       code: 'S0503',
       status: 200,
-      message: ' La configuración de los parámetros del sistema se realizó exitosamente.',
+      message: ' La configuración del parámetro del sistema se realizó exitosamente.',
     },
     {
       code: 'S0601',
       status: 200,
       message:
         'La dirección de correo electrónico asociada a la cuenta registrada fue verificada exitosamente. La cuenta ha sido habilitada.',
+    },
+    {
+      code: 'S0701',
+      status: 200,
+      message: ' La información de servicios fue recuperada exitosamente.',
+    },
+    {
+      code: 'S0702',
+      status: 200,
+      message: ' La configuración del servicio se realizó exitosamente.',
     },
   ],
   error: [
@@ -83,6 +108,29 @@ export const MESSAGES = {
       status: 500,
       message: 'Sucedió un error eliminando las cuentas inactivas.',
     },
+    {
+      code: 'E0118',
+      status: 500,
+      message:
+        'Usted no cuenta con el rol de administrador para ejecutar esta operación. Error en la consulta de cuentas.',
+    },
+    {
+      code: 'E0119',
+      status: 500,
+      message:
+        'Usted no cuenta con el rol de administrador para ejecutar esta operación. Error en la configuración de cuenta.',
+    },
+    {
+      code: 'E0120',
+      status: 500,
+      message:
+        'No se proporcionó el argumento "config" para la configuración de la cuenta. Error en la configuración de cuenta.',
+    },
+    // {
+    //   code: 'E0121',
+    //   status: 500,
+    //   message: 'La propiedad especificada  para la configuración de la cuenta no existe.',
+    // },
     { code: 'E0201', status: 400, message: 'Incorrect password.' },
     { code: 'E0202', status: 400, message: 'The account id was not found.' },
     { code: 'E0203', status: 500, message: 'No current session was foound.' },
@@ -95,6 +143,12 @@ export const MESSAGES = {
     { code: 'E0210', status: 500, message: 'Request body for Session Closer was not found.' },
     { code: 'E0211', status: 500, message: 'An error has ocurred finding active sessions.' },
     { code: 'E0212', status: 500, message: 'No active sessions were found.' },
+    {
+      code: 'E0213',
+      status: 500,
+      message: 'Un error sucedió al recabar las sesiones de la base de datos.',
+    },
+    { code: 'E0214', status: 500, message: 'No se encontraron sesiones.' }, //falso positivo
     { code: 'E0301', status: 500, message: 'No payload or type of token provided.' },
     {
       code: 'E0302',
@@ -127,7 +181,7 @@ export const MESSAGES = {
       status: 500,
       message: "Error en el paso del argumento 'config' al servicio 'systemParameterSetter'.",
     },
-    { code: 'E0504', status: 400, message: 'La propiedad especificada no existe.' },
+    // { code: 'E0504', status: 400, message: 'La propiedad especificada no existe.' },
     {
       code: 'E0505',
       status: 400,
@@ -138,6 +192,16 @@ export const MESSAGES = {
       code: 'E0506',
       status: 400,
       message: "El valor de 'status' debe ser: 'followed' o 'unfollowed'",
+    },
+    {
+      code: 'E0507',
+      status: 400,
+      message: 'La lista de parámetros del sistema no se pudo recuperar.',
+    },
+    {
+      code: 'E0508',
+      status: 400,
+      message: 'No se encontró ningún parámetro del sistema para ser mostrado.',
     },
     {
       code: 'E0601',
@@ -155,18 +219,66 @@ export const MESSAGES = {
       status: 500,
       message: "El argumento 'token' para el servicio 'emailValidator' no fue proporcionado.",
     },
+    {
+      code: 'E0701',
+      status: 500,
+      message:
+        'La verificación del tipo de rol falló. No se puede ejecutar la obtención de servicios.',
+    },
+    {
+      code: 'E0702',
+      status: 500,
+      message: 'Error al obtener la lista de servicios.',
+    },
+    {
+      code: 'E0703',
+      status: 500,
+      message: 'No se encontró ningún servicio para ser mostrado.',
+    },
+    {
+      code: 'E0704',
+      status: 500,
+      message: 'No se proporciono el status para el servicio.',
+    },
+    {
+      code: 'E0705',
+      status: 500,
+      message: 'Estado no válido, los estados permitidos son: "running" y "stopped".',
+    },
+    {
+      code: 'E0706',
+      status: 500,
+      message:
+        'Se requiere el rol de administrador para configurar un servicio. Error en la configuración del servicio.',
+    },
+    {
+      code: 'E0707',
+      status: 500,
+      message: 'Ocurrió un error encontrando el servicio.',
+    },
+    {
+      code: 'E0708',
+      status: 500,
+      message: 'No se proporciono el parametro de configuración para el servicio',
+    },
+    // {
+    //   code: 'E0709',
+    //   status: 500,
+    //   message: 'La propiedad especificada para la configuración del servicio no es válida.',
+    // },
   ],
   warning: [],
   info: [{ code: 'I0101', status: 400, message: 'Account creation was unsuccessful.' }],
 };
 
-// ABCD
+// code format: ABCDE
 // A: Success or Error
-// B: Entity:
+// BC: Entity:
 //    01:Account
 //    02:Session
 //    03:Token(no model entity)
 //    04:Access(no model entity)
 //    05:SystemParameters
 //    06:Email(no model entity)
-// CD: Number of error or success
+//    07:Services(pseudo-lookup entity)
+// DE: Number of error or success

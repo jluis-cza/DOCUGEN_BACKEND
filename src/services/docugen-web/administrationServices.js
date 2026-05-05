@@ -1,24 +1,61 @@
 // SYSTEM PARAMETERS
 
 import SystemParameter from '../../models/docugen-web/SystemParameter.js';
+import Account from '../../models/docugen-web/Account.js';
+import Service from '../../models/docugen-web/Service.js';
 import { systemParameterValuesCollector } from '../../helpers/docugen-web/administrationHelper.js';
 // *************************************************************************************************
 // FROM CONTROLLERS
 // *************************************************************************************************
 // ************* System parameters Monitor *************
-export const systemParametersGetter = async (query) => {
+export const systemParametersGetter = async () => {
+  const systemParameters = await SystemParameter.getAllSystemParameters();
+  const total = systemParameters.length;
+  const pagination = {
+    page: 1,
+    limit: total,
+    total: total,
+    totalPages: 1,
+    hasNextPage: false,
+    hasPrevPage: false,
+  };
+  const sort = { by: null, order: null };
+  const search = null;
+  return {
+    systemParameters,
+    pagination,
+    sort,
+    search,
+    total,
+  };
+};
+
+// ************* System parameter Configuration *************
+export const systemParameterSetter = async (id, config) => {
+  if (!config) throw new Error('E0503');
+  const systemParameter = await SystemParameter.findSystemParameter(id);
+  let updated_systemParameter = {};
+  if (config.status)
+    updated_systemParameter = await systemParameter.setSystemParameterStatus(config.status);
+  return { systemParameter: updated_systemParameter };
+};
+
+// ************* Accounts Monitor *************
+export const accountsGetter = async (query) => {
   // Params
   const page = parseInt(query.page) || 1;
   const limit = parseInt(query.limit) || 10;
   const search = query.search || '';
-  const sortBy = query.sortBy || 'name';
+  const sortBy = query.sortBy || 'username';
   const sortOrder = query.sortOrder === 'desc' ? -1 : 1;
   // Filer of search
   const filter = {};
   if (search) {
     filter.$or = [
-      { name: { $regex: search, $options: 'i' } },
-      { alias: { $regex: search, $options: 'i' } },
+      { username: { $regex: search, $options: 'i' } },
+      { 'user.name': { $regex: search, $options: 'i' } },
+      { 'user.lastname': { $regex: search, $options: 'i' } },
+      { status: { $regex: search, $options: 'i' } },
     ];
   }
 
@@ -26,12 +63,7 @@ export const systemParametersGetter = async (query) => {
   const sort = { [sortBy]: sortOrder }; // Order of list
 
   // Parallel query
-  const { systemParameters, total } = await SystemParameter.getCustomizedSystemParameters(
-    filter,
-    sort,
-    skip,
-    limit
-  );
+  const { accounts, total } = await Account.getCustomizedAccounts(filter, sort, skip, limit);
 
   const totalPages = Math.ceil(total / limit);
 
@@ -45,21 +77,41 @@ export const systemParametersGetter = async (query) => {
     hasPrevPage: page > 1,
   };
 
-  return { systemParameters, pagination, total };
+  return { accounts, pagination, sort: { by: sortBy, order: query.sortOrder }, search, total };
 };
 
-// ************* System parameter Configuration *************
-export const systemParameterSetter = async (id, config) => {
-  if (!config) throw new Error('E0503');
-  const { property, value } = config;
-  const systemParameter = await SystemParameter.findSystemParameter(id);
-  switch (property) {
-    case 'status':
-      await systemParameter.setSystemParameterStatus(value);
-      break;
-    default:
-      throw new Error('E0504');
-  }
+// ************* Account Configuration *************
+export const accountSetter = async (id, config) => {
+  if (!config) throw new Error('E0120');
+  let updated_account = {};
+  if (config.status) updated_account = await Account.setAccountStatus(id, config.status);
+  return { account: updated_account };
+};
+
+// ************* Services getter *************
+export const servicesGetter = async () => {
+  const services = await Service.getAllServices();
+  const total = services.length;
+  const pagination = {
+    page: 1,
+    limit: total,
+    total: total,
+    totalPages: 1,
+    hasNextPage: false,
+    hasPrevPage: false,
+  };
+  const sort = { by: null, order: null };
+  const search = null;
+  return { services, pagination, sort, search, total };
+};
+
+// ************* Service Configuration *************
+export const serviceSetter = async (id, config) => {
+  if (!config) throw new Error('E0708');
+  const service = await Service.findService(id);
+  let updated_service = {};
+  if (config.status) updated_service = await service.setServiceStatus(config.status);
+  return { service: updated_service };
 };
 
 // *************************************************************************************************

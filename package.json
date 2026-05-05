@@ -9,7 +9,8 @@
     "dev": "nodemon server.js",
     "start": "node server.js",
     "lint": "eslint . --ext js,jsx,ts,tsx",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "seed": "node src/config/seeder.js"
   },
   "keywords": [
     "docugen",

@@ -157,6 +157,15 @@ AccountSchema.statics.deleteInactiveAccounts = async function () {
   return deletedAccounts;
 };
 
+AccountSchema.statics.getCustomizedAccounts = async function (filter, sort, skip, limit) {
+  const accountsModel = this;
+  const [accounts, total] = await Promise.all([
+    accountsModel.find(filter).sort(sort).skip(skip).limit(limit),
+    accountsModel.countDocuments(filter),
+  ]);
+  return { accounts, total };
+};
+
 AccountSchema.methods.saveAccount = async function () {
   const account = this;
   const response = await account.save();

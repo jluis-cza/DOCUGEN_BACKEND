@@ -8,6 +8,12 @@ const activitiesSchema = new mongoose.Schema(
   {
     name: { type: String, required: true, trim: true },
     description: { type: String, required: true, trim: true },
+    service: { type: String, required: true, trim: true },
+    associated_template: {
+      type: Schema.Types.ObjectId,
+      ref: 'Template',
+      required: true,
+    },
   },
   {
     timestamps: true,
@@ -49,6 +55,16 @@ const SessionSchema = new mongoose.Schema(
 
 // *************************************************************************************************
 // Methods
+
+// Retrive all sessions
+SessionSchema.statics.findAllSessions = async function () {
+  const sessions = this;
+  const all_sessions = await sessions.find({});
+  if (!all_sessions) throw new Error('E0213');
+  if (all_sessions.length === 0) throw new Error('E0214');
+  return all_sessions;
+};
+
 // Checking if there are a set of historical sessions for the Account id provided
 SessionSchema.statics.findHistoricalSessions = async function (asociatedAccountId) {
   const sessions = this;

@@ -13,9 +13,9 @@ const RENEW_ACCESS_ROUTE = SERVICES.backend.routers.docugen_web.admission.renew_
 const VERIFY_EMAIL_ROUTE = SERVICES.backend.routers.docugen_web.admission.verify_email;
 
 // Endpoints definition
-router.post(REGISTER_ACCOUNT_ROUTE, admissionController.accountRegister);
-router.post(LOGIN_USER_ROUTE, admissionController.sessionStarter);
-router.post(LOGOUT_USER_ROUTE, admissionController.sessionCloser);
+router.post(REGISTER_ACCOUNT_ROUTE, admissionController.myAccountRegister);
+router.post(LOGIN_USER_ROUTE, admissionController.mySessionStarter);
+router.post(LOGOUT_USER_ROUTE, admissionController.mySessionCloser);
 router.post(RENEW_ACCESS_ROUTE, admissionController.accessRenewer);
 router.post(VERIFY_EMAIL_ROUTE, admissionController.emailVerifier);
 

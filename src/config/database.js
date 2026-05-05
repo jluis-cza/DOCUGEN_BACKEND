@@ -6,7 +6,7 @@ import { SERVICES } from '../constants/services.js';
 
 const DB_URI = SERVICES.database.uri;
 
-const connectDB = async () => {
+export const connectDB = async () => {
   try {
     const response = await mongoose.connect(DB_URI);
     console.log('Data Base connected');
@@ -17,4 +17,13 @@ const connectDB = async () => {
   }
 };
 
-export default connectDB;
+export const disconnectDB = async () => {
+  try {
+    await mongoose.connection.close();
+    console.log('Database disconnected');
+    process.exit(0);
+  } catch (error) {
+    console.log('Error in disconnecting the database.', error);
+    process.exit(1);
+  }
+};

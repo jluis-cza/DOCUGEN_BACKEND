@@ -6,10 +6,10 @@ import { KEYS } from '../../constants/keys.js';
 const successMessage = Object.fromEntries(MESSAGES.success.map((s) => [s.code, s]));
 
 // ************* Sign-up *************
-export const accountRegister = async (req, res, next) => {
+export const myAccountRegister = async (req, res, next) => {
   const data = req.body;
   try {
-    const response = await admissionServices.accountRegister(data);
+    const response = await admissionServices.myAccountRegister(data);
     const code = 'S0101';
     const status = successMessage[code]?.status || 200;
     const message = successMessage[code]?.message || 'OK';
@@ -25,10 +25,10 @@ export const accountRegister = async (req, res, next) => {
 };
 
 // ************* Sign-in *************
-export const sessionStarter = async (req, res, next) => {
+export const mySessionStarter = async (req, res, next) => {
   const data = req.body;
   try {
-    const response = await admissionServices.sessionStarter(data);
+    const response = await admissionServices.mySessionStarter(data);
     const code = 'S0201';
     const status = successMessage[code]?.status || 200;
     const message = successMessage[code]?.message || 'OK';
@@ -52,10 +52,10 @@ export const sessionStarter = async (req, res, next) => {
 };
 
 // ************* Logout *************
-export const sessionCloser = async (req, res, next) => {
+export const mySessionCloser = async (req, res, next) => {
   const data = req.body;
   try {
-    await admissionServices.sessionCloser(data);
+    await admissionServices.mySessionCloser(data);
     const code = 'S0202';
     const status = successMessage[code]?.status || 200;
     const message = successMessage[code]?.message || 'OK';

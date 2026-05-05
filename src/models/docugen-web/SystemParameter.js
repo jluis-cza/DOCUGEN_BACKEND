@@ -69,16 +69,10 @@ SystemParameterSchema.statics.findSystemParameter = async function (parameter_id
 
 SystemParameterSchema.statics.getAllSystemParameters = async function () {
   const systemParametersModel = this;
-  try {
-    const systemParameters = await systemParametersModel.find();
-    console.log('Después de la recuperación de toda la colección: ', {
-      systemParameters: systemParameters,
-    });
-    return systemParameters;
-  } catch (error) {
-    console.log('Error finding all the system parameters.', error);
-    throw error;
-  }
+  const systemParameters = await systemParametersModel.find();
+  if (!systemParameters) throw new Error('E0507');
+  if (systemParameters.length === 0) throw new Error('E0508');
+  return systemParameters;
 };
 
 SystemParameterSchema.statics.getCustomizedSystemParameters = async function (
@@ -98,8 +92,8 @@ SystemParameterSchema.statics.getCustomizedSystemParameters = async function (
 SystemParameterSchema.statics.deleteAllSystemParameters = async function () {
   const systemParametersModel = this;
   try {
-    const systemParameters = await systemParametersModel.deleteMany();
-    return systemParameters;
+    const response = await systemParametersModel.deleteMany();
+    return response;
   } catch (error) {
     console.log('Error deleting system parameters.', error);
     throw error;
@@ -109,19 +103,18 @@ SystemParameterSchema.statics.deleteAllSystemParameters = async function () {
 SystemParameterSchema.statics.seedDefaultSystemParameters = async function () {
   const systemParametersModel = this;
   const defaultSystemParameters = LOOKUPS.docugen_web.system_parameters;
-
   try {
     for (const parameter of defaultSystemParameters) {
       await systemParametersModel.findOneAndUpdate(
         { name: parameter.name },
         { $setOnInsert: parameter },
-        { upsert: true, new: true }
+        { upsert: true, new: true, setDefaultsOnInsert: true }
       );
     }
     const systemParameters = await systemParametersModel.find();
     return systemParameters;
   } catch (error) {
-    console.log('Error finding all the system parameters.', error);
+    console.log('Error seeding system parameters.', error);
     throw error;
   }
 };

@@ -3,6 +3,7 @@
 
 import { KEYS } from '../../constants/keys.js';
 import { USERS } from '../../constants/users.js';
+import { LOOKUPS } from '../../constants/lookups.js';
 import { SERVICES } from '../../constants/services.js';
 import { jwtTimeoutToMinutesParser } from '../../helpers/docugen-web/admissionHelper.js';
 import Session from '../../models/docugen-web/Session.js';
@@ -19,7 +20,7 @@ import {
 
 // ************* SIGN-UP *************
 // It asummes a developer is signing up so a developer role account is created
-export const accountRegister = async (data) => {
+export const myAccountRegister = async (data) => {
   if (!data) throw new Error('E0112');
   const { username, user } = data;
   const { email } = user;
@@ -51,7 +52,7 @@ export const accountRegister = async (data) => {
 };
 
 // ************* SIGN-IN *************
-export const sessionStarter = async (data) => {
+export const mySessionStarter = async (data) => {
   if (!data) throw new Error('E0209');
   const { username, user, password } = data;
   const { email } = user;
@@ -92,7 +93,7 @@ export const sessionStarter = async (data) => {
 };
 
 // ************* LOG-OUT *************
-export const sessionCloser = async (data) => {
+export const mySessionCloser = async (data) => {
   if (!data) throw new Error('E0210');
   const arrivingIdentity = data;
   const registeredAccount = await Account.findAccount('', arrivingIdentity.username, '', ''); // Checking if there is a registered account with the username
@@ -130,10 +131,7 @@ export const emailVerifier = async (token) => {
   if (!token) throw new Error('E0603');
   const account = await Account.findAccount('', '', '', token);
   await Account.setAccountToken(account._id, '');
-  await Account.setAccountServices(account._id, [
-    USERS.client.services.edition,
-    USERS.client.services.generation,
-  ]);
+  await Account.setAccountServices(account._id, LOOKUPS.docugen_web.services);
   await Account.setAccountStatus(account._id, USERS.client.status.active); // Activating the account
   return { email: account.user.email };
 };
