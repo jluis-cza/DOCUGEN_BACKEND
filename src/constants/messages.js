@@ -49,6 +49,11 @@ export const MESSAGES = {
       message: ' La configuración del parámetro del sistema se realizó exitosamente.',
     },
     {
+      code: 'S0504',
+      status: 200,
+      message: 'El parámetro de sistema fue recuperado exitósamente.',
+    },
+    {
       code: 'S0601',
       status: 200,
       message:
@@ -202,6 +207,22 @@ export const MESSAGES = {
       code: 'E0508',
       status: 400,
       message: 'No se encontró ningún parámetro del sistema para ser mostrado.',
+    },
+    {
+      code: 'E0509',
+      status: 400,
+      message:
+        'El controlador systemParameterGetter necesita de un rol de administrador para ser usado.',
+    },
+    {
+      code: 'E0510',
+      status: 400,
+      message: 'El servicio systemParameterGetter necesita de un id como argumento.',
+    },
+        {
+      code: 'E0511',
+      status: 400,
+      message: 'No se encontró ningun parámetro del sistema con el id especificado.',
     },
     {
       code: 'E0601',

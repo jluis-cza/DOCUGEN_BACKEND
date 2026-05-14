@@ -18,12 +18,20 @@ const MONITOR_ROUTE = SERVICES.backend.routers.docugen_web.administration.monito
 
 // Endpoints definition
 // ****** Monitors ******
+// *** System Parameters ***
 router.get(
   MONITOR_ROUTE + SYSTEM_PARAMETERS_ROUTE,
   administrationController.systemParametersGetter
 );
 router.get(MONITOR_ROUTE + ACCOUNTS_ROUTE, administrationController.accountsGetter);
 router.get(MONITOR_ROUTE + SERVICES_ROUTE, administrationController.servicesGetter);
+// *** System Parameter ***
+router.get(
+  MONITOR_ROUTE + SYSTEM_PARAMETERS_ROUTE +SYSTEM_PARAMETER_ID,
+  administrationController.systemParameterGetter
+);
+// router.get(MONITOR_ROUTE + ACCOUNTS_ROUTE +ACCOUNT_ID, administrationController.accountGetter);
+// router.get(MONITOR_ROUTE + SERVICES_ROUTE + SERVICE_ID, administrationController.serviceGetter);
 
 // ****** Setters ******
 router.post(

@@ -32,6 +32,27 @@ export const systemParametersGetter = async (req, res, next) => {
   }
 };
 
+// ************* System Parameter monitor *************
+export const systemParameterGetter = async (req, res, next) =>{
+  const id = req.params['system_parameter_id'];
+  const role = req.user.role;
+  if (role !== USERS.server.role.administrator) throw new Error('E0509'); // Checking user's role (admin needed)
+  try {
+    const response = await administrationServices.systemParameterGetter(id);
+    const code =  'S0504';
+    const status = successMessage[code]?.status || 200;
+    const message = successMessage[code]?.message || 'OK';
+    return res.status(status).json({
+      success: true,
+      code: code,
+      message: message,
+      data: { systemParameter: response.systemParameter },
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
 // ************* System parameter configuration *************
 export const systemParameterSetter = async (req, res, next) => {
   const config = req.body.data;

@@ -58,13 +58,9 @@ const SystemParameterSchema = new mongoose.Schema(
 
 SystemParameterSchema.statics.findSystemParameter = async function (parameter_id) {
   const systemParameters = this;
-  try {
-    const systemParameter = await systemParameters.findOne({ _id: parameter_id });
-    return systemParameter;
-  } catch (error) {
-    console.log('Error finding the system parameter.', error);
-    throw error;
-  }
+  const systemParameter = await systemParameters.findOne({ _id: parameter_id });
+  if (!systemParameter) throw new Error('E0511');
+  return systemParameter;
 };
 
 SystemParameterSchema.statics.getAllSystemParameters = async function () {

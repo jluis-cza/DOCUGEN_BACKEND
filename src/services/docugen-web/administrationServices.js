@@ -30,6 +30,13 @@ export const systemParametersGetter = async () => {
   };
 };
 
+// ************* System parameter Monitor *************
+export const systemParameterGetter = async (id) => {
+if (!id) throw new Error('E0510');
+const systemParameter = await SystemParameter.findSystemParameter(id);
+return { systemParameter };
+}
+
 // ************* System parameter Configuration *************
 export const systemParameterSetter = async (id, config) => {
   if (!config) throw new Error('E0503');
