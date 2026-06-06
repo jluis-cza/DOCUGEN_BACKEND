@@ -11,10 +11,6 @@ const userSchema = new mongoose.Schema({
   lastname: { type: String, required: true, trim: true },
   email: { type: String, required: true, unique: true, trim: true },
 });
-const serviceSchema = new mongoose.Schema({
-  name: { type: String, trim: true },
-  description: { type: String, trim: true },
-});
 
 // Document
 const AccountSchema = new mongoose.Schema(
@@ -53,7 +49,6 @@ const AccountSchema = new mongoose.Schema(
       maxlength: 128,
     },
     user: userSchema,
-    services: [serviceSchema],
   },
   {
     timestamps: true,
@@ -127,18 +122,6 @@ AccountSchema.statics.setAccountToken = async function (accountId, token) {
     { new: true }
   );
   if (!account) throw new Error('E0114');
-  return account;
-};
-
-AccountSchema.statics.setAccountServices = async function (accountId, services) {
-  const accounts = this;
-  if (!accountId || !services) throw new Error('E0109');
-  const account = await accounts.findOneAndUpdate(
-    { _id: accountId },
-    { $set: { services: services } },
-    { new: true }
-  );
-  if (!account) throw new Error('E0110');
   return account;
 };
 

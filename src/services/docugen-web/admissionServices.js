@@ -3,11 +3,12 @@
 
 import { KEYS } from '../../constants/keys.js';
 import { USERS } from '../../constants/users.js';
-import { LOOKUPS } from '../../constants/lookups.js';
 import { SERVICES } from '../../constants/services.js';
 import { jwtTimeoutToMinutesParser } from '../../helpers/docugen-web/admissionHelper.js';
 import Session from '../../models/docugen-web/Session.js';
 import Account from '../../models/docugen-web/Account.js';
+import Service from '../../models/docugen-web/Service.js';
+import ServiceLookup from '../../models/docugen-web/ServiceLookup.js';
 import {
   generateToken,
   verifyToken,
@@ -61,7 +62,7 @@ export const mySessionStarter = async (data) => {
   if (!isMatch) throw new Error('E0201');
   try {
     const currentSession = await Session.findCurrentSession(registeredAccount._id); // Checking if there is a current  ongoing session
-    currentSession.endSession('inactive'); // Closing the ongoing session
+    currentSession.endSession('terminated'); // Closing the ongoing session
   } catch (error) {
     if (error.message !== 'E0203') throw error;
   }
@@ -98,7 +99,7 @@ export const mySessionCloser = async (data) => {
   const arrivingIdentity = data;
   const registeredAccount = await Account.findAccount('', arrivingIdentity.username, '', ''); // Checking if there is a registered account with the username
   const currentSession = await Session.findCurrentSession(registeredAccount._id); // Checking if there is a current  ongoing session
-  const closedSession = currentSession.endSession('inactive'); // Closing the ongoing session in DB
+  const closedSession = currentSession.endSession('terminated'); // Closing the ongoing session in DB
   return closedSession;
 };
 
@@ -130,9 +131,20 @@ export const accessRenewer = async (token) => {
 export const emailVerifier = async (token) => {
   if (!token) throw new Error('E0603');
   const account = await Account.findAccount('', '', '', token);
-  await Account.setAccountToken(account._id, '');
-  await Account.setAccountServices(account._id, LOOKUPS.docugen_web.services);
+
+  // Adding services
+  // adding the "generation" service
+  let serviceLookup = {};
+  serviceLookup = await ServiceLookup.findServiceLookup('', 'Generación de Documentos');
+  const newService1 = new Service();
+  await newService1.createService(account._id, serviceLookup._id);
+  // adding the "edition" service
+  serviceLookup = await ServiceLookup.findServiceLookup('', 'Edición de Plantillas');
+  const newService2 = new Service();
+  await newService2.createService(account._id, serviceLookup._id);
+
   await Account.setAccountStatus(account._id, USERS.client.status.active); // Activating the account
+  await Account.setAccountToken(account._id, '');
   return { email: account.user.email };
 };
 // *************************************************************************************************

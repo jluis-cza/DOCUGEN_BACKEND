@@ -4,15 +4,15 @@
 // Populate a initial set of data in a collection database
 import { connectDB, disconnectDB } from './database.js';
 import SystemParameter from '../models/docugen-web/SystemParameter.js';
-import Service from '../models/docugen-web/Service.js';
+import ServiceLookup from '../models/docugen-web/ServiceLookup.js';
 
 const seedDB = async () => {
   try {
     await SystemParameter.deleteAllSystemParameters(); //Delete this if you dont want to delete the already data in the collection and just (update and insert)
     await SystemParameter.seedDefaultSystemParameters();
     // ...
-    await Service.deleteAllServices(); //Delete this if you dont want to delete the already data in the collection and just (update and insert)
-    await Service.seedDefaultServices();
+    await ServiceLookup.deleteAllServiceLookups(); //Delete this if you dont want to delete the already data in the collection and just (update and insert)
+    await ServiceLookup.seedDefaultServiceLookups();
 
     console.log('Successfully seeded');
   } catch (error) {

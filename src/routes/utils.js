@@ -28,8 +28,16 @@ export const notFoundRoute = (req, res) => {
   //  message: "Path not found",
   //  path: req.originalUrl,
   // });
-
   res.status(404).send('404 Not Found');
+};
+
+export const timeRoute = (req, res) => {
+  const currentTime = new Date().toISOString();
+  res.json({
+    success: true,
+    message: 'Server UTC time',
+    time: currentTime,
+  });
 };
 
 // export errorHandlerRoute = (err, req, res, next) => {

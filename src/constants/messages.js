@@ -25,8 +25,24 @@ export const MESSAGES = {
       status: 200,
       message: 'La configuración de la cuenta se realizó exitosamente.',
     },
+    {
+      code: 'S0105',
+      status: 200,
+      message: 'La información de la cuenta se recuperó exitosamente.',
+    },
     { code: 'S0201', status: 200, message: ' Welcome. Session started.' },
     { code: 'S0202', status: 200, message: ' The session was succesfully closed.' },
+    {
+      code: 'S0203',
+      status: 200,
+      message:
+        ' Se realizó la consulta de sesiones para la cuenta dada y no se halló ninguna sesión.',
+    },
+    {
+      code: 'S0204',
+      status: 200,
+      message: ' La consulta fue exitosa y se hallaron sesiones para la cuenta dada.',
+    },
     {
       code: 'S0401',
       status: 200,
@@ -62,12 +78,33 @@ export const MESSAGES = {
     {
       code: 'S0701',
       status: 200,
-      message: ' La información de servicios fue recuperada exitosamente.',
+      message: ' La información de servicio lookups fue recuperada exitosamente.',
     },
     {
       code: 'S0702',
       status: 200,
-      message: ' La configuración del servicio se realizó exitosamente.',
+      message: ' La configuración del servicio lookup se realizó exitosamente.',
+    },
+    {
+      code: 'S0703',
+      status: 200,
+      message: ' La recuperación del servicio lookup se realizó exitosamente.',
+    },
+    {
+      code: 'S0801',
+      status: 200,
+      message:
+        ' La consulta de servicios fue exitosa. No se encontraron resultados asociados a la búsqueda.',
+    },
+    {
+      code: 'S0802',
+      status: 200,
+      message: ' La consulta fue exitosa y se encontraron servicios asociados a la búsqueda.',
+    },
+    {
+      code: 'S0803',
+      status: 200,
+      message: ' La operación fue exitosa y se configuró el servicio.',
     },
   ],
   error: [
@@ -131,11 +168,17 @@ export const MESSAGES = {
       message:
         'No se proporcionó el argumento "config" para la configuración de la cuenta. Error en la configuración de cuenta.',
     },
-    // {
-    //   code: 'E0121',
-    //   status: 500,
-    //   message: 'La propiedad especificada  para la configuración de la cuenta no existe.',
-    // },
+    {
+      code: 'E0121',
+      status: 500,
+      message:
+        'No se cuenta con el rol necesario (administrador) para usar la función accountGetter.',
+    },
+    {
+      code: 'E0122',
+      status: 500,
+      message: 'No se tiene el parámetro id en el servicio de accountGetter.',
+    },
     { code: 'E0201', status: 400, message: 'Incorrect password.' },
     { code: 'E0202', status: 400, message: 'The account id was not found.' },
     { code: 'E0203', status: 500, message: 'No current session was foound.' },
@@ -154,6 +197,12 @@ export const MESSAGES = {
       message: 'Un error sucedió al recabar las sesiones de la base de datos.',
     },
     { code: 'E0214', status: 500, message: 'No se encontraron sesiones.' }, //falso positivo
+    {
+      code: 'E0215',
+      status: 500,
+      message: 'No se puede usar el controlador sessionGetter con su rol actual.',
+    },
+    { code: 'E0216', status: 500, message: 'El id de la cuenta no es valido.' },
     { code: 'E0301', status: 500, message: 'No payload or type of token provided.' },
     {
       code: 'E0302',
@@ -219,7 +268,7 @@ export const MESSAGES = {
       status: 400,
       message: 'El servicio systemParameterGetter necesita de un id como argumento.',
     },
-        {
+    {
       code: 'E0511',
       status: 400,
       message: 'No se encontró ningun parámetro del sistema con el id especificado.',
@@ -244,49 +293,135 @@ export const MESSAGES = {
       code: 'E0701',
       status: 500,
       message:
-        'La verificación del tipo de rol falló. No se puede ejecutar la obtención de servicios.',
+        'La verificación del tipo de rol falló. No se puede ejecutar la obtención de servicio lookups.',
     },
     {
       code: 'E0702',
       status: 500,
-      message: 'Error al obtener la lista de servicios.',
+      message: 'Error al obtener la lista de servicio lookups.',
     },
     {
       code: 'E0703',
       status: 500,
-      message: 'No se encontró ningún servicio para ser mostrado.',
+      message: 'No se encontró ningún servicio lookup para ser mostrado.',
     },
     {
       code: 'E0704',
       status: 500,
-      message: 'No se proporciono el status para el servicio.',
+      message: 'No se proporciono el status para el servicio lookup.',
     },
     {
       code: 'E0705',
       status: 500,
-      message: 'Estado no válido, los estados permitidos son: "running" y "stopped".',
+      message:
+        'Estado no válido, los estados permitidos para setServiceLookupStatus son: "running" y "stopped".',
     },
     {
       code: 'E0706',
       status: 500,
       message:
-        'Se requiere el rol de administrador para configurar un servicio. Error en la configuración del servicio.',
+        'Se requiere el rol de administrador para configurar un servicio lookup. Error en la configuración del servicio lookup.',
     },
     {
       code: 'E0707',
       status: 500,
-      message: 'Ocurrió un error encontrando el servicio.',
+      message: 'Ocurrió un error encontrando el servicio lookup.',
     },
     {
       code: 'E0708',
       status: 500,
       message: 'No se proporciono el parametro de configuración para el servicio',
     },
+    {
+      code: 'E0709',
+      status: 500,
+      message:
+        'Para ejecutar el controlador serviceLookupGetter se necesitan privilegios de administrador.',
+    },
+    {
+      code: 'E0710',
+      status: 500,
+      message: 'No se especificó correctamente el id para el servicio serviceLookupGetter.',
+    },
+    {
+      code: 'E0711',
+      status: 500,
+      message:
+        'El método "findServiceLookup" requiere al menos un parámetro de entrada ya sea "id" del servicio lookup o el "name" de este.',
+    },
+    {
+      code: 'E0801',
+      status: 500,
+      message: 'La consulta para recuperar todos los servicios falló.',
+    },
+    {
+      code: 'E0802',
+      status: 500,
+      message: 'El parámetro pasado al método getAccountServices no corresponde a un id válido.',
+    },
+    {
+      code: 'E0803',
+      status: 500,
+      message: 'El parámetro "id" pasado al método getServices no corresponde a un id válido.',
+    },
+    {
+      code: 'E0804',
+      status: 500,
+      message: 'Error en el parámetro "status" del servicio setServiceStatus.',
+    },
+    {
+      code: 'E0805',
+      status: 500,
+      message: 'Los posibles estados de "status" son "running" o "stopped',
+    },
+    {
+      code: 'E0806',
+      status: 500,
+      message: 'Error buscando el servicio pedido.',
+    },
     // {
-    //   code: 'E0709',
+    //   code: 'E0807',
     //   status: 500,
-    //   message: 'La propiedad especificada para la configuración del servicio no es válida.',
+    //   message:
+    //     'El parámetro "searchBy" del método "getServices" debe ser "account" o "service-lookup" ',
     // },
+    {
+      code: 'E0808',
+      status: 500,
+      message: 'Error del parámetro "id" en servicio "servicesGetter"',
+    },
+    {
+      code: 'E0809',
+      status: 500,
+      message: 'Error en el parámetro "config" del método "serviceSetter"',
+    },
+    {
+      code: 'E0810',
+      status: 500,
+      message:
+        'El controlador "serviceGetter" necesita de un rol de administrador para poder ser ejecutado.',
+    },
+    {
+      code: 'E0811',
+      status: 500,
+      message:
+        'Se neecesita que se tenga rol de administrador para ejecutar el controlador "serviceSetter".',
+    },
+    {
+      code: 'E0812',
+      status: 500,
+      message: 'El parámetro "associatedAccountId" es incorrecto.',
+    },
+    {
+      code: 'E0813',
+      status: 500,
+      message: 'El parámetro "associatedServiceLookupId" es incorrecto.',
+    },
+    {
+      code: 'E0814',
+      status: 500,
+      message: 'Error en la creación del servicio.',
+    },
   ],
   warning: [],
   info: [{ code: 'I0101', status: 400, message: 'Account creation was unsuccessful.' }],
@@ -301,5 +436,6 @@ export const MESSAGES = {
 //    04:Access(no model entity)
 //    05:SystemParameters
 //    06:Email(no model entity)
-//    07:Services(pseudo-lookup entity)
+//    07:ServiceLookup(lookup model entity)
+//    08:Service
 // DE: Number of error or success

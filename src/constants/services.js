@@ -27,6 +27,7 @@ export const SERVICES = {
           base: '/admin',
           monitor: '/monitor',
           configuration: '/config',
+          lookup: '/categories',
           resource: {
             system_parameters: {
               base: '/system',
@@ -35,6 +36,12 @@ export const SERVICES = {
             accounts: {
               base: '/accounts',
               id: '/:account_id',
+              resource: {
+                sessions: {
+                  base: '/sessions',
+                  id: '/:session_id',
+                },
+              },
             },
             services: {
               base: '/services',
@@ -42,10 +49,23 @@ export const SERVICES = {
             },
           },
         },
-        default: '/',
-        health: '/health',
+        utils: {
+          default: '/',
+          health: '/health',
+        },
       },
       docugen_app: {},
+      utils: {
+        time: '/time',
+        notifications: {
+          base: '/notifications',
+          id: '/:notification_id',
+        },
+        activities: {
+          base: '/activities',
+          id: '/:activity',
+        },
+      },
     },
   },
   database: {

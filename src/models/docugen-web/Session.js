@@ -34,8 +34,8 @@ const SessionSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ['active', 'inactive', 'expired'],
-      default: 'inactive',
+      enum: ['active', 'terminated', 'expired'],
+      default: 'terminated',
       required: true,
     },
     token: { type: String, default: '' }, // Refresh token
@@ -66,14 +66,14 @@ SessionSchema.statics.findAllSessions = async function () {
 };
 
 // Checking if there are a set of historical sessions for the Account id provided
-SessionSchema.statics.findHistoricalSessions = async function (asociatedAccountId) {
+SessionSchema.statics.findHistoricalSessions = async function (associatedAccountId) {
   const sessions = this;
   try {
     //moongose query
     const sessions_set = await sessions
       .find({
-        associated_account: asociatedAccountId,
-        status: { $in: ['inactive', 'expired'] },
+        associated_account: associatedAccountId,
+        status: { $in: ['terminated', 'expired'] },
       })
       .populate('associated_account')
       .sort({ createdAt: -1 });
@@ -85,12 +85,12 @@ SessionSchema.statics.findHistoricalSessions = async function (asociatedAccountI
 };
 
 // To find the current session if any
-SessionSchema.statics.findCurrentSession = async function (asociatedAccountId) {
+SessionSchema.statics.findCurrentSession = async function (associatedAccountId) {
   const sessions = this;
-  if (!asociatedAccountId) throw new Error('E0202');
+  if (!associatedAccountId) throw new Error('E0202');
   const current_session = await sessions
     .findOne({
-      associated_account: asociatedAccountId,
+      associated_account: associatedAccountId,
       status: 'active',
     })
     .populate('associated_account');
@@ -107,11 +107,37 @@ SessionSchema.statics.findActiveSessions = async function () {
   return active_sessions;
 };
 
+SessionSchema.statics.getCustomizedSessions = async function (id, params) {
+  const sessionsModel = this;
+  const { filter, sort, skip, limit } = params;
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    throw new Error('E0216');
+  }
+
+  const accountFilter = {
+    associated_account: new mongoose.Types.ObjectId(id),
+    ...filter,
+  };
+
+  const [sessions, total] = await Promise.all([
+    sessionsModel
+      .find(accountFilter)
+      .populate('associated_account')
+      .sort(sort)
+      .skip(skip)
+      .limit(limit),
+    sessionsModel.countDocuments(accountFilter),
+  ]);
+
+  return { sessions, total };
+};
+
 //Create a new session and add the idaccount and status active
-SessionSchema.methods.createSession = async function (asociatedAccountId, token) {
+SessionSchema.methods.createSession = async function (associatedAccountId, token) {
   const session = this;
-  if (!asociatedAccountId) throw new Error('E0207');
-  session.associated_account = asociatedAccountId;
+  if (!associatedAccountId) throw new Error('E0207');
+  session.associated_account = associatedAccountId;
   session.status = 'active';
   session.token = token;
   session.loginTime = new Date();
@@ -126,7 +152,7 @@ SessionSchema.methods.createSession = async function (asociatedAccountId, token)
 SessionSchema.methods.endSession = async function (closureStatus) {
   const session = this;
   if (!closureStatus) throw new Error('E0204');
-  if (closureStatus == 'expired' || closureStatus == 'inactive') {
+  if (closureStatus == 'expired' || closureStatus == 'terminated') {
     session.logoutTime = new Date();
     const loginTime = session.loginTime.getTime();
     const logoutTime = session.logoutTime.getTime();

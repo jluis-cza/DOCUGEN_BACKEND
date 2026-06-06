@@ -5,7 +5,7 @@ import * as administrationServices from '../../services/docugen-web/administrati
 
 const successMessage = Object.fromEntries(MESSAGES.success.map((s) => [s.code, s]));
 
-// ************* System parameters Monitor *************
+// ************* System Parameters Monitor *************
 export const systemParametersGetter = async (req, res, next) => {
   const role = req.user.role;
   if (role !== USERS.server.role.administrator) throw new Error('E0501'); // Checking user's role (admin needed)
@@ -32,14 +32,14 @@ export const systemParametersGetter = async (req, res, next) => {
   }
 };
 
-// ************* System Parameter monitor *************
-export const systemParameterGetter = async (req, res, next) =>{
+// ************* System Parameter Monitor *************
+export const systemParameterGetter = async (req, res, next) => {
   const id = req.params['system_parameter_id'];
   const role = req.user.role;
   if (role !== USERS.server.role.administrator) throw new Error('E0509'); // Checking user's role (admin needed)
   try {
     const response = await administrationServices.systemParameterGetter(id);
-    const code =  'S0504';
+    const code = 'S0504';
     const status = successMessage[code]?.status || 200;
     const message = successMessage[code]?.message || 'OK';
     return res.status(status).json({
@@ -51,7 +51,7 @@ export const systemParameterGetter = async (req, res, next) =>{
   } catch (error) {
     next(error);
   }
-}
+};
 
 // ************* System parameter configuration *************
 export const systemParameterSetter = async (req, res, next) => {
@@ -100,6 +100,27 @@ export const accountsGetter = async (req, res, next) => {
   }
 };
 
+// ************* Account Monitor *************
+export const accountGetter = async (req, res, next) => {
+  const id = req.params['account_id'];
+  const role = req.user.role;
+  if (role !== USERS.server.role.administrator) throw new Error('E0121'); // Checking user's role (admin needed)
+  try {
+    const response = await administrationServices.accountGetter(id);
+    const code = 'S0105';
+    const status = successMessage[code]?.status || 200;
+    const message = successMessage[code]?.message || 'OK';
+    return res.status(status).json({
+      success: true,
+      code: code,
+      message: message,
+      data: { account: response.account },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 // ************* Account configuration *************
 export const accountSetter = async (req, res, next) => {
   const config = req.body.data;
@@ -122,13 +143,15 @@ export const accountSetter = async (req, res, next) => {
   }
 };
 
-// ************* Services Monitor *************
+// ************* Services Getter *************
 export const servicesGetter = async (req, res, next) => {
+  const query = req.query;
+  const id = req.params['account_id'];
   const role = req.user.role;
-  if (role !== USERS.server.role.administrator) throw new Error('E0701'); // Checking user's role (admin needed)
+  if (role !== USERS.server.role.administrator) throw new Error('E0810'); // Checking user's role (admin needed)
   try {
-    const response = await administrationServices.servicesGetter();
-    const code = 'S0701';
+    const response = await administrationServices.servicesGetter(id, query);
+    const code = response.total === 0 ? 'S0801' : 'S0802';
     const status = successMessage[code]?.status || 200;
     const message = successMessage[code]?.message || 'OK';
     return res.status(status).json({
@@ -145,14 +168,15 @@ export const servicesGetter = async (req, res, next) => {
   }
 };
 
+// ************* Service Setter *************
 export const serviceSetter = async (req, res, next) => {
   const config = req.body.data;
   const id = req.params['service_id'];
   const role = req.user.role;
-  if (role !== USERS.server.role.administrator) throw new Error('E0706'); // Checking user's role (admin needed)
+  if (role !== USERS.server.role.administrator) throw new Error('E0811'); // Checking user's role (admin needed)
   try {
     const response = await administrationServices.serviceSetter(id, config);
-    const code = 'S0702';
+    const code = 'S0803';
     const status = successMessage[code]?.status || 200;
     const message = successMessage[code]?.message || 'OK';
     return res.status(status).json({
@@ -160,6 +184,101 @@ export const serviceSetter = async (req, res, next) => {
       code: code,
       message: message,
       data: { service: response.service },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// ************* Service Lookups Monitor *************
+export const serviceLookupsGetter = async (req, res, next) => {
+  const role = req.user.role;
+  if (role !== USERS.server.role.administrator) throw new Error('E0701'); // Checking user's role (admin needed)
+  try {
+    const response = await administrationServices.serviceLookupsGetter();
+    const code = 'S0701';
+    const status = successMessage[code]?.status || 200;
+    const message = successMessage[code]?.message || 'OK';
+    return res.status(status).json({
+      success: true,
+      code: code,
+      message: message,
+      data: { serviceLookups: response.serviceLookups },
+      metadata: {
+        serviceLookups: {
+          pagination: response.pagination,
+          sort: response.sort,
+          search: response.search,
+        },
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// ************* Service Lookup Monitor *************
+export const serviceLookupGetter = async (req, res, next) => {
+  const id = req.params['service_id'];
+  const role = req.user.role;
+  if (role !== USERS.server.role.administrator) throw new Error('E0709'); // Checking user's role (admin needed)
+  try {
+    const response = await administrationServices.serviceLookupGetter(id);
+    const code = 'S0703';
+    const status = successMessage[code]?.status || 200;
+    const message = successMessage[code]?.message || 'OK';
+    return res.status(status).json({
+      success: true,
+      code: code,
+      message: message,
+      data: { serviceLookup: response.serviceLookup },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// ************* Service Lookup Setter *************
+export const serviceLookupSetter = async (req, res, next) => {
+  const config = req.body.data;
+  const id = req.params['service_id'];
+  const role = req.user.role;
+  if (role !== USERS.server.role.administrator) throw new Error('E0706'); // Checking user's role (admin needed)
+  try {
+    const response = await administrationServices.serviceLookupSetter(id, config);
+    const code = 'S0702';
+    const status = successMessage[code]?.status || 200;
+    const message = successMessage[code]?.message || 'OK';
+    return res.status(status).json({
+      success: true,
+      code: code,
+      message: message,
+      data: { serviceLookup: response.serviceLookup },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// ************* Sessions Monitor *************
+export const sessionsGetter = async (req, res, next) => {
+  const query = req.query;
+  const id = req.params['account_id'];
+  const role = req.user.role;
+  if (role !== USERS.server.role.administrator) throw new Error('E0215'); // Checking user's role (admin needed)
+  try {
+    const response = await administrationServices.sessionsGetter(id, query);
+    const code = response.total === 0 ? 'S0203' : 'S0204';
+    const status = successMessage[code]?.status || 200;
+    const message = successMessage[code]?.message || 'OK';
+    return res.status(status).json({
+      success: true,
+      code: code,
+      message: message,
+      data: { sessions: response.sessions },
+      metadata: {
+        sessions: { pagination: response.pagination, sort: response.sort, search: response.search },
+      },
     });
   } catch (error) {
     next(error);
