@@ -106,6 +106,11 @@ export const MESSAGES = {
       status: 200,
       message: ' La operación fue exitosa y se configuró el servicio.',
     },
+    {
+      code: 'S0901',
+      status: 200,
+      message: 'El tiempo del servidor se recuperó exitosamente.',
+    },
   ],
   error: [
     {
@@ -422,6 +427,11 @@ export const MESSAGES = {
       status: 500,
       message: 'Error en la creación del servicio.',
     },
+    {
+      code: 'E0901',
+      status: 500,
+      message: 'Error En la consulta del tiempo del servidor.',
+    },
   ],
   warning: [],
   info: [{ code: 'I0101', status: 400, message: 'Account creation was unsuccessful.' }],
@@ -438,4 +448,5 @@ export const MESSAGES = {
 //    06:Email(no model entity)
 //    07:ServiceLookup(lookup model entity)
 //    08:Service
+//    09:Time(no model entity)
 // DE: Number of error or success

@@ -3,7 +3,9 @@
 // responses by themselves.
 
 import { SERVICES } from '../constants/services.js';
+import { MESSAGES } from '../constants/messages.js';
 
+const successMessage = Object.fromEntries(MESSAGES.success.map((s) => [s.code, s]));
 const ROUTES_INFO = SERVICES.backend.routers;
 
 export const infoRoute = (req, res) => {
@@ -31,12 +33,22 @@ export const notFoundRoute = (req, res) => {
   res.status(404).send('404 Not Found');
 };
 
-export const timeRoute = (req, res) => {
+export const timeRoute = (req, res, next) => {
   const currentTime = new Date().toISOString();
-  res.json({
+  if (!currentTime) {
+    const error = new Error('E0901');
+    next(error);
+  }
+  const code = 'S0901';
+  const status = successMessage[code]?.status || 200;
+  const message = successMessage[code]?.message || 'OK';
+  res.status(status).json({
     success: true,
-    message: 'Server UTC time',
-    time: currentTime,
+    code: code,
+    message: message,
+    data: {
+      time: currentTime,
+    },
   });
 };
 

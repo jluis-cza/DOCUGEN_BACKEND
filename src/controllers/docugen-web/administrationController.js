@@ -61,7 +61,6 @@ export const systemParameterSetter = async (req, res, next) => {
   if (role !== USERS.server.role.administrator) throw new Error('E0502'); // Checking user's role (admin needed)
   try {
     const response = await administrationServices.systemParameterSetter(id, config);
-    console.log({ response });
     const code = 'S0503';
     const status = successMessage[code]?.status || 200;
     const message = successMessage[code]?.message || 'OK';
