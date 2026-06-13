@@ -71,13 +71,13 @@ export const mySessionStarter = async (data, processId) => {
   // Creating a new session
   const newSession = new Session();
   const createdSession = await newSession.createSession(registeredAccount._id);
+  // idset
+  const idSet = {
+    associated_session: createdSession._id,
+    associated_account: registeredAccount._id,
+    associated_process: processId,
+  };
   // Generating tokens
-  // const payload = {
-  //   id: registeredAccount._id,
-  //   username: registeredAccount.username,
-  //   role: registeredAccount.role,
-  //   status: registeredAccount.status,
-  // };
   const accountPayload = {
     id: registeredAccount._id,
     username: registeredAccount.username,
@@ -94,20 +94,13 @@ export const mySessionStarter = async (data, processId) => {
   };
   const accessToken = generateToken(tokenPayload, 'access');
   const refreshToken = generateToken(tokenPayload, 'refresh');
+  await logActivity(1, true, idSet); //Activity log
   // Adding token
   await createdSession.addSessionToken(refreshToken);
+  await logActivity(2, true, idSet); //Activity log
   // Sending response
-  const response = { accessToken, refreshToken, accountPayload, sessionPayload };
-
-  // *** start logging activity ***
-  const idSet = {
-    associated_session: createdSession._id,
-    associated_account: registeredAccount._id,
-    associated_process: processId,
-  };
-  await logActivity(1, true, idSet);
-  // *** end logging activity ***
-
+  const response = { accessToken, refreshToken, accountPayload, sessionPayload, idSet }; //exceptional idSet parameter sending
+  await logActivity(3, true, idSet); //Activity log
   return response;
 };
 
@@ -118,7 +111,7 @@ export const mySessionCloser = async (data, idSet) => {
   const registeredAccount = await Account.findAccount('', arrivingIdentity.username, '', ''); // Checking if there is a registered account with the username
   const currentSession = await Session.findCurrentSession(registeredAccount._id); // Checking if there is a current  ongoing session
   const closedSession = currentSession.endSession('terminated'); // Closing the ongoing session in DB
-  await logActivity(1, true, idSet);
+  await logActivity(1, true, idSet); //Activity log
   return closedSession;
 };
 

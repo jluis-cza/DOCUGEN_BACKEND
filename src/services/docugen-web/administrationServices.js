@@ -42,12 +42,13 @@ export const systemParameterGetter = async (id) => {
 };
 
 // ************* System parameter Configuration *************
-export const systemParameterSetter = async (id, config) => {
+export const systemParameterSetter = async (id, config, idSet) => {
   if (!config) throw new Error('E0503');
   const systemParameter = await SystemParameter.findSystemParameter(id);
   let updated_systemParameter = {};
   if (config.status)
     updated_systemParameter = await systemParameter.setSystemParameterStatus(config.status);
+  await logActivity(1, true, idSet);
   return { systemParameter: updated_systemParameter };
 };
 
@@ -99,10 +100,11 @@ export const accountGetter = async (id) => {
 };
 
 // ************* Account Configuration *************
-export const accountSetter = async (id, config) => {
+export const accountSetter = async (id, config, idSet) => {
   if (!config) throw new Error('E0120');
   let updated_account = {};
   if (config.status) updated_account = await Account.setAccountStatus(id, config.status);
+  await logActivity(1, true, idSet);
   return { account: updated_account };
 };
 
@@ -147,11 +149,12 @@ export const servicesGetter = async (id, query) => {
 };
 
 // ************* Service Setter *************
-export const serviceSetter = async (id, config) => {
+export const serviceSetter = async (id, config, idSet) => {
   if (!config) throw new Error('E0809');
   const service = await Service.findService(id);
   let updated_service = {};
   if (config.status) updated_service = await service.setServiceStatus(config.status);
+  await logActivity(1, true, idSet);
   return { service: updated_service };
 };
 
@@ -180,12 +183,13 @@ export const serviceLookupGetter = async (id) => {
 };
 
 // ************* Service Lookup Configuration *************
-export const serviceLookupSetter = async (id, config) => {
+export const serviceLookupSetter = async (id, config, idSet) => {
   if (!config) throw new Error('E0708');
   const serviceLookup = await ServiceLookup.findServiceLookup(id, '');
   let updated_serviceLookup = {};
   if (config.status)
     updated_serviceLookup = await serviceLookup.setServiceLookupStatus(config.status);
+  await logActivity(1, true, idSet);
   return { serviceLookup: updated_serviceLookup };
 };
 
@@ -253,35 +257,28 @@ export const sessionsGetter = async (id, query) => {
 // *************************************************************************************************
 // ************* System parameters updater *************
 export const sampleSystemParameters = async (idSet) => {
-  try {
-    console.log('Starting System Parameters sampling...');
+  // Getting the followed parameters
+  const followedParameters = await SystemParameter.find({ status: 'followed' });
+  // console.log('Parameters to sample:', { followedParameters: followedParameters });
 
-    // Getting the followed parameters
-    const followedParameters = await SystemParameter.find({ status: 'followed' });
-    // console.log('Parameters to sample:', { followedParameters: followedParameters });
-
-    for (const parameter of followedParameters) {
-      let newValue = null;
-      switch (parameter.name) {
-        case 'database_size':
-          newValue = await systemParameterValuesCollector.getDataBaseSize();
-          break;
-        case 'system_uptime':
-          newValue = await systemParameterValuesCollector.getSystemUptime();
-          break;
-        default:
-          console.log(`No collector defined for: ${parameter.name}`);
-          continue;
-      }
-      if (newValue && newValue.value !== null) {
-        await parameter.addSystemParameterValue(newValue.value, newValue.unit);
-        // console.log(`Sample ${parameter.name}: ${newValue.value} ${newValue.unit}`);
-      }
+  for (const parameter of followedParameters) {
+    let newValue = null;
+    switch (parameter.name) {
+      case 'database_size':
+        newValue = await systemParameterValuesCollector.getDataBaseSize();
+        break;
+      case 'system_uptime':
+        newValue = await systemParameterValuesCollector.getSystemUptime();
+        break;
+      default:
+        console.log(`No collector defined for: ${parameter.name}`);
+        continue;
     }
-    await logActivity(1, true, idSet);
-    console.log('Sampling complete.');
-  } catch (error) {
-    await logActivity(1, false, idSet);
-    console.error('Error sampling values. ', error);
+    if (newValue && newValue.value !== null) {
+      await parameter.addSystemParameterValue(newValue.value, newValue.unit);
+      // console.log(`Sample ${parameter.name}: ${newValue.value} ${newValue.unit}`);
+    }
   }
+  console.log('Sampling complete.');
+  await logActivity(1, true, idSet);
 };

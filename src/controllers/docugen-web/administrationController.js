@@ -2,6 +2,8 @@
 import { USERS } from '../../constants/users.js';
 import { MESSAGES } from '../../constants/messages.js';
 import * as administrationServices from '../../services/docugen-web/administrationServices.js';
+import { registerProcessSignature } from '../../helpers/utils.js';
+import { terminateProcess, logActivity } from '../../services/utils.js';
 
 const successMessage = Object.fromEntries(MESSAGES.success.map((s) => [s.code, s]));
 
@@ -55,12 +57,13 @@ export const systemParameterGetter = async (req, res, next) => {
 
 // ************* System parameter configuration *************
 export const systemParameterSetter = async (req, res, next) => {
+  const idSet = await registerProcessSignature('P0201', req.sess.id, req.user.id);
   const config = req.body.data;
   const id = req.params['system_parameter_id'];
   const role = req.user.role;
   if (role !== USERS.server.role.administrator) throw new Error('E0502'); // Checking user's role (admin needed)
   try {
-    const response = await administrationServices.systemParameterSetter(id, config);
+    const response = await administrationServices.systemParameterSetter(id, config, idSet);
     const code = 'S0503';
     const status = successMessage[code]?.status || 200;
     const message = successMessage[code]?.message || 'OK';
@@ -71,7 +74,10 @@ export const systemParameterSetter = async (req, res, next) => {
       data: { systemParameter: response.systemParameter },
     });
   } catch (error) {
+    await logActivity(1, false, idSet);
     next(error);
+  } finally {
+    await terminateProcess(idSet.associated_process);
   }
 };
 
@@ -122,12 +128,13 @@ export const accountGetter = async (req, res, next) => {
 
 // ************* Account configuration *************
 export const accountSetter = async (req, res, next) => {
+  const idSet = await registerProcessSignature('P0202', req.sess.id, req.user.id);
   const config = req.body.data;
   const id = req.params['account_id'];
   const role = req.user.role;
   if (role !== USERS.server.role.administrator) throw new Error('E0119'); // Checking user's role (admin needed)
   try {
-    const response = await administrationServices.accountSetter(id, config);
+    const response = await administrationServices.accountSetter(id, config, idSet);
     const code = 'S0104';
     const status = successMessage[code]?.status || 200;
     const message = successMessage[code]?.message || 'OK';
@@ -138,7 +145,10 @@ export const accountSetter = async (req, res, next) => {
       data: { account: response.account },
     });
   } catch (error) {
+    await logActivity(1, false, idSet);
     next(error);
+  } finally {
+    await terminateProcess(idSet.associated_process);
   }
 };
 
@@ -169,12 +179,13 @@ export const servicesGetter = async (req, res, next) => {
 
 // ************* Service Setter *************
 export const serviceSetter = async (req, res, next) => {
+  const idSet = await registerProcessSignature('P0203', req.sess.id, req.user.id);
   const config = req.body.data;
   const id = req.params['service_id'];
   const role = req.user.role;
   if (role !== USERS.server.role.administrator) throw new Error('E0811'); // Checking user's role (admin needed)
   try {
-    const response = await administrationServices.serviceSetter(id, config);
+    const response = await administrationServices.serviceSetter(id, config, idSet);
     const code = 'S0803';
     const status = successMessage[code]?.status || 200;
     const message = successMessage[code]?.message || 'OK';
@@ -185,7 +196,10 @@ export const serviceSetter = async (req, res, next) => {
       data: { service: response.service },
     });
   } catch (error) {
+    await logActivity(1, false, idSet);
     next(error);
+  } finally {
+    await terminateProcess(idSet.associated_process);
   }
 };
 
@@ -239,12 +253,13 @@ export const serviceLookupGetter = async (req, res, next) => {
 
 // ************* Service Lookup Setter *************
 export const serviceLookupSetter = async (req, res, next) => {
+  const idSet = await registerProcessSignature('P0204', req.sess.id, req.user.id);
   const config = req.body.data;
   const id = req.params['service_id'];
   const role = req.user.role;
   if (role !== USERS.server.role.administrator) throw new Error('E0706'); // Checking user's role (admin needed)
   try {
-    const response = await administrationServices.serviceLookupSetter(id, config);
+    const response = await administrationServices.serviceLookupSetter(id, config, idSet);
     const code = 'S0702';
     const status = successMessage[code]?.status || 200;
     const message = successMessage[code]?.message || 'OK';
@@ -255,7 +270,10 @@ export const serviceLookupSetter = async (req, res, next) => {
       data: { serviceLookup: response.serviceLookup },
     });
   } catch (error) {
+    await logActivity(1, false, idSet);
     next(error);
+  } finally {
+    await terminateProcess(idSet.associated_process);
   }
 };
 

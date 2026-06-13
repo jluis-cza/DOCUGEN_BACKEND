@@ -1,6 +1,6 @@
 // ADMISSION CONTROLLER
 import * as admissionServices from '../../services/docugen-web/admissionServices.js';
-import { registerProcess, terminateProcess } from '../../services/utils.js';
+import { registerProcess, terminateProcess, logActivity } from '../../services/utils.js';
 import { registerProcessSignature } from '../../helpers/utils.js';
 import { MESSAGES } from '../../constants/messages.js';
 import { KEYS } from '../../constants/keys.js';
@@ -30,9 +30,11 @@ export const myAccountRegister = async (req, res, next) => {
 export const mySessionStarter = async (req, res, next) => {
   const processCode = 'P0101';
   const processId = await registerProcess(processCode);
+  let idSet = {};
   const data = req.body;
   try {
     const response = await admissionServices.mySessionStarter(data, processId);
+    idSet = response.idSet;
     const code = 'S0201';
     const status = successMessage[code]?.status || 200;
     const message = successMessage[code]?.message || 'OK';
@@ -51,6 +53,13 @@ export const mySessionStarter = async (req, res, next) => {
       data: formatedResponse,
     });
   } catch (error) {
+    if (error.message === 'E0301' || error.message === 'E0302' || error.message === 'E0303') {
+      await logActivity(1, false, idSet);
+    } else if (error.message === 'E0217' || error.message === 'E0218') {
+      await logActivity(2, false, idSet);
+    } else {
+      await logActivity(3, false, idSet);
+    }
     next(error);
   } finally {
     await terminateProcess(processId);
@@ -74,6 +83,7 @@ export const mySessionCloser = async (req, res, next) => {
       message: message,
     });
   } catch (error) {
+    await logActivity(1, false, idSet); //logging activity
     next(error);
   } finally {
     await terminateProcess(idSet.associated_process);
