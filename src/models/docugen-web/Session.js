@@ -4,21 +4,21 @@ import mongoose, { Schema } from 'mongoose';
 
 // *************************************************************************************************
 // Subdocument
-const activitiesSchema = new mongoose.Schema(
-  {
-    name: { type: String, required: true, trim: true },
-    description: { type: String, required: true, trim: true },
-    service: { type: String, required: true, trim: true },
-    associated_template: {
-      type: Schema.Types.ObjectId,
-      ref: 'Template',
-      required: true,
-    },
-  },
-  {
-    timestamps: true,
-  }
-);
+// const activitiesSchema = new mongoose.Schema(
+//   {
+//     name: { type: String, required: true, trim: true },
+//     description: { type: String, required: true, trim: true },
+//     service: { type: String, required: true, trim: true },
+//     associated_template: {
+//       type: Schema.Types.ObjectId,
+//       ref: 'Template',
+//       required: true,
+//     },
+//   },
+//   {
+//     timestamps: true,
+//   }
+// );
 
 // Document
 const SessionSchema = new mongoose.Schema(
@@ -46,7 +46,7 @@ const SessionSchema = new mongoose.Schema(
     logoutTime: {
       type: Date,
     },
-    activities: [activitiesSchema],
+    // activities: [activitiesSchema],
   },
   {
     timestamps: true,
@@ -68,20 +68,17 @@ SessionSchema.statics.findAllSessions = async function () {
 // Checking if there are a set of historical sessions for the Account id provided
 SessionSchema.statics.findHistoricalSessions = async function (associatedAccountId) {
   const sessions = this;
-  try {
-    //moongose query
-    const sessions_set = await sessions
-      .find({
-        associated_account: associatedAccountId,
-        status: { $in: ['terminated', 'expired'] },
-      })
-      .populate('associated_account')
-      .sort({ createdAt: -1 });
-    return sessions_set;
-  } catch (error) {
-    console.log('Error finding sessions of account.', error);
-    throw error;
-  }
+  if (!associatedAccountId) throw new Error('E0219');
+  //moongose query
+  const sessions_set = await sessions
+    .find({
+      associated_account: associatedAccountId,
+      status: { $in: ['terminated', 'expired'] },
+    })
+    .populate('associated_account')
+    .sort({ createdAt: -1 });
+  if (!sessions_set) throw new Error('E0220');
+  return sessions_set;
 };
 
 // To find the current session if any
@@ -134,17 +131,26 @@ SessionSchema.statics.getCustomizedSessions = async function (id, params) {
 };
 
 //Create a new session and add the idaccount and status active
-SessionSchema.methods.createSession = async function (associatedAccountId, token) {
+SessionSchema.methods.createSession = async function (associatedAccountId) {
   const session = this;
   if (!associatedAccountId) throw new Error('E0207');
   session.associated_account = associatedAccountId;
   session.status = 'active';
-  session.token = token;
   session.loginTime = new Date();
   session.duration = 0;
   const createdSession = await session.save();
   if (!createdSession) throw new Error('E0208');
   return createdSession;
+};
+
+// Adding a refresh token to the session
+SessionSchema.methods.addSessionToken = async function (token) {
+  const session = this;
+  if (!token) throw new Error('E0217');
+  session.token = token;
+  const updatedSession = await session.save();
+  if (!updatedSession) throw new Error('E0218');
+  return updatedSession;
 };
 
 //Update the duration field according to the help od the registered and currect timestamp
@@ -168,20 +174,20 @@ SessionSchema.methods.endSession = async function (closureStatus) {
 };
 
 //Add a new activity to the currect session
-SessionSchema.methods.addSessionActivity = async function (activity) {
-  const session = this;
-  if (session.status !== 'active') {
-    throw new Error('Could not add activities to a not active activity.');
-  }
-  if (!activity.name || !activity.description) {
-    throw new Error('the activity has to have name and description.');
-  }
-  session.activities.push({
-    name: activity.name,
-    description: activity.description,
-  });
-  return await session.save();
-};
+// SessionSchema.methods.addSessionActivity = async function (activity) {
+//   const session = this;
+//   if (session.status !== 'active') {
+//     throw new Error('Could not add activities to a not active activity.');
+//   }
+//   if (!activity.name || !activity.description) {
+//     throw new Error('the activity has to have name and description.');
+//   }
+//   session.activities.push({
+//     name: activity.name,
+//     description: activity.description,
+//   });
+//   return await session.save();
+// };
 
 const Session = mongoose.model('Session', SessionSchema);
 export default Session;

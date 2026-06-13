@@ -57,7 +57,7 @@ export const generateToken = (payload, type) => {
       jti: crypto.randomUUID(), // ID
       iat: Math.floor(Date.now() / 1000), // Issued At
     };
-    const tokenTimeout = KEYS[type].session_timeout[payload.role];
+    const tokenTimeout = KEYS[type].session_timeout[payload.accountPayload.role];
     const token = jwt.sign(enhacendPayload, KEY_JWT, { expiresIn: tokenTimeout });
     if (!token) throw new Error('E0303');
     console.log(`${type.toUpperCase()} token successfully generated.`);

@@ -208,6 +208,22 @@ export const MESSAGES = {
       message: 'No se puede usar el controlador sessionGetter con su rol actual.',
     },
     { code: 'E0216', status: 500, message: 'El id de la cuenta no es valido.' },
+    {
+      code: 'E0217',
+      status: 500,
+      message: 'El token provisto para el métod "addSessionToken" es incorrecto.',
+    },
+    { code: 'E0218', status: 500, message: 'Error en el guardado del refresh token a la sesión.' },
+    {
+      code: 'E0219',
+      status: 500,
+      message: 'Error en el parámetro de entrada del método "findHistoricalSessions"',
+    },
+    {
+      code: 'E0220',
+      status: 500,
+      message: 'Error en la búsqueda de las sesiones históricas asociadas a la cuenta.',
+    },
     { code: 'E0301', status: 500, message: 'No payload or type of token provided.' },
     {
       code: 'E0302',
@@ -432,6 +448,102 @@ export const MESSAGES = {
       status: 500,
       message: 'Error En la consulta del tiempo del servidor.',
     },
+    {
+      code: 'E1001',
+      status: 500,
+      message: 'El método "createActivity" no posee argumentos de entrada válidos.',
+    },
+    {
+      code: 'E1002',
+      status: 500,
+      message: 'Error en el guardado de la nueva actividad.',
+    },
+    {
+      code: 'E1003',
+      status: 500,
+      message: 'Error al guardar el valor de la propiedad "success" de la actividad.',
+    },
+    {
+      code: 'E1004',
+      status: 500,
+      message: 'El valor de "success" debe ser booleano.',
+    },
+    {
+      code: 'E1005',
+      status: 500,
+      message:
+        'El valor del argumento "processId" del método "findProcessActivities" es incorrecto.',
+    },
+    {
+      code: 'E1006',
+      status: 500,
+      message: 'Error encontrando actividades para el proceso.',
+    },
+    {
+      code: 'E1007',
+      status: 500,
+      message: 'Error en los argumentos de entrada del servicio auxiliar "logActivity".',
+    },
+    {
+      code: 'E1101',
+      status: 500,
+      message: 'El método "createProcess" no posee un argumento de entrada válido.',
+    },
+    {
+      code: 'E1102',
+      status: 500,
+      message: 'Error en el guardado del nuevo proceso.',
+    },
+    {
+      code: 'E1103',
+      status: 500,
+      message: 'El argumento del método setProcessStatus es inválido.',
+    },
+    {
+      code: 'E1104',
+      status: 500,
+      message: 'Error en el guardado el proceso.',
+    },
+    {
+      code: 'E1105',
+      status: 500,
+      message: 'El valor de status debe ser running o terminated.',
+    },
+    {
+      code: 'E1106',
+      status: 500,
+      message: 'Error en la especificación del método "findProcess".',
+    },
+    {
+      code: 'E1107',
+      status: 500,
+      message: 'Error en la búsqueda del proceso.',
+    },
+    {
+      code: 'E1108',
+      status: 500,
+      message: 'Error en la actualización del estado del proceso.',
+    },
+    {
+      code: 'E1109',
+      status: 500,
+      message: 'El parámetro de entrada debe ser booleano.',
+    },
+    {
+      code: 'E1110',
+      status: 500,
+      message: 'Error en una de las entradas de la función auxiliar "registerProcessSignature"',
+    },
+    {
+      code: 'E1111',
+      status: 500,
+      message: 'Error en la entrada "code" del servicio auxiliar "registerProcess"',
+    },
+    {
+      code: 'E1112',
+      status: 500,
+      message: 'Error en la entrada "id" del servicio auxiliar "terminateProcess"',
+    },
   ],
   warning: [],
   info: [{ code: 'I0101', status: 400, message: 'Account creation was unsuccessful.' }],
@@ -449,4 +561,6 @@ export const MESSAGES = {
 //    07:ServiceLookup(lookup model entity)
 //    08:Service
 //    09:Time(no model entity)
+//    10:Activity
+//    11:Process
 // DE: Number of error or success

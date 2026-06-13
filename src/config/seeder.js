@@ -5,14 +5,18 @@
 import { connectDB, disconnectDB } from './database.js';
 import SystemParameter from '../models/docugen-web/SystemParameter.js';
 import ServiceLookup from '../models/docugen-web/ServiceLookup.js';
+import Account from '../models/docugen-web/Account.js';
 
 const seedDB = async () => {
   try {
-    await SystemParameter.deleteAllSystemParameters(); //Delete this if you dont want to delete the already data in the collection and just (update and insert)
+    // await SystemParameter.deleteAllSystemParameters(); //Delete this if you dont want to delete the already data in the collection and just (update and insert)
     await SystemParameter.seedDefaultSystemParameters();
     // ...
-    await ServiceLookup.deleteAllServiceLookups(); //Delete this if you dont want to delete the already data in the collection and just (update and insert)
+    // await ServiceLookup.deleteAllServiceLookups(); //Delete this if you dont want to delete the already data in the collection and just (update and insert)
     await ServiceLookup.seedDefaultServiceLookups();
+    // ...
+    // await Account.deleteDefaultAccounts() //Delete this if you dont want to delete the already data in the collection and just (update and insert)
+    await Account.seedDefaultAccounts();
 
     console.log('Successfully seeded');
   } catch (error) {

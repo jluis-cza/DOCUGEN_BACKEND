@@ -15,7 +15,9 @@ const securityMiddleware = async (req, res, next) => {
     const token = tokenBearerSplit[1];
     try {
       const response = await verifyToken(token, 'access'); //Decoding token
-      req.user = response.payload; // Saving decoded token
+      req.user = response.payload.accountPayload; // Saving account info from decoded token
+      req.sess = response.payload.sessionPayload; // Saving session info from decoded token
+      console.log('request:', req.user, req.sess);
       return next(); // it passed the verification
     } catch (error) {
       return res.status(401).json({ success: false, message: error.message });

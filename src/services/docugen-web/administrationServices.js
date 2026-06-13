@@ -6,6 +6,8 @@ import ServiceLookup from '../../models/docugen-web/ServiceLookup.js';
 import Service from '../../models/docugen-web/Service.js';
 import Session from '../../models/docugen-web/Session.js';
 import { systemParameterValuesCollector } from '../../helpers/docugen-web/administrationHelper.js';
+import { logActivity } from '../utils.js';
+
 // *************************************************************************************************
 // FROM CONTROLLERS
 // *************************************************************************************************
@@ -250,7 +252,7 @@ export const sessionsGetter = async (id, query) => {
 // FROM CRON JOBS
 // *************************************************************************************************
 // ************* System parameters updater *************
-export const sampleSystemParameters = async () => {
+export const sampleSystemParameters = async (idSet) => {
   try {
     console.log('Starting System Parameters sampling...');
 
@@ -276,8 +278,10 @@ export const sampleSystemParameters = async () => {
         // console.log(`Sample ${parameter.name}: ${newValue.value} ${newValue.unit}`);
       }
     }
+    await logActivity(1, true, idSet);
     console.log('Sampling complete.');
   } catch (error) {
+    await logActivity(1, false, idSet);
     console.error('Error sampling values. ', error);
   }
 };

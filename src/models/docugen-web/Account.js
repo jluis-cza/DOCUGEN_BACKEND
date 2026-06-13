@@ -3,6 +3,7 @@
 
 import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
+import { LOOKUPS } from '../../constants/lookups.js';
 
 // *************************************************************************************************
 // Subdocuments
@@ -147,6 +148,39 @@ AccountSchema.statics.getCustomizedAccounts = async function (filter, sort, skip
     accountsModel.countDocuments(filter),
   ]);
   return { accounts, total };
+};
+
+AccountSchema.statics.seedDefaultAccounts = async function () {
+  const accountsModel = this;
+  const defaultAccountsData = LOOKUPS.docugen_web.accounts;
+  try {
+    const salt = await bcrypt.genSalt(10);
+    for (const account of defaultAccountsData) {
+      const hash = await bcrypt.hash(account.password, salt);
+      account.password = hash;
+      await accountsModel.findOneAndUpdate(
+        { username: account.username },
+        { $setOnInsert: account },
+        { upsert: true, new: true, setDefaultsOnInsert: true }
+      );
+    }
+    const defaultAccounts = await accountsModel.find({ role: 'admin' });
+    return defaultAccounts;
+  } catch (error) {
+    console.log('Error seeding the default accounts.', error);
+    throw error;
+  }
+};
+
+AccountSchema.statics.deleteDefaultAccounts = async function () {
+  const accountsModel = this;
+  try {
+    const response = await accountsModel.deleteMany({ role: 'admin' });
+    return response;
+  } catch (error) {
+    console.log('Error deleting default accounts.', error);
+    throw error;
+  }
 };
 
 AccountSchema.methods.saveAccount = async function () {

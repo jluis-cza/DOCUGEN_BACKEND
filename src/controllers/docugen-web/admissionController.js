@@ -1,5 +1,7 @@
 // ADMISSION CONTROLLER
 import * as admissionServices from '../../services/docugen-web/admissionServices.js';
+import { registerProcess, terminateProcess } from '../../services/utils.js';
+import { registerProcessSignature } from '../../helpers/utils.js';
 import { MESSAGES } from '../../constants/messages.js';
 import { KEYS } from '../../constants/keys.js';
 
@@ -26,9 +28,11 @@ export const myAccountRegister = async (req, res, next) => {
 
 // ************* Sign-in *************
 export const mySessionStarter = async (req, res, next) => {
+  const processCode = 'P0101';
+  const processId = await registerProcess(processCode);
   const data = req.body;
   try {
-    const response = await admissionServices.mySessionStarter(data);
+    const response = await admissionServices.mySessionStarter(data, processId);
     const code = 'S0201';
     const status = successMessage[code]?.status || 200;
     const message = successMessage[code]?.message || 'OK';
@@ -48,14 +52,17 @@ export const mySessionStarter = async (req, res, next) => {
     });
   } catch (error) {
     next(error);
+  } finally {
+    await terminateProcess(processId);
   }
 };
 
 // ************* Logout *************
 export const mySessionCloser = async (req, res, next) => {
+  const idSet = await registerProcessSignature('P0102', req.sess.id, req.user.id);
   const data = req.body;
   try {
-    await admissionServices.mySessionCloser(data);
+    await admissionServices.mySessionCloser(data, idSet);
     const code = 'S0202';
     const status = successMessage[code]?.status || 200;
     const message = successMessage[code]?.message || 'OK';
@@ -68,6 +75,8 @@ export const mySessionCloser = async (req, res, next) => {
     });
   } catch (error) {
     next(error);
+  } finally {
+    await terminateProcess(idSet.associated_process);
   }
 };
 

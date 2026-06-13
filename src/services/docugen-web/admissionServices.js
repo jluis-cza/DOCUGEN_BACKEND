@@ -14,6 +14,7 @@ import {
   verifyToken,
   sendEmail,
 } from '../../helpers/docugen-web/admissionHelper.js';
+import { logActivity } from '../utils.js';
 
 // *************************************************************************************************
 // FROM CONTROLLERS
@@ -53,32 +54,30 @@ export const myAccountRegister = async (data) => {
 };
 
 // ************* SIGN-IN *************
-export const mySessionStarter = async (data) => {
+export const mySessionStarter = async (data, processId) => {
   if (!data) throw new Error('E0209');
   const { username, user, password } = data;
   const { email } = user;
   const registeredAccount = await Account.findAccount(email, username, '', ''); // Checking if there is a registered account with the email or username
   const isMatch = await registeredAccount.verifyAccountPassword(password); // Verifying password
   if (!isMatch) throw new Error('E0201');
+
   try {
     const currentSession = await Session.findCurrentSession(registeredAccount._id); // Checking if there is a current  ongoing session
     currentSession.endSession('terminated'); // Closing the ongoing session
   } catch (error) {
     if (error.message !== 'E0203') throw error;
   }
-  // Generating tokens
-  const payload = {
-    id: registeredAccount._id,
-    username: registeredAccount.username,
-    role: registeredAccount.role,
-    status: registeredAccount.status,
-  };
-  const accessToken = generateToken(payload, 'access');
-  const refreshToken = generateToken(payload, 'refresh');
   // Creating a new session
   const newSession = new Session();
-  const createdSession = await newSession.createSession(registeredAccount._id, refreshToken);
-  // Sending response
+  const createdSession = await newSession.createSession(registeredAccount._id);
+  // Generating tokens
+  // const payload = {
+  //   id: registeredAccount._id,
+  //   username: registeredAccount.username,
+  //   role: registeredAccount.role,
+  //   status: registeredAccount.status,
+  // };
   const accountPayload = {
     id: registeredAccount._id,
     username: registeredAccount.username,
@@ -89,41 +88,66 @@ export const mySessionStarter = async (data) => {
     id: createdSession._id,
     status: createdSession.status,
   };
+  const tokenPayload = {
+    accountPayload,
+    sessionPayload,
+  };
+  const accessToken = generateToken(tokenPayload, 'access');
+  const refreshToken = generateToken(tokenPayload, 'refresh');
+  // Adding token
+  await createdSession.addSessionToken(refreshToken);
+  // Sending response
   const response = { accessToken, refreshToken, accountPayload, sessionPayload };
+
+  // *** start logging activity ***
+  const idSet = {
+    associated_session: createdSession._id,
+    associated_account: registeredAccount._id,
+    associated_process: processId,
+  };
+  await logActivity(1, true, idSet);
+  // *** end logging activity ***
+
   return response;
 };
 
 // ************* LOG-OUT *************
-export const mySessionCloser = async (data) => {
+export const mySessionCloser = async (data, idSet) => {
   if (!data) throw new Error('E0210');
   const arrivingIdentity = data;
   const registeredAccount = await Account.findAccount('', arrivingIdentity.username, '', ''); // Checking if there is a registered account with the username
   const currentSession = await Session.findCurrentSession(registeredAccount._id); // Checking if there is a current  ongoing session
   const closedSession = currentSession.endSession('terminated'); // Closing the ongoing session in DB
+  await logActivity(1, true, idSet);
   return closedSession;
 };
 
 // ************* RENEW ACCESS *************
 export const accessRenewer = async (token) => {
   const { payload } = await verifyToken(token, 'refresh'); // Verifying refresh token
-  const accountId = payload.id; // Extracting payload of token and account id
+  console.log(payload);
+  // const accountId = payload.accountPayload.id; // Extracting payload of token and account id
   const newAccessToken = generateToken(payload, 'access'); // Renewing the access token
   // Getting the current account and session
-  const account = await Account.findAccount('', '', accountId, '');
-  const session = await Session.findCurrentSession(accountId);
-  // Generating the account and session payloads
-  const accountPayload = {
-    id: account._id,
-    username: account.username,
-    role: account.role,
-    status: account.status,
-  };
-  const sessionPayload = {
-    id: session._id,
-    status: session.status,
-  };
+  // const account = await Account.findAccount('', '', accountId, '');
+  // const session = await Session.findCurrentSession(accountId);
+  // // Generating the account and session payloads
+  // const accountPayload = {
+  //   id: account._id,
+  //   username: account.username,
+  //   role: account.role,
+  //   status: account.status,
+  // };
+  // const sessionPayload = {
+  //   id: session._id,
+  //   status: session.status,
+  // };
   // Sending the response
-  const response = { newAccessToken, accountPayload, sessionPayload }; // Sending response
+  const response = {
+    newAccessToken,
+    accountPayload: payload.accountPayload,
+    sessionPayload: payload.sessionPayload,
+  }; // Sending response
   return response;
 };
 
@@ -155,7 +179,7 @@ export const emailVerifier = async (token) => {
 
 // ************* ACTIVE SESSION CLOSER *************
 // It uses "refresh token" timeouts to close sessions
-export const checkActiveSessionDuration = async () => {
+export const checkActiveSessionDuration = async (idSet) => {
   let sessionTimeoutString = null;
   let sessionTimeoutNumber = null;
   let userRole = null;
@@ -176,6 +200,7 @@ export const checkActiveSessionDuration = async () => {
   for (const activeSession of activeSessions) {
     // Checking user's role and assigned timeouts
     userRole = activeSession.associated_account.role;
+    if (activeSession.associated_account.username === 'system') continue; //Avoids the system session closure
     sessionTimeoutString =
       userRole === adminRole ? adminSessionTimeout : userRole === devRole ? devSessionTimeout : '0';
     sessionTimeoutNumber = jwtTimeoutToMinutesParser(sessionTimeoutString); // Parsing
@@ -189,12 +214,14 @@ export const checkActiveSessionDuration = async () => {
       console.log('Expired session found and closed.');
     }
   }
+  await logActivity(1, true, idSet);
 };
 // ************* INACTIVE ACCOUNT DELETER *************
-export const checkInactiveAccounts = async () => {
+export const checkInactiveAccounts = async (idSet) => {
   const response = await Account.deleteInactiveAccounts();
   if (response.deletedCount > 0) {
     console.log(`Deleted ${response.deletedCount} inactive accounts.`);
   }
+  await logActivity(1, true, idSet);
 };
 // *************************************************************************************************

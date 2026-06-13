@@ -8,26 +8,34 @@ import {
   checkInactiveAccounts,
 } from '../services/docugen-web/admissionServices.js';
 import { MESSAGES } from '../constants/messages.js';
+import { registerProcessSignature } from '../helpers/utils.js';
+import { terminateProcess } from '../services/utils.js';
 
 const errorMessage = Object.fromEntries(MESSAGES.error.map((e) => [e.code, e]));
-const startCJ = async () => {
+const startCronJobs = async (session, account) => {
   try {
     // Sampling system parameters
     cron.schedule('*/30 * * * *', async () => {
+      const idSet = await registerProcessSignature('P0205', session._id, account._id);
       console.log('Sampling system parameters values...');
-      await sampleSystemParameters();
+      await sampleSystemParameters(idSet);
+      await terminateProcess(idSet.associated_process);
     });
 
     // Closing inactive sessions
     cron.schedule('*/5 * * * *', async () => {
+      const idSet = await registerProcessSignature('P0103', session._id, account._id);
       console.log('Checking active session duration...');
-      await checkActiveSessionDuration();
+      await checkActiveSessionDuration(idSet);
+      await terminateProcess(idSet.associated_process);
     });
 
     // Deleting inactive accounts
     cron.schedule('*/10 * * * *', async () => {
+      const idSet = await registerProcessSignature('P0104', session._id, account._id);
       console.log('Checking inactive accounts to delete them...');
-      await checkInactiveAccounts();
+      await checkInactiveAccounts(idSet);
+      await terminateProcess(idSet.associated_process);
     });
     //Example
     // cron.schedule("*/1 * * * *", async () => {
@@ -43,4 +51,5 @@ const startCJ = async () => {
     process.exit(1);
   }
 };
-export default startCJ;
+
+export default startCronJobs;
