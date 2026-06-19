@@ -34,15 +34,13 @@ const ActivitySchema = new mongoose.Schema(
       default: false,
       required: true,
     },
-    associated_session: {
+    associated_resource: {
       type: Schema.Types.ObjectId,
-      ref: 'Session',
-      required: true,
+      refPath: 'associated_resource_model',
     },
-    associated_account: {
-      type: Schema.Types.ObjectId,
-      ref: 'Account',
-      required: true,
+    associated_resource_model: {
+      type: String,
+      trim: true,
     },
     associated_process: {
       type: Schema.Types.ObjectId,
@@ -70,24 +68,46 @@ ActivitySchema.statics.findProcessActivities = async function (processId) {
   return activities_set;
 };
 
-ActivitySchema.methods.createActivity = async function (activityData, referenceData) {
-  if (!activityData || !referenceData) throw new Error('E1001');
+ActivitySchema.statics.getActivities = async function (query) {
+  if (!query) throw new Error('E1009');
+  const activitiesModel = this;
+  const activities = await activitiesModel.find(query).sort({ createdAt: -1 });
+  if (!activities) throw new Error('E1010');
+  return activities;
+};
+
+ActivitySchema.statics.findActivity = async function (id) {
+  if (!id) throw new Error('E1013');
+  const activitiesModel = this;
+  const activity = await activitiesModel.findOne({ _id: id });
+  if (!activity) throw new Error('E1014');
+  return activity;
+};
+
+ActivitySchema.methods.createActivity = async function (activityData, processId) {
+  if (!activityData || !processId) throw new Error('E1001');
 
   const activityModel = this;
   const { stage, name, alias, description } = activityData;
-  const { associated_account, associated_session, associated_process } = referenceData;
-
   activityModel.stage = stage;
   activityModel.name = name;
   activityModel.alias = alias;
   activityModel.description = description;
-  activityModel.associated_session = associated_session;
-  activityModel.associated_account = associated_account;
-  activityModel.associated_process = associated_process;
+  activityModel.associated_process = processId;
 
   const createdActivity = await activityModel.save();
   if (!createdActivity) throw new Error('E1002');
   return createdActivity;
+};
+
+ActivitySchema.methods.addActivityResource = async function (id, model) {
+  if (!id || !model) throw new Error('E1011');
+  const activityModel = this;
+  activityModel.associated_resource_model = model;
+  activityModel.associated_resource = id;
+  const updatedActivity = await activityModel.save();
+  if (!updatedActivity) throw new Error('E1012');
+  return updatedActivity;
 };
 
 ActivitySchema.methods.setActivitySuccess = async function (success) {

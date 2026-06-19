@@ -8,54 +8,67 @@ import {
   checkInactiveAccounts,
 } from '../services/docugen-web/admissionServices.js';
 import { MESSAGES } from '../constants/messages.js';
-import { registerProcessSignature } from '../helpers/utils.js';
-import { terminateProcess, logActivity } from '../services/utils.js';
+import {
+  registerProcess,
+  terminateProcess,
+  registerActivity,
+  setActivitySuccess,
+} from '../services/utilsServices.js';
 
 const errorMessage = Object.fromEntries(MESSAGES.error.map((e) => [e.code, e]));
 const startCronJobs = async (session, account) => {
   try {
     // Sampling system parameters
-    cron.schedule('*/30 * * * *', async () => {
-      let idSet = {};
+    cron.schedule('*/60 * * * *', async () => {
+      let processId = {};
+      let activity = {};
       try {
-        idSet = await registerProcessSignature('P0205', session._id, account._id);
+        processId = await registerProcess('P0205', session._id, account._id);
         console.log('Starting system parameter sampling...');
-        await sampleSystemParameters(idSet);
+        activity = await registerActivity(1, processId);
+        await sampleSystemParameters();
+        await setActivitySuccess(activity._id, true);
       } catch (error) {
         console.log('Error in sampling system parameters.', error);
-        await handleCronJobError(error, idSet);
+        await handleCronJobError(error, processId, activity._id);
       } finally {
-        await terminateProcess(idSet.associated_process);
+        await terminateProcess(processId);
       }
     });
 
     // Closing inactive sessions
-    cron.schedule('*/5 * * * *', async () => {
-      let idSet = {};
+    cron.schedule('*/60 * * * *', async () => {
+      let processId = {};
+      let activity = {};
       try {
-        idSet = await registerProcessSignature('P0103', session._id, account._id);
+        processId = await registerProcess('P0103', session._id, account._id);
         console.log('Starting active session duration control...');
-        await checkActiveSessionDuration(idSet);
+        activity = await registerActivity(1, processId);
+        await checkActiveSessionDuration();
+        await setActivitySuccess(activity._id, true);
       } catch (error) {
         console.log('Error in checking active session duration.', error);
-        await handleCronJobError(error, idSet);
+        await handleCronJobError(error, processId, activity._id);
       } finally {
-        await terminateProcess(idSet.associated_process);
+        await terminateProcess(processId);
       }
     });
 
     // Deleting inactive accounts
-    cron.schedule('*/10 * * * *', async () => {
-      let idSet = {};
+    cron.schedule('*/30 * * * *', async () => {
+      let processId = {};
+      let activity = {};
       try {
-        idSet = await registerProcessSignature('P0104', session._id, account._id);
+        processId = await registerProcess('P0104', session._id, account._id);
         console.log('Starting inactive account detection...');
-        await checkInactiveAccounts(idSet);
+        activity = await registerActivity(1, processId);
+        await checkInactiveAccounts();
+        await setActivitySuccess(activity._id, true);
       } catch (error) {
         console.log('Error in checking inactive accounts.', error);
-        await handleCronJobError(error, idSet);
+        await handleCronJobError(error, processId, activity._id);
       } finally {
-        await terminateProcess(idSet.associated_process);
+        await terminateProcess(processId);
       }
     });
     //Example
@@ -71,8 +84,8 @@ const startCronJobs = async (session, account) => {
   }
 };
 
-const handleCronJobError = async (error, idSet) => {
-  await logActivity(1, false, idSet);
+const handleCronJobError = async (error, processId, activityId) => {
+  await setActivitySuccess(activityId, false);
   const code = error.message || 'default';
   const message = errorMessage[code]?.message || 'Unknown error';
   console.log('Error message:', message);

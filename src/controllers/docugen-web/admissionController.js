@@ -1,7 +1,6 @@
 // ADMISSION CONTROLLER
 import * as admissionServices from '../../services/docugen-web/admissionServices.js';
-import { registerProcess, terminateProcess, logActivity } from '../../services/utils.js';
-import { registerProcessSignature } from '../../helpers/utils.js';
+import { registerProcess, terminateProcess, registerActivity, setActivitySuccess } from '../../services/utilsServices.js';
 import { MESSAGES } from '../../constants/messages.js';
 import { KEYS } from '../../constants/keys.js';
 
@@ -29,12 +28,16 @@ export const myAccountRegister = async (req, res, next) => {
 // ************* Sign-in *************
 export const mySessionStarter = async (req, res, next) => {
   const processCode = 'P0101';
-  const processId = await registerProcess(processCode);
-  let idSet = {};
+  let activity = {}
+  let processId = {}
   const data = req.body;
   try {
-    const response = await admissionServices.mySessionStarter(data, processId);
-    idSet = response.idSet;
+    const response = await admissionServices.mySessionStarter(data);
+    // Special case because it didnt have the session id first
+    processId = await registerProcess(processCode, response.sessionPayload.id, response.accountPayload.id);
+    activity = await registerActivity(1, processId);
+    await setActivitySuccess(activity._id, true);
+    // Special case because it didnt have the session id first
     const code = 'S0201';
     const status = successMessage[code]?.status || 200;
     const message = successMessage[code]?.message || 'OK';
@@ -53,13 +56,6 @@ export const mySessionStarter = async (req, res, next) => {
       data: formatedResponse,
     });
   } catch (error) {
-    if (error.message === 'E0301' || error.message === 'E0302' || error.message === 'E0303') {
-      await logActivity(1, false, idSet);
-    } else if (error.message === 'E0217' || error.message === 'E0218') {
-      await logActivity(2, false, idSet);
-    } else {
-      await logActivity(3, false, idSet);
-    }
     next(error);
   } finally {
     await terminateProcess(processId);
@@ -68,10 +64,13 @@ export const mySessionStarter = async (req, res, next) => {
 
 // ************* Logout *************
 export const mySessionCloser = async (req, res, next) => {
-  const idSet = await registerProcessSignature('P0102', req.sess.id, req.user.id);
+  const processId = await registerProcess('P0102', req.sess.id, req.user.id);
+  let activity = {}
   const data = req.body;
   try {
-    await admissionServices.mySessionCloser(data, idSet);
+    activity = await registerActivity(1, processId);
+    await admissionServices.mySessionCloser(data);
+    await setActivitySuccess(activity._id, true);
     const code = 'S0202';
     const status = successMessage[code]?.status || 200;
     const message = successMessage[code]?.message || 'OK';
@@ -83,10 +82,10 @@ export const mySessionCloser = async (req, res, next) => {
       message: message,
     });
   } catch (error) {
-    await logActivity(1, false, idSet); //logging activity
+    await setActivitySuccess(activity._id, false);
     next(error);
   } finally {
-    await terminateProcess(idSet.associated_process);
+    await terminateProcess(processId);
   }
 };
 

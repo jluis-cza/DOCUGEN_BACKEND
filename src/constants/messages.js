@@ -111,6 +111,36 @@ export const MESSAGES = {
       status: 200,
       message: 'El tiempo del servidor se recuperó exitosamente.',
     },
+    {
+      code: 'S1001',
+      status: 200,
+      message: 'La consulta fue exitosa y no se recuperaron actividades asociadas a la consulta.',
+    },
+    {
+      code: 'S1002',
+      status: 200,
+      message: 'La consulta fue exitosa y se recuperaron actividades asociadas a la consulta.',
+    },
+    {
+      code: 'S1101',
+      status: 200,
+      message: 'La consulta fue exitosa y no se recuperaron procesos asociados a la consulta.',
+    },
+    {
+      code: 'S1102',
+      status: 200,
+      message: 'La consulta fue exitosa y se recuperaron procesos asociados a la consulta.',
+    },
+    {
+      code: 'S1103',
+      status: 200,
+      message: 'La consulta fue exitosa se recuperó el proceso.',
+    },
+    {
+      code: 'S1201',
+      status: 200,
+      message: 'La información de las rutas del la API se recueraron exitosamente.',
+    },
   ],
   error: [
     {
@@ -482,12 +512,57 @@ export const MESSAGES = {
     {
       code: 'E1007',
       status: 500,
-      message: 'Error en los argumentos de entrada del servicio auxiliar "logActivity".',
+      message: 'Error en los argumentos de entrada del servicio auxiliar "registryActivity".',
+    },
+    {
+      code: 'E1008',
+      status: 500,
+      message: 'El servicio "activitiesGetter" requiere un arguento query válido.',
+    },
+    {
+      code: 'E1009',
+      status: 500,
+      message: 'Argumento no valido para el método "getActivities".',
+    },
+    {
+      code: 'E1010',
+      status: 500,
+      message: 'Un error sucedio al encontrar las actividades.',
+    },
+    {
+      code: 'E1011',
+      status: 500,
+      message: 'El método "addActivityResource" tiene argumentos no válidos.',
+    },
+    {
+      code: 'E1012',
+      status: 500,
+      message: 'Error en el guardado de la actividad.',
+    },
+    {
+      code: 'E1013',
+      status: 500,
+      message: 'Argumento "id" no válido.',
+    },
+    {
+      code: 'E1014',
+      status: 500,
+      message: 'Error al encontrar la actividad.',
+    },
+    {
+      code: 'E1015',
+      status: 500,
+      message: 'Error en los argumentos de entrada de "setActivitySuccess".',
+    },
+    {
+      code: 'E1016',
+      status: 500,
+      message: 'En los argumentos de entrada de "setActivityResourse".',
     },
     {
       code: 'E1101',
       status: 500,
-      message: 'El método "createProcess" no posee un argumento de entrada válido.',
+      message: 'El método "createProcess" no posee argumentos de entrada válido.',
     },
     {
       code: 'E1102',
@@ -529,20 +604,41 @@ export const MESSAGES = {
       status: 500,
       message: 'El parámetro de entrada debe ser booleano.',
     },
-    {
-      code: 'E1110',
-      status: 500,
-      message: 'Error en una de las entradas de la función auxiliar "registerProcessSignature"',
-    },
+    // {
+    //   code: 'E1110',
+    //   status: 500,
+    //   message: 'Error en una de las entradas de la función auxiliar "registerProcessSignature"',
+    // },
     {
       code: 'E1111',
       status: 500,
-      message: 'Error en la entrada "code" del servicio auxiliar "registerProcess"',
+      message:
+        'Error en la entrada "code" "sessionId" o "resourceId" del servicio auxiliar "registerProcess"',
     },
     {
       code: 'E1112',
       status: 500,
       message: 'Error en la entrada "id" del servicio auxiliar "terminateProcess"',
+    },
+    {
+      code: 'E1113',
+      status: 500,
+      message: 'Error en el argumento "query" del servicio "processesGetter"',
+    },
+    {
+      code: 'E1114',
+      status: 500,
+      message: 'Error en el argumento "id" del servicio "processGetter"',
+    },
+    {
+      code: 'E1115',
+      status: 500,
+      message: 'No se puede agregar actividades a un proceso que no este en estado "running".',
+    },
+    {
+      code: 'E1116',
+      status: 500,
+      message: 'El argumento "activityId" no es válido.',
     },
   ],
   warning: [],
@@ -563,4 +659,5 @@ export const MESSAGES = {
 //    09:Time(no model entity)
 //    10:Activity
 //    11:Process
+//    12:Routes(no model entity)
 // DE: Number of error or success

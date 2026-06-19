@@ -55,22 +55,10 @@ export const LOOKUPS = {
         code: 'P0101',
         name: 'Inicio de sesión',
         alias: 'session_starter',
-        stages: 3,
+        stages: 1,
         activities: [
           {
             stage: 1,
-            name: 'Generación de tokens',
-            alias: 'token_generation',
-            description: 'Generando tokens de acceso y refresco.',
-          },
-          {
-            stage: 2,
-            name: 'Creación de sesión',
-            alias: 'session_creation',
-            description: 'Creando nueva sesión.',
-          },
-          {
-            stage: 3,
             name: 'Inicio de sesión',
             alias: 'session_starter',
             description: 'Iniciando sesión.',

@@ -6,7 +6,6 @@ import ServiceLookup from '../../models/docugen-web/ServiceLookup.js';
 import Service from '../../models/docugen-web/Service.js';
 import Session from '../../models/docugen-web/Session.js';
 import { systemParameterValuesCollector } from '../../helpers/docugen-web/administrationHelper.js';
-import { logActivity } from '../utils.js';
 
 // *************************************************************************************************
 // FROM CONTROLLERS
@@ -42,14 +41,15 @@ export const systemParameterGetter = async (id) => {
 };
 
 // ************* System parameter Configuration *************
-export const systemParameterSetter = async (id, config, idSet) => {
+export const systemParameterSetter = async (id, config) => {
+  const resources = []
   if (!config) throw new Error('E0503');
   const systemParameter = await SystemParameter.findSystemParameter(id);
   let updated_systemParameter = {};
   if (config.status)
     updated_systemParameter = await systemParameter.setSystemParameterStatus(config.status);
-  await logActivity(1, true, idSet);
-  return { systemParameter: updated_systemParameter };
+  resources.push({})
+  return { systemParameter: updated_systemParameter, resources };
 };
 
 // ************* Accounts Monitor *************
@@ -100,11 +100,10 @@ export const accountGetter = async (id) => {
 };
 
 // ************* Account Configuration *************
-export const accountSetter = async (id, config, idSet) => {
+export const accountSetter = async (id, config) => {
   if (!config) throw new Error('E0120');
   let updated_account = {};
   if (config.status) updated_account = await Account.setAccountStatus(id, config.status);
-  await logActivity(1, true, idSet);
   return { account: updated_account };
 };
 
@@ -149,12 +148,11 @@ export const servicesGetter = async (id, query) => {
 };
 
 // ************* Service Setter *************
-export const serviceSetter = async (id, config, idSet) => {
+export const serviceSetter = async (id, config) => {
   if (!config) throw new Error('E0809');
   const service = await Service.findService(id);
   let updated_service = {};
   if (config.status) updated_service = await service.setServiceStatus(config.status);
-  await logActivity(1, true, idSet);
   return { service: updated_service };
 };
 
@@ -183,13 +181,12 @@ export const serviceLookupGetter = async (id) => {
 };
 
 // ************* Service Lookup Configuration *************
-export const serviceLookupSetter = async (id, config, idSet) => {
+export const serviceLookupSetter = async (id, config) => {
   if (!config) throw new Error('E0708');
   const serviceLookup = await ServiceLookup.findServiceLookup(id, '');
   let updated_serviceLookup = {};
   if (config.status)
     updated_serviceLookup = await serviceLookup.setServiceLookupStatus(config.status);
-  await logActivity(1, true, idSet);
   return { serviceLookup: updated_serviceLookup };
 };
 
@@ -256,7 +253,7 @@ export const sessionsGetter = async (id, query) => {
 // FROM CRON JOBS
 // *************************************************************************************************
 // ************* System parameters updater *************
-export const sampleSystemParameters = async (idSet) => {
+export const sampleSystemParameters = async () => {
   // Getting the followed parameters
   const followedParameters = await SystemParameter.find({ status: 'followed' });
   // console.log('Parameters to sample:', { followedParameters: followedParameters });
@@ -280,5 +277,4 @@ export const sampleSystemParameters = async (idSet) => {
     }
   }
   console.log('Sampling complete.');
-  await logActivity(1, true, idSet);
 };

@@ -1,8 +1,20 @@
 // PROCESS MODEL
 
-import mongoose from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
 
 // *************************************************************************************************
+// Subdocuments
+const activitiesSchema = new mongoose.Schema(
+  {
+    associated_activity: {
+      type: Schema.Types.ObjectId,
+      ref: 'Activity',
+      required: true,
+    },
+  },
+  { timestamps: true }
+);
+
 // Document
 const ProcessSchema = new mongoose.Schema(
   {
@@ -31,8 +43,8 @@ const ProcessSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ['started', 'running', 'terminated'],
-      default: 'started',
+      enum: ['running', 'terminated'],
+      default: 'running',
       required: true,
     },
     success: {
@@ -40,6 +52,17 @@ const ProcessSchema = new mongoose.Schema(
       default: false,
       required: true,
     },
+    associated_session: {
+      type: Schema.Types.ObjectId,
+      ref: 'Session',
+      required: true,
+    },
+        associated_account: {
+      type: Schema.Types.ObjectId,
+      ref: 'Account',
+      required: true,
+    },
+    activities: [activitiesSchema],
   },
   {
     timestamps: true,
@@ -58,8 +81,16 @@ ProcessSchema.statics.findProcess = async function (id) {
   return process;
 };
 
-ProcessSchema.methods.createProcess = async function (data) {
-  if (!data) throw new Error('E1101');
+ProcessSchema.statics.getProcesses = async function (query) {
+  if (!query) throw new Error('E1009');
+  const processesModel = this;
+  const processes = await processesModel.find(query).sort({ createdAt: -1 });
+  if (!processes) throw new Error('E1010');
+  return processes;
+};
+
+ProcessSchema.methods.createProcess = async function (data, sessionId, accountId) {
+  if (!data || !sessionId || !accountId) throw new Error('E1101');
 
   const processModel = this;
   const { code, name, alias, stages } = data;
@@ -68,6 +99,8 @@ ProcessSchema.methods.createProcess = async function (data) {
   processModel.name = name;
   processModel.alias = alias;
   processModel.stages = stages;
+  processModel.associated_session = sessionId;
+  processModel.associated_account = accountId;
 
   const createdProcess = await processModel.save();
   if (!createdProcess) throw new Error('E1102');
@@ -99,6 +132,21 @@ ProcessSchema.methods.setProcessSuccess = async function (success) {
   } else {
     throw new Error('E1109');
   }
+};
+
+//Add a new activity to the currect process
+ProcessSchema.methods.addProcessActivity = async function (activityId) {
+  if (!activityId) {
+    throw new Error('E1116');
+  }
+  const processModel = this;
+  if (processModel.status !== 'running') {
+    throw new Error('E1115');
+  }
+  processModel.activities.push({
+    associated_activity: activityId,
+  });
+  return await processModel.save();
 };
 
 const Process = mongoose.model('Process', ProcessSchema);
