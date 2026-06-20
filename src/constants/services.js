@@ -49,6 +49,7 @@ export const SERVICES = {
             },
           },
         },
+        management: {},
       },
       docugen_app: {},
       utils: {

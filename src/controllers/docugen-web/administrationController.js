@@ -2,7 +2,12 @@
 import { USERS } from '../../constants/users.js';
 import { MESSAGES } from '../../constants/messages.js';
 import * as administrationServices from '../../services/docugen-web/administrationServices.js';
-import { registerProcess, terminateProcess, registerActivity, setActivitySuccess } from '../../services/utilsServices.js';
+import {
+  registerProcess,
+  terminateProcess,
+  registerActivity,
+  setActivitySuccess,
+} from '../../services/utilsServices.js';
 
 const successMessage = Object.fromEntries(MESSAGES.success.map((s) => [s.code, s]));
 
@@ -57,7 +62,7 @@ export const systemParameterGetter = async (req, res, next) => {
 // ************* System parameter configuration *************
 export const systemParameterSetter = async (req, res, next) => {
   const processId = await registerProcess('P0201', req.sess.id, req.user.id);
-  let activity = {}
+  let activity = {};
   const config = req.body.data;
   const id = req.params['system_parameter_id'];
   const role = req.user.role;
@@ -131,7 +136,7 @@ export const accountGetter = async (req, res, next) => {
 // ************* Account configuration *************
 export const accountSetter = async (req, res, next) => {
   const processId = await registerProcess('P0202', req.sess.id, req.user.id);
-  let activity = {}
+  let activity = {};
   const config = req.body.data;
   const id = req.params['account_id'];
   const role = req.user.role;
@@ -185,7 +190,7 @@ export const servicesGetter = async (req, res, next) => {
 // ************* Service Setter *************
 export const serviceSetter = async (req, res, next) => {
   const processId = await registerProcess('P0203', req.sess.id, req.user.id);
-  let activity = {}
+  let activity = {};
   const config = req.body.data;
   const id = req.params['service_id'];
   const role = req.user.role;
@@ -262,7 +267,7 @@ export const serviceLookupGetter = async (req, res, next) => {
 // ************* Service Lookup Setter *************
 export const serviceLookupSetter = async (req, res, next) => {
   const processId = await registerProcess('P0204', req.sess.id, req.user.id);
-  let activity = {}
+  let activity = {};
   const config = req.body.data;
   const id = req.params['service_id'];
   const role = req.user.role;

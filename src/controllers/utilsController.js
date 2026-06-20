@@ -29,10 +29,28 @@ export const activitiesGetter = async (req, res, next) => {
   }
 };
 
+// ************* Activity Getter *************
+export const activityGetter = async (req, res, next) => {
+  const id = req.params['activity_id'];
+  try {
+    const response = await utilsServices.activityGetter(id);
+    const code = 'S1003';
+    const status = successMessage[code]?.status || 200;
+    const message = successMessage[code]?.message || 'OK';
+    return res.status(status).json({
+      success: true,
+      code: code,
+      message: message,
+      data: { activity: response.activity },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 // ************* Processes gettter *************
 export const processesGetter = async (req, res, next) => {
   const query = req.query;
-  const accountId = req.sess.id
   try {
     const response = await utilsServices.processesGetter(query);
     const code = response.total === 0 ? 'S1101' : 'S1102';
@@ -56,8 +74,8 @@ export const processesGetter = async (req, res, next) => {
 
 // ************* Process Getter *************
 export const processGetter = async (req, res, next) => {
-  const id = req.params['process_id']
-  try{
+  const id = req.params['process_id'];
+  try {
     const response = await utilsServices.processGetter(id);
     const code = 'S1103';
     const status = successMessage[code]?.status || 200;
@@ -68,10 +86,10 @@ export const processGetter = async (req, res, next) => {
       message: message,
       data: { process: response.process },
     });
-  }catch(error){
+  } catch (error) {
     next(error);
   }
-}
+};
 
 // *************************************************************************************************
 // MODELLESS CONTROLLERS

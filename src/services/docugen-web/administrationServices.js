@@ -42,13 +42,13 @@ export const systemParameterGetter = async (id) => {
 
 // ************* System parameter Configuration *************
 export const systemParameterSetter = async (id, config) => {
-  const resources = []
+  const resources = [];
   if (!config) throw new Error('E0503');
   const systemParameter = await SystemParameter.findSystemParameter(id);
   let updated_systemParameter = {};
   if (config.status)
     updated_systemParameter = await systemParameter.setSystemParameterStatus(config.status);
-  resources.push({})
+  resources.push({});
   return { systemParameter: updated_systemParameter, resources };
 };
 

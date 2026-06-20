@@ -1,6 +1,11 @@
 // ADMISSION CONTROLLER
 import * as admissionServices from '../../services/docugen-web/admissionServices.js';
-import { registerProcess, terminateProcess, registerActivity, setActivitySuccess } from '../../services/utilsServices.js';
+import {
+  registerProcess,
+  terminateProcess,
+  registerActivity,
+  setActivitySuccess,
+} from '../../services/utilsServices.js';
 import { MESSAGES } from '../../constants/messages.js';
 import { KEYS } from '../../constants/keys.js';
 
@@ -28,13 +33,17 @@ export const myAccountRegister = async (req, res, next) => {
 // ************* Sign-in *************
 export const mySessionStarter = async (req, res, next) => {
   const processCode = 'P0101';
-  let activity = {}
-  let processId = {}
+  let activity = {};
+  let processId = {};
   const data = req.body;
   try {
     const response = await admissionServices.mySessionStarter(data);
     // Special case because it didnt have the session id first
-    processId = await registerProcess(processCode, response.sessionPayload.id, response.accountPayload.id);
+    processId = await registerProcess(
+      processCode,
+      response.sessionPayload.id,
+      response.accountPayload.id
+    );
     activity = await registerActivity(1, processId);
     await setActivitySuccess(activity._id, true);
     // Special case because it didnt have the session id first
@@ -65,7 +74,7 @@ export const mySessionStarter = async (req, res, next) => {
 // ************* Logout *************
 export const mySessionCloser = async (req, res, next) => {
   const processId = await registerProcess('P0102', req.sess.id, req.user.id);
-  let activity = {}
+  let activity = {};
   const data = req.body;
   try {
     activity = await registerActivity(1, processId);

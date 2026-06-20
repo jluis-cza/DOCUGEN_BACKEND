@@ -57,7 +57,7 @@ const ProcessSchema = new mongoose.Schema(
       ref: 'Session',
       required: true,
     },
-        associated_account: {
+    associated_account: {
       type: Schema.Types.ObjectId,
       ref: 'Account',
       required: true,

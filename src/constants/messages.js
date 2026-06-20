@@ -122,6 +122,11 @@ export const MESSAGES = {
       message: 'La consulta fue exitosa y se recuperaron actividades asociadas a la consulta.',
     },
     {
+      code: 'S1003',
+      status: 200,
+      message: 'La consulta fue exitosa y se recuperó la actividad.',
+    },
+    {
       code: 'S1101',
       status: 200,
       message: 'La consulta fue exitosa y no se recuperaron procesos asociados a la consulta.',
@@ -558,6 +563,11 @@ export const MESSAGES = {
       code: 'E1016',
       status: 500,
       message: 'En los argumentos de entrada de "setActivityResourse".',
+    },
+    {
+      code: 'E1017',
+      status: 500,
+      message: 'Error en los argumentos de entrada de "activityGetter"',
     },
     {
       code: 'E1101',
