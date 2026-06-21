@@ -146,6 +146,21 @@ export const MESSAGES = {
       status: 200,
       message: 'La información de las rutas del la API se recueraron exitosamente.',
     },
+    {
+      code: 'S1301',
+      status: 200,
+      message: 'La notificación fue configurada exitosamente.',
+    },
+    {
+      code: 'S1302',
+      status: 200,
+      message: 'La consulta fue exitosa pero no se encontraron notificaciones para la consulta.',
+    },
+    {
+      code: 'S1303',
+      status: 200,
+      message: 'Consulta realizada exitosamente. Se recuperaron notificaciones.',
+    },
   ],
   error: [
     {
@@ -650,6 +665,68 @@ export const MESSAGES = {
       status: 500,
       message: 'El argumento "activityId" no es válido.',
     },
+    {
+      code: 'E1301',
+      status: 500,
+      message:
+        'El rol necesario para utilizar el controlador "notificationCreator" debe ser de administrador.',
+    },
+    {
+      code: 'E1302',
+      status: 500,
+      message: 'Error del argumento "query" en el servicio "notificationsGetter".',
+    },
+    {
+      code: 'E1303',
+      status: 500,
+      message: 'Error en los argumentos de entrada del servicio "notificationCreator".',
+    },
+    {
+      code: 'E1304',
+      status: 500,
+      message: 'Error en el argumento de entrada "id" del método "findNotification".',
+    },
+    {
+      code: 'E1305',
+      status: 500,
+      message: 'Error en la búsqueda de la notificación pedida.',
+    },
+    {
+      code: 'E1306',
+      status: 500,
+      message: 'Error en el argumento de entrada "query" del método "getNotifications".',
+    },
+    {
+      code: 'E1307',
+      status: 500,
+      message:
+        'Error en el proceso de encontrar notificaciones a través de la consulta especificada.',
+    },
+    {
+      code: 'E1308',
+      status: 500,
+      message: 'Error en el argumento de entrada "query" del método "createNotification".',
+    },
+    {
+      code: 'E1309',
+      status: 500,
+      message: 'El argumento de entrada "from" no posee el tipo de id de mongoose.',
+    },
+    {
+      code: 'E1310',
+      status: 500,
+      message: 'El argumento de entrada "to" no posee el tipo de id de mongoose.',
+    },
+    {
+      code: 'E1311',
+      status: 500,
+      message: 'Los argumentos de entrada "subject" o "message" no son correctos.',
+    },
+    {
+      code: 'E1312',
+      status: 500,
+      message: 'Hubo un error en el guardado de la notificación creada.',
+    },
   ],
   warning: [],
   info: [{ code: 'I0101', status: 400, message: 'Account creation was unsuccessful.' }],
@@ -670,4 +747,5 @@ export const MESSAGES = {
 //    10:Activity
 //    11:Process
 //    12:Routes(no model entity)
+//    13:Notifications
 // DE: Number of error or success

@@ -42,14 +42,12 @@ export const systemParameterGetter = async (id) => {
 
 // ************* System parameter Configuration *************
 export const systemParameterSetter = async (id, config) => {
-  const resources = [];
   if (!config) throw new Error('E0503');
   const systemParameter = await SystemParameter.findSystemParameter(id);
   let updated_systemParameter = {};
   if (config.status)
     updated_systemParameter = await systemParameter.setSystemParameterStatus(config.status);
-  resources.push({});
-  return { systemParameter: updated_systemParameter, resources };
+  return { systemParameter: updated_systemParameter };
 };
 
 // ************* Accounts Monitor *************
@@ -225,6 +223,7 @@ export const sessionsGetter = async (id, query) => {
 
   return { sessions, pagination, sort: { by: sortBy, order: query.sortOrder }, search, total };
 };
+
 // // ************* Home monitor *************
 // export const homeGetter = async (role) => {
 //   if (role === 'admin') {

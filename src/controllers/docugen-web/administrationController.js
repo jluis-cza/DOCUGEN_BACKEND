@@ -7,7 +7,7 @@ import {
   terminateProcess,
   registerActivity,
   setActivitySuccess,
-} from '../../services/utilsServices.js';
+} from '../../services/docugen-web/managementServices.js';
 
 const successMessage = Object.fromEntries(MESSAGES.success.map((s) => [s.code, s]));
 

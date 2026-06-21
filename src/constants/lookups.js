@@ -178,6 +178,21 @@ export const LOOKUPS = {
           },
         ],
       },
+      // Management processes
+      {
+        code: 'P0301',
+        name: 'Creación de notificación',
+        alias: 'notification_creator',
+        stages: 1,
+        activities: [
+          {
+            stage: 1,
+            name: 'Creación de notificación',
+            alias: 'notification_creator',
+            description: 'Creando notificación de usuario.',
+          },
+        ],
+      },
     ],
   },
   docugen_app: {},
@@ -191,4 +206,5 @@ export const LOOKUPS = {
 // Reference MN list:
 // 01: Admission
 // 02: Administration
+// 03: Management
 // ...

@@ -49,25 +49,31 @@ export const SERVICES = {
             },
           },
         },
-        management: {},
+        management: {
+          base: '/manager',
+          monitor: '/monitor',
+          configuration: '/config', //Rarely used
+          resource: {
+            activities: {
+              base: '/activities',
+              id: '/:activity_id',
+            },
+            processes: {
+              base: '/processes',
+              id: '/:process_id',
+            },
+            notifications: {
+              base: '/notifications',
+              id: '/:notification_id',
+            },
+          },
+        },
       },
       docugen_app: {},
       utils: {
         base: '/utils',
         routes_info: '/info',
         time: '/time',
-        notifications: {
-          base: '/notifications',
-          id: '/:notification_id',
-        },
-        activities: {
-          base: '/activities',
-          id: '/:activity_id',
-        },
-        processes: {
-          base: '/processes',
-          id: '/:process_id',
-        },
       },
     },
   },

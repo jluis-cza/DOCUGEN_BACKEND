@@ -13,7 +13,7 @@ import {
   terminateProcess,
   registerActivity,
   setActivitySuccess,
-} from '../services/utilsServices.js';
+} from '../services/docugen-web/managementServices.js';
 
 const errorMessage = Object.fromEntries(MESSAGES.error.map((e) => [e.code, e]));
 const startCronJobs = async (session, account) => {

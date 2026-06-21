@@ -5,7 +5,7 @@ import {
   terminateProcess,
   registerActivity,
   setActivitySuccess,
-} from '../../services/utilsServices.js';
+} from '../../services/docugen-web/managementServices.js';
 import { MESSAGES } from '../../constants/messages.js';
 import { KEYS } from '../../constants/keys.js';
 
