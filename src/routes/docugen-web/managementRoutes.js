@@ -12,6 +12,8 @@ const PROCESS_ID = SERVICES.backend.routers.docugen_web.management.resource.proc
 const NOTIFICATIONS_ROUTE =
   SERVICES.backend.routers.docugen_web.management.resource.notifications.base;
 // const NOTIFICATION_ID = SERVICES.backend.routers.docugen_web.management.resource.notifications.id;
+const PROFILES_ROUTE = SERVICES.backend.routers.docugen_web.management.resource.profiles.base
+const PROFILE_ID = SERVICES.backend.routers.docugen_web.management.resource.profiles.id
 const MONITOR_ROUTE = SERVICES.backend.routers.docugen_web.management.monitor;
 const CONFIGURATION_ROUTE = SERVICES.backend.routers.docugen_web.management.configuration;
 
@@ -21,6 +23,8 @@ router.get(MONITOR_ROUTE + ACTIVITIES_ROUTE, managementController.activitiesGett
 router.get(MONITOR_ROUTE + ACTIVITIES_ROUTE + ACTIVITY_ID, managementController.activityGetter);
 router.get(MONITOR_ROUTE + PROCESSES_ROUTE, managementController.processesGetter);
 router.get(MONITOR_ROUTE + PROCESSES_ROUTE + PROCESS_ID, managementController.processGetter);
+router.get(MONITOR_ROUTE + PROFILES_ROUTE + PROFILE_ID, managementController.profileGetter);
 router.get(MONITOR_ROUTE + NOTIFICATIONS_ROUTE, managementController.notificationsGetter);
 router.post(CONFIGURATION_ROUTE + NOTIFICATIONS_ROUTE, managementController.notificationCreator);
+router.post(CONFIGURATION_ROUTE + PROFILES_ROUTE + PROFILE_ID, managementController.profileSetter);
 export default router;

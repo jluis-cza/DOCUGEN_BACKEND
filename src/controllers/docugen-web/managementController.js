@@ -7,6 +7,7 @@ import {
   registerActivity,
   setActivitySuccess,
 } from '../../services/docugen-web/managementServices.js';
+
 const successMessage = Object.fromEntries(MESSAGES.success.map((s) => [s.code, s]));
 
 // ************* Activities Getter *************
@@ -92,6 +93,54 @@ export const processGetter = async (req, res, next) => {
     });
   } catch (error) {
     next(error);
+  }
+};
+
+// ************* Profile Getter *************
+export const profileGetter = async (req, res, next) => {
+  // TODO: Configure controller services and filters, fields selectors and updaters
+  const id = req.params['profile_id'];
+  try {
+    const response = await managementServices.profileGetter(id);
+    const code = 'S1401';
+    const status = successMessage[code]?.status || 200;
+    const message = successMessage[code]?.message || 'OK';
+    return res.status(status).json({
+      success: true,
+      code: code,
+      message: message,
+      data: { profile: response.profile },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// ************* Profile Setter *************
+export const profileSetter = async (req, res, next) => {
+  // TODO: Configure controller services and filters, fields selectors and updaters
+  const processId = await registerProcess('P0302', req.sess.id, req.user.id);
+  let activity = {};
+  const id = req.params['profile_id'];
+  const config = req.body.data;
+  try {
+    activity = await registerActivity(1, processId);
+    const response = await managementServices.profileSetter(id, config);
+    await setActivitySuccess(activity._id, true);
+    const code = 'S1402';
+    const status = successMessage[code]?.status || 200;
+    const message = successMessage[code]?.message || 'OK';
+    return res.status(status).json({
+      success: true,
+      code: code,
+      message: message,
+      data: { profile: response.profile, account: response.accountPayload },
+    });
+  } catch (error) {
+    await setActivitySuccess(activity._id, false);
+    next(error);
+  } finally {
+    await terminateProcess(processId);
   }
 };
 

@@ -22,11 +22,15 @@ export const SERVICES = {
           close_session: '/logout',
           renew_access: '/refresh',
           verify_email: '/verify-email',
+          verify_password: '/verify-pass',
+          check_username: '/check-user',
+          get_username: '/get-user',
         },
         administration: {
           base: '/admin',
           monitor: '/monitor',
           configuration: '/config',
+          review: '/rev',
           lookup: '/categories',
           resource: {
             system_parameters: {
@@ -65,6 +69,10 @@ export const SERVICES = {
             notifications: {
               base: '/notifications',
               id: '/:notification_id',
+            },
+            profiles: {
+              base: '/profiles',
+              id: '/:profile_id',
             },
           },
         },

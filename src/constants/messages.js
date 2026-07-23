@@ -30,6 +30,11 @@ export const MESSAGES = {
       status: 200,
       message: 'La información de la cuenta se recuperó exitosamente.',
     },
+    {
+      code: 'S0106',
+      status: 200,
+      message: 'La información resumida de las cuentas se recuperó exitosamente.',
+    },
     { code: 'S0201', status: 200, message: ' Welcome. Session started.' },
     { code: 'S0202', status: 200, message: ' The session was succesfully closed.' },
     {
@@ -70,6 +75,11 @@ export const MESSAGES = {
       message: 'El parámetro de sistema fue recuperado exitósamente.',
     },
     {
+      code: 'S0505',
+      status: 200,
+      message: 'La sistesis de los parámetros del sistema fue recuperada exitosamente.',
+    },
+    {
       code: 'S0601',
       status: 200,
       message:
@@ -89,6 +99,11 @@ export const MESSAGES = {
       code: 'S0703',
       status: 200,
       message: ' La recuperación del servicio lookup se realizó exitosamente.',
+    },
+    {
+      code: 'S0704',
+      status: 200,
+      message: 'La información resumida de Service Lookups fue recuperada exitosamente.',
     },
     {
       code: 'S0801',
@@ -161,6 +176,31 @@ export const MESSAGES = {
       status: 200,
       message: 'Consulta realizada exitosamente. Se recuperaron notificaciones.',
     },
+    {
+      code: 'S1401',
+      status: 200,
+      message: 'Consulta realizada exitosamente. Se recuperó la información del perfil.',
+    },
+    {
+      code: 'S1402',
+      status: 200,
+      message: 'La configuración del perfil se realizó exitosamente.',
+    },
+    {
+      code: 'S1501',
+      status: 200,
+      message: 'El proceso de verificación contraseña se ejecutó exitosamente.',
+    },
+    {
+      code: 'S1601',
+      status: 200,
+      message: 'Consulta de disponibilidad de nombre de usuario realizada correctamente.',
+    },
+        {
+      code: 'S1602',
+      status: 200,
+      message: 'La consulta de nombre de usuario se realizó con éxito.',
+    },
   ],
   error: [
     {
@@ -169,7 +209,7 @@ export const MESSAGES = {
       message:
         'Al least one of the parameters (username, email, id or temporary token) needs to be provided.',
     },
-    { code: 'E0102', status: 400, message: 'The account was not found.' },
+    { code: 'E0102', status: 400, message: 'La cuenta no fue encontrada.' },
     { code: 'E0103', status: 409, message: 'The username or email already exists.' },
     { code: 'E0104', status: 500, message: 'The account was not saved.' },
     { code: 'E0105', status: 500, message: 'Wrong parameters entry.' },
@@ -233,6 +273,36 @@ export const MESSAGES = {
       code: 'E0122',
       status: 500,
       message: 'No se tiene el parámetro id en el servicio de accountGetter.',
+    },
+    {
+      code: 'E0123',
+      status: 500,
+      message: 'No se tiene el rol necesario para usar el controlador "accountsOverviewer".',
+    },
+    {
+      code: 'E0124',
+      status: 500,
+      message: 'Error en el argumento "filter" del método "getAccountsCount".',
+    },
+    {
+      code: 'E0125',
+      status: 500,
+      message: 'Error en el argumentos del método "setAccountPassword".',
+    },
+    {
+      code: 'E0126',
+      status: 500,
+      message: 'Error configurando la contraseña. Error en el método "setAccountPassword".',
+    },
+    {
+      code: 'E0127',
+      status: 500,
+      message: 'Error en el argumentos del método "setAccountUsername".',
+    },
+    {
+      code: 'E0128',
+      status: 500,
+      message: 'Error guardando el nombre de usuario.',
     },
     { code: 'E0201', status: 400, message: 'Incorrect password.' },
     { code: 'E0202', status: 400, message: 'The account id was not found.' },
@@ -345,6 +415,16 @@ export const MESSAGES = {
       message: 'No se encontró ningun parámetro del sistema con el id especificado.',
     },
     {
+      code: 'E0512',
+      status: 500,
+      message: 'El rol del usuario debe ser "administrador".',
+    },
+    // {
+    //   code: 'E0513',
+    //   status: 400,
+    //   message: 'No se encontró ningun parámetro del sistema con el id especificado.',
+    // },
+    {
       code: 'E0601',
       status: 500,
       message:
@@ -419,6 +499,12 @@ export const MESSAGES = {
       status: 500,
       message:
         'El método "findServiceLookup" requiere al menos un parámetro de entrada ya sea "id" del servicio lookup o el "name" de este.',
+    },
+    {
+      code: 'E0712',
+      status: 500,
+      message:
+        'Se requiere un rol de administrador para utilizar el controlador "serviceLookupsOverviewer".',
     },
     {
       code: 'E0801',
@@ -723,10 +809,42 @@ export const MESSAGES = {
       message: 'Los argumentos de entrada "subject" o "message" no son correctos.',
     },
     {
-      code: 'E1312',
+      code: 'E1401',
       status: 500,
-      message: 'Hubo un error en el guardado de la notificación creada.',
+      message: 'El argumento "id" del servicio "profileGetter" es incorrecto.',
     },
+    {
+      code: 'E1402',
+      status: 500,
+      message: 'Error en los argumentos de entrada al servicio "profileSetter".',
+    },
+    // {
+    //   code: 'E1403',
+    //   status: 400,
+    //   message: 'Error en el cambio de contraseña. La contraseña actual no es correcta.',
+    // },
+    {
+      code: 'E1501',
+      status: 500,
+      message:
+        'El servicio "passwordVerifier" necesita de una argumento "password" y "id" válidos.',
+    },
+    {
+      code: 'E1502',
+      status: 400,
+      message: 'Contraseña incorrecta.',
+    },
+    {
+      code: 'E1601',
+      status: 500,
+      message: 'Error en el argumento del servicio "usernameChecker".',
+    },
+        {
+      code: 'E1602',
+      status: 500,
+      message: 'Elmservicio "usernameGetter" requiere un argumento "id".',
+    },
+
   ],
   warning: [],
   info: [{ code: 'I0101', status: 400, message: 'Account creation was unsuccessful.' }],
@@ -748,4 +866,7 @@ export const MESSAGES = {
 //    11:Process
 //    12:Routes(no model entity)
 //    13:Notifications
+//    14:Profile(no model entity)
+//    15:Password(no model entity)
+//    16:Username(no model entity)
 // DE: Number of error or success

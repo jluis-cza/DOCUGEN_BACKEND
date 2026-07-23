@@ -88,6 +88,28 @@ export const systemParameterSetter = async (req, res, next) => {
   }
 };
 
+// ************* System parameters overviewer *************
+export const systemParametersOverviewer = async (req, res, next) => {
+  const role = req.user.role;
+  if (role !== USERS.server.role.administrator) throw new Error('E0512'); // Checking user's role (admin needed)
+  try {
+    const response = await administrationServices.systemParametersOverviewer();
+    const code = 'S0505';
+    const status = successMessage[code]?.status || 200;
+    const message = successMessage[code]?.message || 'OK';
+    return res.status(status).json({
+      success: true,
+      code: code,
+      message: message,
+      data: {
+        systemParametersOverview: response.systemParametersOverview,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 // ************* Accounts Monitor *************
 export const accountsGetter = async (req, res, next) => {
   const query = req.query;
@@ -159,6 +181,28 @@ export const accountSetter = async (req, res, next) => {
     next(error);
   } finally {
     await terminateProcess(processId);
+  }
+};
+
+// ************* Accounts overviewer *************
+export const accountsOverviewer = async (req, res, next) => {
+  const role = req.user.role;
+  if (role !== USERS.server.role.administrator) throw new Error('E0123'); // Checking user's role (admin needed)
+  try {
+    const response = await administrationServices.accountsOverviewer();
+    const code = 'S0106';
+    const status = successMessage[code]?.status || 200;
+    const message = successMessage[code]?.message || 'OK';
+    return res.status(status).json({
+      success: true,
+      code: code,
+      message: message,
+      data: {
+        accountsOverview: response.accountsOverview,
+      },
+    });
+  } catch (error) {
+    next(error);
   }
 };
 
@@ -290,6 +334,28 @@ export const serviceLookupSetter = async (req, res, next) => {
     next(error);
   } finally {
     await terminateProcess(processId);
+  }
+};
+
+// ************* Service Lookup overviewer *************
+export const serviceLookupsOverviewer = async (req, res, next) => {
+  const role = req.user.role;
+  if (role !== USERS.server.role.administrator) throw new Error('E0712'); // Checking user's role (admin needed)
+  try {
+    const response = await administrationServices.serviceLookupsOverviewer();
+    const code = 'S0704';
+    const status = successMessage[code]?.status || 200;
+    const message = successMessage[code]?.message || 'OK';
+    return res.status(status).json({
+      success: true,
+      code: code,
+      message: message,
+      data: {
+        serviceLookupsOverview: response.serviceLookupsOverview,
+      },
+    });
+  } catch (error) {
+    next(error);
   }
 };
 

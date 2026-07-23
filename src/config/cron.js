@@ -19,7 +19,7 @@ const errorMessage = Object.fromEntries(MESSAGES.error.map((e) => [e.code, e]));
 const startCronJobs = async (session, account) => {
   try {
     // Sampling system parameters
-    cron.schedule('*/60 * * * *', async () => {
+    cron.schedule('*/6 * * * *', async () => {
       let processId = {};
       let activity = {};
       try {
@@ -37,7 +37,7 @@ const startCronJobs = async (session, account) => {
     });
 
     // Closing inactive sessions
-    cron.schedule('*/60 * * * *', async () => {
+    cron.schedule('*/1 * * * *', async () => {
       let processId = {};
       let activity = {};
       try {
@@ -55,7 +55,7 @@ const startCronJobs = async (session, account) => {
     });
 
     // Deleting inactive accounts
-    cron.schedule('*/30 * * * *', async () => {
+    cron.schedule('*/3 * * * *', async () => {
       let processId = {};
       let activity = {};
       try {

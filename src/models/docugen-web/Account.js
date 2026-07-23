@@ -126,6 +126,32 @@ AccountSchema.statics.setAccountToken = async function (accountId, token) {
   return account;
 };
 
+AccountSchema.statics.setAccountPassword = async function (accountId, password) {
+  const accounts = this;
+  if (!accountId || !password) throw new Error('E0125');
+  const salt = await bcrypt.genSalt(10);
+  const hash = await bcrypt.hash(password, salt);
+  const account = await accounts.findOneAndUpdate(
+    { _id: accountId },
+    { $set: { password: hash } },
+    { new: true }
+  );
+  if (!account) throw new Error('E0126');
+  return account;
+};
+
+AccountSchema.statics.setAccountUsername = async function (accountId, username) {
+  const accounts = this;
+  if (!accountId || !username) throw new Error('E0127');
+  const account = await accounts.findOneAndUpdate(
+    { _id: accountId },
+    { $set: { username } },
+    { new: true }
+  );
+  if (!account) throw new Error('E0128');
+  return account;
+};
+
 AccountSchema.statics.findInactiveAccounts = async function () {
   const accounts = this;
   const inactive_accounts = await accounts.find({ status: 'inactive' });
@@ -181,6 +207,13 @@ AccountSchema.statics.deleteDefaultAccounts = async function () {
     console.log('Error deleting default accounts.', error);
     throw error;
   }
+};
+
+AccountSchema.statics.getAccountsCount = async function (filter) {
+  if (!filter) throw new Error('E0124');
+  const accountsModel = this;
+  const count = accountsModel.countDocuments(filter);
+  return count;
 };
 
 AccountSchema.methods.saveAccount = async function () {

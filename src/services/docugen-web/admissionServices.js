@@ -73,7 +73,7 @@ export const mySessionStarter = async (data) => {
   // Generating tokens
   const accountPayload = {
     id: registeredAccount._id,
-    username: registeredAccount.username,
+    // username: registeredAccount.username,
     role: registeredAccount.role,
     status: registeredAccount.status,
   };
@@ -98,8 +98,8 @@ export const mySessionStarter = async (data) => {
 export const mySessionCloser = async (data) => {
   if (!data) throw new Error('E0210');
   const arrivingIdentity = data;
-  const registeredAccount = await Account.findAccount('', arrivingIdentity.username, '', ''); // Checking if there is a registered account with the username
-  const currentSession = await Session.findCurrentSession(registeredAccount._id); // Checking if there is a current  ongoing session
+  // const registeredAccount = await Account.findAccount('', '', arrivingIdentity.id, ''); // Checking if there is a registered account with the username
+  const currentSession = await Session.findCurrentSession(arrivingIdentity.id); // Checking if there is a current  ongoing session
   const closedSession = currentSession.endSession('terminated'); // Closing the ongoing session in DB
   return closedSession;
 };
@@ -152,6 +152,34 @@ export const emailVerifier = async (token) => {
   await Account.setAccountStatus(account._id, USERS.client.status.active); // Activating the account
   await Account.setAccountToken(account._id, '');
   return { email: account.user.email };
+};
+
+// ************* PASSWORD VERIFIER *************
+export const passwordVerifier = async (id, password) => {
+  if (!id || !password) throw new Error('E1501');
+  const account = await Account.findAccount('', '', id, '');
+  const isMatch = await account.verifyAccountPassword(password); // Verifying password
+  if (typeof isMatch !== 'boolean') throw new Error('E1502');
+  return { password: account.password , passedVerification: isMatch};
+};
+
+// ************* USERNAME CHECKER *************
+export const usernameChecker = async (username) => {
+  if (!username) throw new Error('E1601');
+  let isAvailable = false
+  try {
+    await Account.findAccount('', username, '', '');
+  } catch (error) {
+    if (error.message === 'E0102') isAvailable = true
+  }
+  return { username, isAvailable}
+};
+
+// ************* USERNAME GETTER *************
+export const usernameGetter = async (id) => {
+  if (!id) throw new Error('E1602');
+const account =    await Account.findAccount('', '', id, '');
+  return { username: account.username}
 };
 
 // *************************************************************************************************

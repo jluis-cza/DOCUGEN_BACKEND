@@ -1,13 +1,14 @@
 import Activity from '../../models/docugen-web/Activity.js';
 import Process from '../../models/docugen-web/Process.js';
 import Notification from '../../models/docugen-web/Notification.js';
+import Account from '../../models/docugen-web/Account.js';
 import { LOOKUPS } from '../../constants/lookups.js';
 
 // *************************************************************************************************
 // FOR CONTROLLERS
 // *************************************************************************************************
 
-// ************* ACTIVITY GETTER *************
+// ************* ACTIVITIES *************
 export const activitiesGetter = async (query) => {
   if (!query) throw new Error('E1008');
   const activities = await Activity.getActivities(query);
@@ -20,7 +21,7 @@ export const activityGetter = async (id) => {
   return activity;
 };
 
-// ************* PROCESS GETTER *************
+// ************* PROCESSES *************
 export const processesGetter = async (query) => {
   if (!query) throw new Error('E1113');
   const processes = await Process.getProcesses(query);
@@ -33,19 +34,37 @@ export const processGetter = async (id) => {
   return process;
 };
 
-// ************* NOTIFICATIONS GETTER *************
+// ************* NOTIFICATIONS *************
 export const notificationsGetter = async (query) => {
   if (!query) throw new Error('E1302');
   const notifications = await Notification.getNotifications(query);
   return { notifications, query };
 };
 
-// ************* NOTIFICATION CREATOR *************
 export const notificationCreator = async (config) => {
   if (!config) throw new Error('E1303');
   const newNotification = new Notification();
   const created_notification = await newNotification.createNotification(config);
   return { notification: created_notification };
+};
+
+// ************* PROFILES *************
+export const profileGetter = async (id) => {
+  if (!id) throw new Error('E1401');
+  const profile = await Account.findAccount('', '', id, '');
+  return { profile };
+};
+export const profileSetter = async (id, config) => {
+  if (!id || !config) throw new Error('E1402');
+  let updated_account = {};
+  if (config.password) updated_account = await Account.setAccountPassword(id, config.password);
+  if (config.username) updated_account = await Account.setAccountUsername(id, config.username);
+  const accountPayload = {
+    id: updated_account._id,
+    role: updated_account.role,
+    status: updated_account.status,
+  };
+  return { profile: updated_account, accountPayload };
 };
 
 // *************************************************************************************************
@@ -92,7 +111,7 @@ export const registerActivity = async (stage, processId) => {
 };
 
 export const setActivitySuccess = async (activityId, success) => {
-  if (!activityId || !success) throw new Error('E1015');
+  if (!activityId || typeof success !== 'boolean') throw new Error('E1015');
   // Searching the activity by id
   const activity = await Activity.findActivity(activityId);
   // Adding the success value

@@ -6,7 +6,13 @@ import ServiceLookup from '../../models/docugen-web/ServiceLookup.js';
 import Service from '../../models/docugen-web/Service.js';
 import Session from '../../models/docugen-web/Session.js';
 import { systemParameterValuesCollector } from '../../helpers/docugen-web/administrationHelper.js';
-
+import {
+  getDataBaseName,
+  getDataBaseTotalSize,
+  getHostname,
+  getPlatform,
+  getNetworkInfo,
+} from '../../helpers/docugen-web/administrationHelper.js';
 // *************************************************************************************************
 // FROM CONTROLLERS
 // *************************************************************************************************
@@ -48,6 +54,33 @@ export const systemParameterSetter = async (id, config) => {
   if (config.status)
     updated_systemParameter = await systemParameter.setSystemParameterStatus(config.status);
   return { systemParameter: updated_systemParameter };
+};
+
+// ************* System parameters Overviewer *************
+export const systemParametersOverviewer = async () => {
+  // DB used storage [MB]
+  const dbUsedSize = await systemParameterValuesCollector.getDataBaseUsedSize();
+  // Total uptime [horas]
+  const systemUptime = await systemParameterValuesCollector.getSystemUptime();
+
+  // utils
+  const dbName = await getDataBaseName();
+  const dbTotalSize = await getDataBaseTotalSize();// DB storage[GB]
+  const hostname = getHostname();
+  const platform = getPlatform();
+  const interfaces = getNetworkInfo();
+
+  // to send
+  const systemParametersOverview = {
+      dbTotalSize,
+      dbUsedSize,
+      systemUptime,
+      dbName,
+      hostname,
+      platform,
+      interfaces,
+  };
+  return { systemParametersOverview };
 };
 
 // ************* Accounts Monitor *************
@@ -103,6 +136,27 @@ export const accountSetter = async (id, config) => {
   let updated_account = {};
   if (config.status) updated_account = await Account.setAccountStatus(id, config.status);
   return { account: updated_account };
+};
+
+// ************* Accounts Overviewer *************
+export const accountsOverviewer = async () => {
+  const total = await Account.getAccountsCount({});
+  const active = await Account.getAccountsCount({ status: 'active' });
+  const inactive = await Account.getAccountsCount({ status: 'inactive' });
+  const suspended = await Account.getAccountsCount({ status: 'suspended' });
+  const developer = await Account.getAccountsCount({ role: 'dev' });
+  const administrator = await Account.getAccountsCount({ role: 'admin' });
+
+  // to send
+  const accountsOverview = {
+    total,
+    active,
+    inactive,
+    suspended,
+    developer,
+    administrator,
+  };
+  return { accountsOverview };
 };
 
 // ************* Services Getter *************
@@ -188,6 +242,12 @@ export const serviceLookupSetter = async (id, config) => {
   return { serviceLookup: updated_serviceLookup };
 };
 
+// ************* System Lookups Overviewer *************
+export const serviceLookupsOverviewer = async () => {
+  const serviceLookupsOverview = await ServiceLookup.getAllServiceLookups();
+  return { serviceLookupsOverview };
+};
+
 // ************* Sessions monitor *************
 export const sessionsGetter = async (id, query) => {
   // Params
@@ -260,8 +320,8 @@ export const sampleSystemParameters = async () => {
   for (const parameter of followedParameters) {
     let newValue = null;
     switch (parameter.name) {
-      case 'database_size':
-        newValue = await systemParameterValuesCollector.getDataBaseSize();
+      case 'database_used_size':
+        newValue = await systemParameterValuesCollector.getDataBaseUsedSize();
         break;
       case 'system_uptime':
         newValue = await systemParameterValuesCollector.getSystemUptime();

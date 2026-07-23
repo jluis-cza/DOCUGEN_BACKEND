@@ -142,3 +142,67 @@ export const emailVerifier = async (req, res, next) => {
     next(error);
   }
 };
+
+// ************* Password verifier *************
+export const passwordVerifier = async (req, res, next) => {
+  const data = req.body.data;
+  const id = req.user.id;
+  try {
+    const { password } = data;
+    const response = await admissionServices.passwordVerifier(id, password);
+    const code = 'S1501';
+    const status = successMessage[code]?.status || 200;
+    const message = successMessage[code]?.message || 'OK';
+    return res.status(status).json({
+      success: true,
+      code: code,
+      message: message,
+      data: { password: response.password },
+      metadata: { password: { passedVerification: response.passedVerification } },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// ************* Username checker *************
+export const usernameChecker = async (req, res, next) => {
+  const data = req.body.data;
+  try {
+    const { username } = data;
+    const response = await admissionServices.usernameChecker(username);
+    const code = 'S1601';
+    const status = successMessage[code]?.status || 200;
+    const message = successMessage[code]?.message || 'OK';
+    return res.status(status).json({
+      success: true,
+      code: code,
+      message: message,
+      data: { username: response.username },
+      metadata:{username:{isAvailable: response.isAvailable}}
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// ************* Username getter *************
+export const usernameGetter = async (req, res, next) => {
+  const query = req.query;
+  console.log({query})
+  try {
+    const { id } = query;
+    const response = await admissionServices.usernameGetter(id);
+    const code = 'S1602';
+    const status = successMessage[code]?.status || 200;
+    const message = successMessage[code]?.message || 'OK';
+    return res.status(status).json({
+      success: true,
+      code: code,
+      message: message,
+      data: { username: response.username },
+    });
+  } catch (error) {
+    next(error);
+  }
+};

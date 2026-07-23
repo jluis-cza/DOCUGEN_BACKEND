@@ -6,7 +6,7 @@ dotenv.config();
 export const LOOKUPS = {
   docugen_web: {
     system_parameters: [
-      { name: 'database_size', alias: 'Tamaño de la base de datos' },
+      { name: 'database_used_size', alias: 'Tamaño usado de la base de datos' },
       { name: 'system_uptime', alias: 'Tiempo de actividad del sistema' },
     ],
     services: [
@@ -193,6 +193,20 @@ export const LOOKUPS = {
           },
         ],
       },
+      {
+        code: 'P0302',
+        name: 'Configuración de perfil',
+        alias: 'profile_setter',
+        stages: 1,
+        activities: [
+          {
+            stage: 1,
+            name: 'Configuración de perfil',
+            alias: 'profile_setter',
+            description: 'Configurando perfil.',
+          },
+        ],
+      },
     ],
   },
   docugen_app: {},
@@ -207,4 +221,8 @@ export const LOOKUPS = {
 // 01: Admission
 // 02: Administration
 // 03: Management
-// ...
+// 04: Edition
+// 05: Acquisition
+// 06: Configuration
+// 07: Processing
+// 08: Presentation

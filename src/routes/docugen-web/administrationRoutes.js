@@ -17,6 +17,7 @@ const SESSIONS_ROUTE =
   SERVICES.backend.routers.docugen_web.administration.resource.accounts.resource.sessions.base;
 const CONFIGURATION_ROUTE = SERVICES.backend.routers.docugen_web.administration.configuration;
 const MONITOR_ROUTE = SERVICES.backend.routers.docugen_web.administration.monitor;
+const REVIEW_ROUTE = SERVICES.backend.routers.docugen_web.administration.review;
 const LOOKUP_ROUTE = SERVICES.backend.routers.docugen_web.administration.lookup;
 // *************************************************************************************************
 // Monitors
@@ -67,5 +68,16 @@ router.post(
 router.post(
   CONFIGURATION_ROUTE + SERVICES_ROUTE + SERVICE_ID,
   administrationController.serviceSetter
+);
+// *************************************************************************************************
+// Overviewers
+router.get(REVIEW_ROUTE + ACCOUNTS_ROUTE, administrationController.accountsOverviewer);
+router.get(
+  REVIEW_ROUTE + SYSTEM_PARAMETERS_ROUTE,
+  administrationController.systemParametersOverviewer
+);
+router.get(
+  REVIEW_ROUTE + LOOKUP_ROUTE + SERVICES_ROUTE,
+  administrationController.serviceLookupsOverviewer
 );
 export default router;
