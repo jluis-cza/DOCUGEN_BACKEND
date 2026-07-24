@@ -146,7 +146,7 @@ SessionSchema.methods.createSession = async function (associatedAccountId) {
 // Adding a refresh token to the session
 SessionSchema.methods.addSessionToken = async function (token) {
   const session = this;
-  if (!token) throw new Error('E0217');
+  if (typeof token !== 'string') throw new Error('E0217');
   session.token = token;
   const updatedSession = await session.save();
   if (!updatedSession) throw new Error('E0218');

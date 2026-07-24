@@ -12,8 +12,8 @@ const PROCESS_ID = SERVICES.backend.routers.docugen_web.management.resource.proc
 const NOTIFICATIONS_ROUTE =
   SERVICES.backend.routers.docugen_web.management.resource.notifications.base;
 // const NOTIFICATION_ID = SERVICES.backend.routers.docugen_web.management.resource.notifications.id;
-const PROFILES_ROUTE = SERVICES.backend.routers.docugen_web.management.resource.profiles.base
-const PROFILE_ID = SERVICES.backend.routers.docugen_web.management.resource.profiles.id
+const PROFILES_ROUTE = SERVICES.backend.routers.docugen_web.management.resource.profiles.base;
+const PROFILE_ID = SERVICES.backend.routers.docugen_web.management.resource.profiles.id;
 const MONITOR_ROUTE = SERVICES.backend.routers.docugen_web.management.monitor;
 const CONFIGURATION_ROUTE = SERVICES.backend.routers.docugen_web.management.configuration;
 

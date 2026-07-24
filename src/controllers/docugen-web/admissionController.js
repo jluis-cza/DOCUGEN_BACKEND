@@ -179,7 +179,7 @@ export const usernameChecker = async (req, res, next) => {
       code: code,
       message: message,
       data: { username: response.username },
-      metadata:{username:{isAvailable: response.isAvailable}}
+      metadata: { username: { isAvailable: response.isAvailable } },
     });
   } catch (error) {
     next(error);
@@ -189,7 +189,7 @@ export const usernameChecker = async (req, res, next) => {
 // ************* Username getter *************
 export const usernameGetter = async (req, res, next) => {
   const query = req.query;
-  console.log({query})
+  console.log({ query });
   try {
     const { id } = query;
     const response = await admissionServices.usernameGetter(id);

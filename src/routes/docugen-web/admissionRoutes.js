@@ -13,8 +13,8 @@ const LOGOUT_USER_ROUTE = SERVICES.backend.routers.docugen_web.admission.close_s
 const RENEW_ACCESS_ROUTE = SERVICES.backend.routers.docugen_web.admission.renew_access;
 const VERIFY_EMAIL_ROUTE = SERVICES.backend.routers.docugen_web.admission.verify_email;
 const VERIFY_PASSWORD_ROUTE = SERVICES.backend.routers.docugen_web.admission.verify_password;
-const CHECK_USERNAME_ROUTE = SERVICES.backend.routers.docugen_web.admission.check_username
-const GET_USERNAME_ROUTE = SERVICES.backend.routers.docugen_web.admission.get_username
+const CHECK_USERNAME_ROUTE = SERVICES.backend.routers.docugen_web.admission.check_username;
+const GET_USERNAME_ROUTE = SERVICES.backend.routers.docugen_web.admission.get_username;
 
 // Endpoints definition
 router.post(REGISTER_ACCOUNT_ROUTE, admissionController.myAccountRegister);
@@ -24,5 +24,5 @@ router.post(RENEW_ACCESS_ROUTE, admissionController.accessRenewer);
 router.post(VERIFY_EMAIL_ROUTE, admissionController.emailVerifier);
 router.post(VERIFY_PASSWORD_ROUTE, securityMiddleware, admissionController.passwordVerifier); //id from cookies
 router.post(CHECK_USERNAME_ROUTE, admissionController.usernameChecker);
-router.get(GET_USERNAME_ROUTE, securityMiddleware, admissionController.usernameGetter )
+router.get(GET_USERNAME_ROUTE, securityMiddleware, admissionController.usernameGetter);
 export default router;

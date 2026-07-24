@@ -65,20 +65,20 @@ export const systemParametersOverviewer = async () => {
 
   // utils
   const dbName = await getDataBaseName();
-  const dbTotalSize = await getDataBaseTotalSize();// DB storage[GB]
+  const dbTotalSize = await getDataBaseTotalSize(); // DB storage[GB]
   const hostname = getHostname();
   const platform = getPlatform();
   const interfaces = getNetworkInfo();
 
   // to send
   const systemParametersOverview = {
-      dbTotalSize,
-      dbUsedSize,
-      systemUptime,
-      dbName,
-      hostname,
-      platform,
-      interfaces,
+    dbTotalSize,
+    dbUsedSize,
+    systemUptime,
+    dbName,
+    hostname,
+    platform,
+    interfaces,
   };
   return { systemParametersOverview };
 };

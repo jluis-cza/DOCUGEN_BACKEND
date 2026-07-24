@@ -196,7 +196,7 @@ export const MESSAGES = {
       status: 200,
       message: 'Consulta de disponibilidad de nombre de usuario realizada correctamente.',
     },
-        {
+    {
       code: 'S1602',
       status: 200,
       message: 'La consulta de nombre de usuario se realizó con éxito.',
@@ -306,7 +306,7 @@ export const MESSAGES = {
     },
     { code: 'E0201', status: 400, message: 'Incorrect password.' },
     { code: 'E0202', status: 400, message: 'The account id was not found.' },
-    { code: 'E0203', status: 500, message: 'No current session was foound.' },
+    { code: 'E0203', status: 500, message: 'No se encontró una sesión en curso.' },
     { code: 'E0204', status: 500, message: 'Missing closure status entry.' },
     { code: 'E0205', status: 500, message: 'The closure status must be "expired" or "inactive".' },
     { code: 'E0206', status: 500, message: 'Error in updating the end session data.' },
@@ -331,7 +331,7 @@ export const MESSAGES = {
     {
       code: 'E0217',
       status: 500,
-      message: 'El token provisto para el métod "addSessionToken" es incorrecto.',
+      message: 'El token provisto para el método "addSessionToken" debe ser de tipo "string".',
     },
     { code: 'E0218', status: 500, message: 'Error en el guardado del refresh token a la sesión.' },
     {
@@ -839,12 +839,11 @@ export const MESSAGES = {
       status: 500,
       message: 'Error en el argumento del servicio "usernameChecker".',
     },
-        {
+    {
       code: 'E1602',
       status: 500,
       message: 'Elmservicio "usernameGetter" requiere un argumento "id".',
     },
-
   ],
   warning: [],
   info: [{ code: 'I0101', status: 400, message: 'Account creation was unsuccessful.' }],

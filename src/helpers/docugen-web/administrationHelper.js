@@ -39,7 +39,7 @@ export const getDataBaseName = async () => {
   try {
     const db = mongoose.connection.db;
     const stats = await db.stats();
-    const dbName = stats.db
+    const dbName = stats.db;
     return dbName;
   } catch (error) {
     console.error('Error getting the database name.', error);
@@ -51,7 +51,7 @@ export const getDataBaseTotalSize = async () => {
     const db = mongoose.connection.db;
     const stats = await db.stats();
     return {
-      value: (stats.fsTotalSize / (1024 * 1024 *1024)).toFixed(2), // GB
+      value: (stats.fsTotalSize / (1024 * 1024 * 1024)).toFixed(2), // GB
       unit: 'GB',
     };
   } catch (error) {
@@ -88,6 +88,6 @@ export const getNetworkInfo = () => {
     }
   }
 
-  // Devolvemos el objeto 
+  // Devolvemos el objeto
   return reporte;
 };

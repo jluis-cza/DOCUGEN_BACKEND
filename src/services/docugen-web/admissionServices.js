@@ -61,15 +61,22 @@ export const mySessionStarter = async (data) => {
   const isMatch = await registeredAccount.verifyAccountPassword(password); // Verifying password
   if (!isMatch) throw new Error('E0201');
 
-  try {
-    const currentSession = await Session.findCurrentSession(registeredAccount._id); // Checking if there is a current  ongoing session
-    currentSession.endSession('terminated'); // Closing the ongoing session
-  } catch (error) {
-    if (error.message !== 'E0203') throw error;
+  let createdSession = {};
+  if (registeredAccount.username === 'system') {
+    // Special case "system" user
+    createdSession = await Session.findCurrentSession(registeredAccount._id);
+  } else {
+    try {
+      const currentSession = await Session.findCurrentSession(registeredAccount._id); // Checking if there is a current  ongoing session
+      await currentSession.endSession('terminated'); // Closing the ongoing session
+    } catch (error) {
+      if (error.message !== 'E0203') throw error;
+    }
+    // Creating a new session
+    const newSession = new Session();
+    createdSession = await newSession.createSession(registeredAccount._id);
   }
-  // Creating a new session
-  const newSession = new Session();
-  const createdSession = await newSession.createSession(registeredAccount._id);
+
   // Generating tokens
   const accountPayload = {
     id: registeredAccount._id,
@@ -98,9 +105,14 @@ export const mySessionStarter = async (data) => {
 export const mySessionCloser = async (data) => {
   if (!data) throw new Error('E0210');
   const arrivingIdentity = data;
-  // const registeredAccount = await Account.findAccount('', '', arrivingIdentity.id, ''); // Checking if there is a registered account with the username
+  const registeredAccount = await Account.findAccount('', '', arrivingIdentity.id, ''); // Checking if there is a registered account with the username
   const currentSession = await Session.findCurrentSession(arrivingIdentity.id); // Checking if there is a current  ongoing session
-  const closedSession = currentSession.endSession('terminated'); // Closing the ongoing session in DB
+  let closedSession = {};
+  if (registeredAccount.username !== 'system') {
+    closedSession = await currentSession.endSession('terminated'); // Closing the ongoing session in DB
+  } else {
+    closedSession = await currentSession.addSessionToken(''); //removing refresh token
+  }
   return closedSession;
 };
 
@@ -160,26 +172,26 @@ export const passwordVerifier = async (id, password) => {
   const account = await Account.findAccount('', '', id, '');
   const isMatch = await account.verifyAccountPassword(password); // Verifying password
   if (typeof isMatch !== 'boolean') throw new Error('E1502');
-  return { password: account.password , passedVerification: isMatch};
+  return { password: account.password, passedVerification: isMatch };
 };
 
 // ************* USERNAME CHECKER *************
 export const usernameChecker = async (username) => {
   if (!username) throw new Error('E1601');
-  let isAvailable = false
+  let isAvailable = false;
   try {
     await Account.findAccount('', username, '', '');
   } catch (error) {
-    if (error.message === 'E0102') isAvailable = true
+    if (error.message === 'E0102') isAvailable = true;
   }
-  return { username, isAvailable}
+  return { username, isAvailable };
 };
 
 // ************* USERNAME GETTER *************
 export const usernameGetter = async (id) => {
   if (!id) throw new Error('E1602');
-const account =    await Account.findAccount('', '', id, '');
-  return { username: account.username}
+  const account = await Account.findAccount('', '', id, '');
+  return { username: account.username };
 };
 
 // *************************************************************************************************
