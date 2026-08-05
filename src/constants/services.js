@@ -69,6 +69,8 @@ export const SERVICES = {
             notifications: {
               base: '/notifications',
               id: '/:notification_id',
+              acknowledgement: '/ack',
+              creation: '/create',
             },
             profiles: {
               base: '/profiles',
@@ -80,8 +82,21 @@ export const SERVICES = {
       docugen_app: {},
       utils: {
         base: '/utils',
-        routes_info: '/info',
-        time: '/time',
+        routes: '/info',
+        time:'/time'
+      },
+      lookup: {
+        base: '/lookup',
+        resource:{
+          accounts: {
+            base: '/accounts',
+          },
+          roles: {
+            base: '/roles',
+            admin: '/admin',
+            dev: '/dev'
+          }
+        }
       },
     },
   },

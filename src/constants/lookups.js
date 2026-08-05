@@ -193,6 +193,7 @@ export const LOOKUPS = {
           },
         ],
       },
+
       {
         code: 'P0302',
         name: 'Configuración de perfil',
@@ -204,6 +205,21 @@ export const LOOKUPS = {
             name: 'Configuración de perfil',
             alias: 'profile_setter',
             description: 'Configurando perfil.',
+          },
+        ],
+      },
+
+      {
+        code: 'P0303',
+        name: 'Recepción de notificación',
+        alias: 'notification_acknowledger',
+        stages: 1,
+        activities: [
+          {
+            stage: 1,
+            name: 'Recepción de notificación',
+            alias: 'notification_acknowledger',
+            description: 'Recibiendo notificación',
           },
         ],
       },

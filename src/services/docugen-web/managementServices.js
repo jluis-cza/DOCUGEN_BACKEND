@@ -37,8 +37,19 @@ export const processGetter = async (id) => {
 // ************* NOTIFICATIONS *************
 export const notificationsGetter = async (query) => {
   if (!query) throw new Error('E1302');
-  const notifications = await Notification.getNotifications(query);
-  return { notifications, query };
+  const { cursor, limit, ...filter } = query;
+  const pagination = {};
+  pagination.cursor = (cursor && cursor !== 'null' && cursor !== 'undefined') ? cursor : null;
+  pagination.limit = parseInt(limit) + 1;
+  const notifications = await Notification.getNotifications(pagination, filter);
+  pagination.hasNextChunk = notifications.length > limit;
+  if(pagination.hasNextChunk) notifications.pop();
+  if (notifications.length > 0) {
+    pagination.cursor = notifications[notifications.length - 1]['_id'];
+  } else {
+    pagination.cursor = null;
+  }
+  return { notifications, cursor: pagination.cursor, limit, hasNextChunk: pagination.hasNextChunk };
 };
 
 export const notificationCreator = async (config) => {
@@ -46,6 +57,12 @@ export const notificationCreator = async (config) => {
   const newNotification = new Notification();
   const created_notification = await newNotification.createNotification(config);
   return { notification: created_notification };
+};
+
+export const notificationAcknowledger = async (id) => {
+  if (!id) throw new Error('E1314');
+  const updated_notification = await Notification.acknowledgeNotification(id);
+  return { notification: updated_notification };
 };
 
 // ************* PROFILES *************

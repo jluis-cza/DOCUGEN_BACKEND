@@ -26,7 +26,6 @@ const ServiceLookupSchema = new mongoose.Schema(
       type: String,
       required: true,
       trim: true,
-      index: true,
     },
     status: {
       type: String,

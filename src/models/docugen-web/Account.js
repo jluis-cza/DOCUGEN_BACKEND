@@ -212,8 +212,17 @@ AccountSchema.statics.deleteDefaultAccounts = async function () {
 AccountSchema.statics.getAccountsCount = async function (filter) {
   if (!filter) throw new Error('E0124');
   const accountsModel = this;
-  const count = accountsModel.countDocuments(filter);
+  const count = await accountsModel.countDocuments(filter);
   return count;
+};
+
+AccountSchema.statics.getAdminAccountsInfo = async function () {
+  const accountsModel = this;
+  const filter = { role: 'admin' };
+  const fields = { username: 1 };
+  const accounts = await accountsModel.find(filter).select(fields);
+  if (!accounts) throw new Error('E0129');
+  return accounts;
 };
 
 AccountSchema.methods.saveAccount = async function () {

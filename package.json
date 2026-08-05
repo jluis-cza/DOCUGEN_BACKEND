@@ -29,12 +29,13 @@
     "mongodb": "^6.17.0",
     "mongoose": "^8.16.4",
     "node-cron": "^4.2.1",
-    "nodemailer": "^8.0.2",
+    "nodemailer": "^9.0.3",
+    "qs": "^6.15.3",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1"
   },
   "devDependencies": {
-    "eslint": "^9.39.2",
+    "eslint": "^10.8.0",
     "eslint-config-prettier": "^10.1.8",
     "nodemon": "^3.1.10",
     "prettier": "^3.7.4"

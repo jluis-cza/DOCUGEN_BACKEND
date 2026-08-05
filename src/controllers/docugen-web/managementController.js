@@ -159,7 +159,9 @@ export const notificationsGetter = async (req, res, next) => {
       data: { notifications: response.notifications },
       metadata: {
         notifications: {
-          query: response.query,
+          cursor: response.cursor,
+          limit: response.limit,
+          hasNextChunk: response.hasNextChunk,
         },
       },
     });
@@ -180,6 +182,35 @@ export const notificationCreator = async (req, res, next) => {
     const response = await managementServices.notificationCreator(config);
     await setActivitySuccess(activity._id, true);
     const code = 'S1301';
+    const status = successMessage[code]?.status || 200;
+    const message = successMessage[code]?.message || 'OK';
+    return res.status(status).json({
+      success: true,
+      code: code,
+      message: message,
+      data: { notification: response.notification },
+    });
+  } catch (error) {
+    await setActivitySuccess(activity._id, false);
+    next(error);
+  } finally {
+    await terminateProcess(processId);
+  }
+};
+
+// ************* Notification acknowledger *************
+
+export const notificationAcknowledger = async (req, res, next) => {
+  const processId = await registerProcess('P0303', req.sess.id, req.user.id);
+  let activity = {};
+  const id = req.params['notification_id'];
+  // const role = req.user.role;
+  // if (role !== USERS.server.role.developer) throw new Error('E1315'); // Checking user's role (dev needed)
+  try {
+    activity = await registerActivity(1, processId);
+    const response = await managementServices.notificationAcknowledger(id);
+    await setActivitySuccess(activity._id, true);
+    const code = 'S1304';
     const status = successMessage[code]?.status || 200;
     const message = successMessage[code]?.message || 'OK';
     return res.status(status).json({

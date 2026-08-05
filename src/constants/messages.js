@@ -35,6 +35,11 @@ export const MESSAGES = {
       status: 200,
       message: 'La información resumida de las cuentas se recuperó exitosamente.',
     },
+    {
+      code: 'S0107',
+      status: 200,
+      message: 'La consulta de información acerca de los usuarios administradores se realizó correctamente.',
+    },
     { code: 'S0201', status: 200, message: ' Welcome. Session started.' },
     { code: 'S0202', status: 200, message: ' The session was succesfully closed.' },
     {
@@ -177,6 +182,11 @@ export const MESSAGES = {
       message: 'Consulta realizada exitosamente. Se recuperaron notificaciones.',
     },
     {
+      code: 'S1304',
+      status: 200,
+      message: 'El acuse de recibo de notificación se configuró exitosamente.',
+    },
+    {
       code: 'S1401',
       status: 200,
       message: 'Consulta realizada exitosamente. Se recuperó la información del perfil.',
@@ -304,6 +314,12 @@ export const MESSAGES = {
       status: 500,
       message: 'Error guardando el nombre de usuario.',
     },
+
+    {
+      code: 'E0129',
+      status: 500,
+      message: 'Error encontrando información de cuentas de administradores.',
+    },
     { code: 'E0201', status: 400, message: 'Incorrect password.' },
     { code: 'E0202', status: 400, message: 'The account id was not found.' },
     { code: 'E0203', status: 500, message: 'No se encontró una sesión en curso.' },
@@ -358,7 +374,7 @@ export const MESSAGES = {
     { code: 'E0304', status: 500, message: 'The token or type of token is not specified.' },
     { code: 'E0305', status: 500, message: 'The type of token must be "access" or "refresh".' },
     { code: 'E0306', status: 500, message: 'The process of token verification has failed.' },
-    { code: 'E0401', status: 403, message: "The refresh token hasn't been found" },
+    { code: 'E0401', status: 403, message: 'El refresh token no fue encontrado.' },
     {
       code: 'E0501',
       status: 403,
@@ -780,7 +796,7 @@ export const MESSAGES = {
     {
       code: 'E1306',
       status: 500,
-      message: 'Error en el argumento de entrada "query" del método "getNotifications".',
+      message: 'Error en el argumento de entrada "filter" o "pagination" del método "getNotifications".',
     },
     {
       code: 'E1307',
@@ -808,6 +824,26 @@ export const MESSAGES = {
       status: 500,
       message: 'Los argumentos de entrada "subject" o "message" no son correctos.',
     },
+    {
+      code: 'E1312',
+      status: 500,
+      message: 'El método "acknowledgementNotification" necesita un argumento "id" válido.',
+    },
+    {
+      code: 'E1313',
+      status: 500,
+      message: 'Error en la búsqueda de la notificación.',
+    },
+    {
+      code: 'E1314',
+      status: 500,
+      message: 'El servicio "notificationAcknowledger" requiere de un "id" válido.',
+    },
+    // {
+    //   code: 'E1315',
+    //   status: 500,
+    //   message: 'El rol necesario para realizar esta operación es "developer".',
+    // },
     {
       code: 'E1401',
       status: 500,
@@ -844,6 +880,11 @@ export const MESSAGES = {
       status: 500,
       message: 'Elmservicio "usernameGetter" requiere un argumento "id".',
     },
+    {
+      code: 'E1701',
+      status: 500,
+      message: '',
+    },
   ],
   warning: [],
   info: [{ code: 'I0101', status: 400, message: 'Account creation was unsuccessful.' }],
@@ -869,3 +910,4 @@ export const MESSAGES = {
 //    15:Password(no model entity)
 //    16:Username(no model entity)
 // DE: Number of error or success
+//

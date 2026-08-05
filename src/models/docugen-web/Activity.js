@@ -27,7 +27,6 @@ const ActivitySchema = new mongoose.Schema(
       type: String,
       required: true,
       trim: true,
-      index: true,
     },
     success: {
       type: Boolean,
