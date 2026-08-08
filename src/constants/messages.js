@@ -38,7 +38,8 @@ export const MESSAGES = {
     {
       code: 'S0107',
       status: 200,
-      message: 'La consulta de información acerca de los usuarios administradores se realizó correctamente.',
+      message:
+        'La consulta de información acerca de los usuarios administradores se realizó correctamente.',
     },
     { code: 'S0201', status: 200, message: ' Welcome. Session started.' },
     { code: 'S0202', status: 200, message: ' The session was succesfully closed.' },
@@ -185,6 +186,18 @@ export const MESSAGES = {
       code: 'S1304',
       status: 200,
       message: 'El acuse de recibo de notificación se configuró exitosamente.',
+    },
+    {
+      code: 'S1305',
+      status: 200,
+      message:
+        'Consulta realizada exitosamente. El número de notificaciones que coinciden con la consulta es cero.',
+    },
+    {
+      code: 'S1306',
+      status: 200,
+      message:
+        'Consulta realizada exitosamente. Se obtuvo la cuenta del número de notificaciones para la consulta.',
     },
     {
       code: 'S1401',
@@ -796,7 +809,8 @@ export const MESSAGES = {
     {
       code: 'E1306',
       status: 500,
-      message: 'Error en el argumento de entrada "filter" o "pagination" del método "getNotifications".',
+      message:
+        'Error en el argumento de entrada "filter" o "pagination" del método "getNotifications".',
     },
     {
       code: 'E1307',
@@ -839,11 +853,21 @@ export const MESSAGES = {
       status: 500,
       message: 'El servicio "notificationAcknowledger" requiere de un "id" válido.',
     },
-    // {
-    //   code: 'E1315',
-    //   status: 500,
-    //   message: 'El rol necesario para realizar esta operación es "developer".',
-    // },
+    {
+      code: 'E1315',
+      status: 500,
+      message: 'El servicio "notificationsCounter" requiere parámetros válidos.',
+    },
+    {
+      code: 'E1316',
+      status: 500,
+      message: 'El método "countNotifications" requiere de un "filter" válido.',
+    },
+    {
+      code: 'E1317',
+      status: 500,
+      message: 'Un error sucedió al obtener el número de notificaciones.',
+    },
     {
       code: 'E1401',
       status: 500,

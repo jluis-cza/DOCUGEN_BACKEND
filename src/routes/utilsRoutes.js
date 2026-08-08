@@ -5,7 +5,7 @@ import { SERVICES } from '../constants/services.js';
 
 const router = express.Router();
 
-const ROUTES_INFO_ROUTE = SERVICES.backend.routers.utils.routes
+const ROUTES_INFO_ROUTE = SERVICES.backend.routers.utils.routes;
 const SERVER_TIME_ROUTE = SERVICES.backend.routers.utils.time;
 
 // Endpoints definition

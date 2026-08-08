@@ -98,7 +98,6 @@ export const processGetter = async (req, res, next) => {
 
 // ************* Profile Getter *************
 export const profileGetter = async (req, res, next) => {
-  // TODO: Configure controller services and filters, fields selectors and updaters
   const id = req.params['profile_id'];
   try {
     const response = await managementServices.profileGetter(id);
@@ -118,7 +117,6 @@ export const profileGetter = async (req, res, next) => {
 
 // ************* Profile Setter *************
 export const profileSetter = async (req, res, next) => {
-  // TODO: Configure controller services and filters, fields selectors and updaters
   const processId = await registerProcess('P0302', req.sess.id, req.user.id);
   let activity = {};
   const id = req.params['profile_id'];
@@ -224,5 +222,24 @@ export const notificationAcknowledger = async (req, res, next) => {
     next(error);
   } finally {
     await terminateProcess(processId);
+  }
+};
+
+// ************* Notifications Counter *************
+export const notificationsCounter = async (req, res, next) => {
+  const query = req.query;
+  try {
+    const response = await managementServices.notificationsCounter(query);
+    const code = response.total === 0 ? 'S1305' : 'S1306';
+    const status = successMessage[code]?.status || 200;
+    const message = successMessage[code]?.message || 'OK';
+    return res.status(status).json({
+      success: true,
+      code: code,
+      message: message,
+      data: { notificationsCount: response.notificationsCount },
+    });
+  } catch (error) {
+    next(error);
   }
 };

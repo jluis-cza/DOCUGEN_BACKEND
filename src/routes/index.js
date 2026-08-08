@@ -6,7 +6,7 @@ import admissionRoutes from './docugen-web/admissionRoutes.js';
 import administrationRoutes from './docugen-web/administrationRoutes.js';
 import managementRoutes from './docugen-web/managementRoutes.js';
 import utilsRoutes from './utilsRoutes.js';
-import lookupRoutes from './lookupRoutes.js'
+import lookupRoutes from './lookupRoutes.js';
 import { SERVICES } from '../constants/services.js';
 
 const router = express.Router();

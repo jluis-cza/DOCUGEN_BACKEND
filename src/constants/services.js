@@ -57,6 +57,7 @@ export const SERVICES = {
           base: '/manager',
           monitor: '/monitor',
           configuration: '/config', //Rarely used
+          count: '/cnt',
           resource: {
             activities: {
               base: '/activities',
@@ -83,20 +84,20 @@ export const SERVICES = {
       utils: {
         base: '/utils',
         routes: '/info',
-        time:'/time'
+        time: '/time',
       },
       lookup: {
         base: '/lookup',
-        resource:{
+        resource: {
           accounts: {
             base: '/accounts',
           },
           roles: {
             base: '/roles',
             admin: '/admin',
-            dev: '/dev'
-          }
-        }
+            dev: '/dev',
+          },
+        },
       },
     },
   },

@@ -39,11 +39,11 @@ export const notificationsGetter = async (query) => {
   if (!query) throw new Error('E1302');
   const { cursor, limit, ...filter } = query;
   const pagination = {};
-  pagination.cursor = (cursor && cursor !== 'null' && cursor !== 'undefined') ? cursor : null;
+  pagination.cursor = cursor && cursor !== 'null' && cursor !== 'undefined' ? cursor : null;
   pagination.limit = parseInt(limit) + 1;
   const notifications = await Notification.getNotifications(pagination, filter);
   pagination.hasNextChunk = notifications.length > limit;
-  if(pagination.hasNextChunk) notifications.pop();
+  if (pagination.hasNextChunk) notifications.pop();
   if (notifications.length > 0) {
     pagination.cursor = notifications[notifications.length - 1]['_id'];
   } else {
@@ -65,6 +65,14 @@ export const notificationAcknowledger = async (id) => {
   return { notification: updated_notification };
 };
 
+export const notificationsCounter = async (query) => {
+  if (!query) throw new Error('E1315');
+  const filter = {};
+  if (query.to) filter.to = query.to;
+  if (query.status) filter.status = query.status;
+  const notificationsCount = await Notification.countNotifications(filter);
+  return { notificationsCount };
+};
 // ************* PROFILES *************
 export const profileGetter = async (id) => {
   if (!id) throw new Error('E1401');
