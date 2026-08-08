@@ -86,24 +86,24 @@ ProcessSchema.statics.getProcesses = async function (query) {
   if (!query) throw new Error('E1009');
   const processesModel = this;
   let processedQuery = query;
-  console.log(processedQuery);
 
   // Processing query
-  // *the aditional "[]" is put there by axios
-  if (query['requestedModules[]']) {
+  if (query['requestedModules']) {
     let prefix = '';
-    if (Array.isArray(query['requestedModules[]'])) {
+    if (Array.isArray(query['requestedModules'])) {
       let filters = [];
-      for (const module of query['requestedModules[]']) {
+      for (const module of query['requestedModules']) {
         prefix = identifyModuleProcessPrefix(module);
         filters.push({ code: new RegExp(`^${prefix}`) });
       }
       processedQuery = { $or: filters };
-    } else {
-      prefix = identifyModuleProcessPrefix(query['requestedModules[]']);
-      processedQuery = { code: new RegExp(`^${prefix}`) };
-    }
+    } 
+    // else {  
+    //   prefix = identifyModuleProcessPrefix(query['requestedModules']);
+    //   processedQuery = { code: new RegExp(`^${prefix}`) };
+    // }
   }
+
   const processes = await processesModel.find(processedQuery).sort({ createdAt: -1 });
   if (!processes) throw new Error('E1010');
   return processes;

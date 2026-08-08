@@ -119,7 +119,7 @@ export const mySessionCloser = async (data) => {
 // ************* RENEW ACCESS *************
 export const accessRenewer = async (token) => {
   const { payload } = await verifyToken(token, 'refresh'); // Verifying refresh token
-  console.log(payload);
+  // console.log(payload);
   // const accountId = payload.accountPayload.id; // Extracting payload of token and account id
   const newAccessToken = generateToken(payload, 'access'); // Renewing the access token
   // Getting the current account and session

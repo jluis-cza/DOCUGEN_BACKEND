@@ -189,7 +189,7 @@ export const usernameChecker = async (req, res, next) => {
 // ************* Username getter *************
 export const usernameGetter = async (req, res, next) => {
   const query = req.query;
-  console.log({ query });
+  // console.log({ query });
   try {
     const { id } = query;
     const response = await admissionServices.usernameGetter(id);

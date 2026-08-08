@@ -3,6 +3,7 @@
 import cors from 'cors';
 import express from 'express';
 import cookieParser from 'cookie-parser';
+import qs from 'qs'
 import { SERVICES } from '../constants/services.js';
 
 const FRONTEND_URL = SERVICES.frontend.url;
@@ -20,6 +21,7 @@ const generalMiddleware = (app) => {
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
   app.use(cookieParser());
+  app.set('query parser', (str) => qs.parse(str));
 };
 
 export default generalMiddleware;
