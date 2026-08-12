@@ -6,7 +6,8 @@ import admissionRoutes from './docugen-web/admissionRoutes.js';
 import administrationRoutes from './docugen-web/administrationRoutes.js';
 import managementRoutes from './docugen-web/managementRoutes.js';
 import utilsRoutes from './utilsRoutes.js';
-import lookupRoutes from './lookupRoutes.js'
+import lookupRoutes from './lookupRoutes.js';
+import templateRoutes from './docugen-app/templateRoutes.js';
 import { SERVICES } from '../constants/services.js';
 
 const router = express.Router();
@@ -17,6 +18,7 @@ const LOOKUP_ROUTE = SERVICES.backend.routers.lookup.base;
 const ADMISSION_ROUTE = SERVICES.backend.routers.docugen_web.admission.base;
 const ADMINISTRATION_ROUTE = SERVICES.backend.routers.docugen_web.administration.base;
 const MANAGEMENT_ROUTE = SERVICES.backend.routers.docugen_web.management.base;
+const DOCUGEN_APP_ROUTE = SERVICES.backend.routers.docugen_app.base;
 
 // Main routes
 // docugen-web
@@ -24,6 +26,7 @@ router.use(ADMISSION_ROUTE, admissionRoutes); // Admission
 router.use(ADMINISTRATION_ROUTE, securityMiddleware, administrationRoutes); // Administration
 router.use(MANAGEMENT_ROUTE, securityMiddleware, managementRoutes); // Management
 // docugen-app
+router.use(DOCUGEN_APP_ROUTE, securityMiddleware, templateRoutes);
 
 // Utils
 router.use(UTILS_ROUTE, securityMiddleware, utilsRoutes);

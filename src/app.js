@@ -11,6 +11,7 @@ const app = express();
 
 generalMiddleware(app);
 documentationMiddleware(app);
+app.use('/generated', express.static('storage/generated'));
 asignRoutes(app);
 errorHandlerMiddleware(app);
 

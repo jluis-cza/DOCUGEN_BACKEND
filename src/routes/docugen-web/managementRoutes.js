@@ -12,8 +12,10 @@ const PROCESS_ID = SERVICES.backend.routers.docugen_web.management.resource.proc
 const NOTIFICATIONS_ROUTE =
   SERVICES.backend.routers.docugen_web.management.resource.notifications.base;
 const NOTIFICATION_ID = SERVICES.backend.routers.docugen_web.management.resource.notifications.id;
-const NOTIFICATION_ACKNOWLEDGEMENT_ROUTE = SERVICES.backend.routers.docugen_web.management.resource.notifications.acknowledgement
-const NOTIFICATION_CREATION_ROUTE = SERVICES.backend.routers.docugen_web.management.resource.notifications.creation
+const NOTIFICATION_ACKNOWLEDGEMENT_ROUTE =
+  SERVICES.backend.routers.docugen_web.management.resource.notifications.acknowledgement;
+const NOTIFICATION_CREATION_ROUTE =
+  SERVICES.backend.routers.docugen_web.management.resource.notifications.creation;
 const PROFILES_ROUTE = SERVICES.backend.routers.docugen_web.management.resource.profiles.base;
 const PROFILE_ID = SERVICES.backend.routers.docugen_web.management.resource.profiles.id;
 const MONITOR_ROUTE = SERVICES.backend.routers.docugen_web.management.monitor;
@@ -31,7 +33,13 @@ router.get(MONITOR_ROUTE + PROFILES_ROUTE + PROFILE_ID, managementController.pro
 router.post(CONFIGURATION_ROUTE + PROFILES_ROUTE + PROFILE_ID, managementController.profileSetter);
 
 router.get(MONITOR_ROUTE + NOTIFICATIONS_ROUTE, managementController.notificationsGetter);
-router.post(NOTIFICATION_CREATION_ROUTE + NOTIFICATIONS_ROUTE, managementController.notificationCreator);
-router.post(NOTIFICATION_ACKNOWLEDGEMENT_ROUTE + NOTIFICATIONS_ROUTE + NOTIFICATION_ID, managementController.notificationAcknowledger);
+router.post(
+  NOTIFICATION_CREATION_ROUTE + NOTIFICATIONS_ROUTE,
+  managementController.notificationCreator
+);
+router.post(
+  NOTIFICATION_ACKNOWLEDGEMENT_ROUTE + NOTIFICATIONS_ROUTE + NOTIFICATION_ID,
+  managementController.notificationAcknowledger
+);
 
 export default router;

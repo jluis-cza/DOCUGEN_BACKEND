@@ -19,8 +19,8 @@ export const KEYS = {
     },
     cookie_config: {
       httpOnly: true,
-      secure: false, // true in HTTPS
-      sameSite: 'lax', //None in HTTPS
+      secure: true,
+      sameSite: 'none',
       // path: '/auth/refresh',
     },
   },

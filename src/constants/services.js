@@ -79,24 +79,31 @@ export const SERVICES = {
           },
         },
       },
-      docugen_app: {},
+      docugen_app: {
+        base: '/app',
+        templates: {
+          base: '/templates',
+          id: '/:template_id',
+        },
+        render: '/render',
+      },
       utils: {
         base: '/utils',
         routes: '/info',
-        time:'/time'
+        time: '/time',
       },
       lookup: {
         base: '/lookup',
-        resource:{
+        resource: {
           accounts: {
             base: '/accounts',
           },
           roles: {
             base: '/roles',
             admin: '/admin',
-            dev: '/dev'
-          }
-        }
+            dev: '/dev',
+          },
+        },
       },
     },
   },

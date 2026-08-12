@@ -38,7 +38,8 @@ export const MESSAGES = {
     {
       code: 'S0107',
       status: 200,
-      message: 'La consulta de información acerca de los usuarios administradores se realizó correctamente.',
+      message:
+        'La consulta de información acerca de los usuarios administradores se realizó correctamente.',
     },
     { code: 'S0201', status: 200, message: ' Welcome. Session started.' },
     { code: 'S0202', status: 200, message: ' The session was succesfully closed.' },
@@ -796,7 +797,8 @@ export const MESSAGES = {
     {
       code: 'E1306',
       status: 500,
-      message: 'Error en el argumento de entrada "filter" o "pagination" del método "getNotifications".',
+      message:
+        'Error en el argumento de entrada "filter" o "pagination" del método "getNotifications".',
     },
     {
       code: 'E1307',

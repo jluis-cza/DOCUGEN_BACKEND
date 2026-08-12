@@ -67,8 +67,13 @@ NotificationSchema.statics.getNotifications = async function (pagination, filter
   const notificationsModel = this;
   const query = {};
   if (filter.to) query.to = filter.to;
-  if (pagination.cursor && mongoose.Types.ObjectId.isValid(pagination.cursor)) query['_id'] = { $lt: pagination.cursor };
-  const notifications = await notificationsModel.find(query).sort({ _id: -1 }).limit(pagination.limit).lean();
+  if (pagination.cursor && mongoose.Types.ObjectId.isValid(pagination.cursor))
+    query['_id'] = { $lt: pagination.cursor };
+  const notifications = await notificationsModel
+    .find(query)
+    .sort({ _id: -1 })
+    .limit(pagination.limit)
+    .lean();
   if (!notifications) throw new Error('E1307');
   return notifications;
 };
