@@ -100,12 +100,12 @@ export const renderTemplate = async (req, res, next) => {
   try {
     const protocol = req.get('x-forwarded-proto') || req.protocol;
     const host = req.get('x-forwarded-host') || req.get('host');
-    const baseUrl = host ? `${protocol}://${host}` : undefined;
+    const remoteHost = host && !host.includes(':3000') ? `${protocol}://${host}` : undefined;
 
     const response = await templateService.renderTemplate({
       ownerId: req.user.id,
       payload: req.body,
-      baseUrl,
+      baseUrl: remoteHost,
     });
 
     return res.status(200).json({
