@@ -209,11 +209,16 @@ const drawElement = async (doc, element, payload = {}) => {
         doc
           .fontSize(element.fontSize || 10)
           .fillColor(element.color || '#111111')
-          .text(String(cell || '').trim(), x + colIndex * cellWidth + 4, y + rowIndex * lineHeight + 4, {
-            width: cellWidth - 8,
-            height: lineHeight,
-            align: element.align || 'left',
-          });
+          .text(
+            String(cell || '').trim(),
+            x + colIndex * cellWidth + 4,
+            y + rowIndex * lineHeight + 4,
+            {
+              width: cellWidth - 8,
+              height: lineHeight,
+              align: element.align || 'left',
+            }
+          );
       });
     });
     return;
@@ -226,7 +231,12 @@ const drawElement = async (doc, element, payload = {}) => {
       .fontSize(element.fontSize || 24)
       .fillColor(element.color || '#111111')
       .font('Helvetica-Bold')
-      .text(String(textValue), x, y, { width, height, align: element.align || 'left', continued: false });
+      .text(String(textValue), x, y, {
+        width,
+        height,
+        align: element.align || 'left',
+        continued: false,
+      });
     return;
   }
 
@@ -235,7 +245,12 @@ const drawElement = async (doc, element, payload = {}) => {
       .fontSize(element.fontSize || 20)
       .fillColor(element.color || '#111111')
       .font('Helvetica-Bold')
-      .text(String(textValue), x, y, { width, height, align: element.align || 'left', continued: false });
+      .text(String(textValue), x, y, {
+        width,
+        height,
+        align: element.align || 'left',
+        continued: false,
+      });
     return;
   }
 
@@ -244,7 +259,12 @@ const drawElement = async (doc, element, payload = {}) => {
       .fontSize(element.fontSize || 14)
       .fillColor(element.color || '#111111')
       .font('Helvetica')
-      .text(String(textValue), x, y, { width, height, align: element.align || 'left', continued: false });
+      .text(String(textValue), x, y, {
+        width,
+        height,
+        align: element.align || 'left',
+        continued: false,
+      });
     return;
   }
 
@@ -291,7 +311,12 @@ const drawElement = async (doc, element, payload = {}) => {
     .fontSize(element.fontSize || 16)
     .fillColor(element.color || '#111111')
     .font('Helvetica')
-    .text(String(textValue), x, y, { width, height, align: element.align || 'left', continued: false });
+    .text(String(textValue), x, y, {
+      width,
+      height,
+      align: element.align || 'left',
+      continued: false,
+    });
 };
 
 export const ensurePdfStorage = async () => {
