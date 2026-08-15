@@ -169,7 +169,17 @@ export const generateDocumentRemote = async (req, res, next) => {
     activity = await registerActivity(1, processId);
     const protocol = req.get('x-forwarded-proto') || req.protocol;
     const host = req.get('x-forwarded-host') || req.get('host');
-    const remoteHost = host && !host.includes(':3000') ? `${protocol}://${host}` : undefined;
+
+    // Solo usar remoteHost si es un dominio real (no localhost ni 127.0.0.1)
+    let remoteHost = undefined;
+    if (
+      host &&
+      !host.includes(':3000') &&
+      !host.includes('localhost') &&
+      !host.includes('127.0.0.1')
+    ) {
+      remoteHost = `${protocol}://${host}`;
+    }
 
     const response = await templateService.generateDocumentRemote({
       ownerId: req.user.id,
@@ -199,7 +209,17 @@ export const renderTemplate = async (req, res, next) => {
     activity = await registerActivity(1, processId);
     const protocol = req.get('x-forwarded-proto') || req.protocol;
     const host = req.get('x-forwarded-host') || req.get('host');
-    const remoteHost = host && !host.includes(':3000') ? `${protocol}://${host}` : undefined;
+
+    // Solo usar remoteHost si es un dominio real (no localhost ni 127.0.0.1)
+    let remoteHost = undefined;
+    if (
+      host &&
+      !host.includes(':3000') &&
+      !host.includes('localhost') &&
+      !host.includes('127.0.0.1')
+    ) {
+      remoteHost = `${protocol}://${host}`;
+    }
 
     const response = await templateService.renderTemplate({
       ownerId: req.user.id,

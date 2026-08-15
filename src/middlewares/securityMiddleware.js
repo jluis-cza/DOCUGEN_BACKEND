@@ -56,7 +56,8 @@ const securityMiddleware = async (req, res, next) => {
           email: apiToken.owner.user?.email,
           name: apiToken.owner.user?.name,
         };
-        req.sess = { id: `api-token-${apiToken._id}` };
+        // Para API tokens, usar el ObjectId del token como sesión
+        req.sess = { id: apiToken._id.toString() };
         req.apiToken = apiToken;
         req.scopes = apiToken.scopes;
         req.isAPIToken = true;

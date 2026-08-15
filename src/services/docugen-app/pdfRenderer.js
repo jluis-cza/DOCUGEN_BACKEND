@@ -7,6 +7,7 @@ import QRCode from 'qrcode';
 const GENERATED_DIR = path.resolve(process.cwd(), 'storage', 'generated');
 
 export const resolvePublicBaseUrl = (baseUrl) => {
+  // Si se proporciona baseUrl y no es del frontend, usarlo
   if (baseUrl) {
     if (baseUrl.includes(':3000') || baseUrl.includes('localhost:3000')) {
       // ignore frontend host as source for PDF URL
@@ -15,8 +16,10 @@ export const resolvePublicBaseUrl = (baseUrl) => {
     }
   }
 
+  // Si hay BACKEND_URL configurado en .env, usarlo (producción)
   if (process.env.BACKEND_URL) return process.env.BACKEND_URL.replace(/\/$/, '');
 
+  // Si estamos en Codespaces, construir la URL de Codespaces
   const codespaceName = process.env.CODESPACE_NAME;
   const codespaceDomain = process.env.GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN;
   const backendPort = process.env.BACKEND_PORT || 4000;
@@ -25,6 +28,8 @@ export const resolvePublicBaseUrl = (baseUrl) => {
     return `https://${codespaceName}-${backendPort}.${codespaceDomain}`.replace(/\/$/, '');
   }
 
+  // Fallback: localhost (desarrollo local)
+  // IMPORTANTE: Esto debería reemplazarse con un dominio real en producción
   return `http://localhost:${backendPort}`.replace(/\/$/, '');
 };
 
@@ -376,8 +381,16 @@ export const generatePdfFromTemplate = async ({ template, data = {}, baseUrl } =
 
   const resolvedBaseUrl = resolvePublicBaseUrl(baseUrl);
 
+  // SIEMPRE retornar URL absoluta con dominio real
+  // Para que sistemas externos (APIs remotas) puedan descargar el PDF
+  // resolvePublicBaseUrl() ya detecta automáticamente:
+  // - Dominio de Codespaces
+  // - BACKEND_URL desde .env (producción)
+  // - localhost en desarrollo
+  const pdfUrl = `${resolvedBaseUrl}/generated/${fileName}`;
+
   return {
-    url: `${resolvedBaseUrl}/generated/${fileName}`,
+    url: pdfUrl,
     mimeType: 'application/pdf',
     fileName,
     generatedAt: new Date().toISOString(),

@@ -42,7 +42,7 @@ router.use((req, res) => {
 });
 
 const asignRoutes = (app) => {
-  app.use(VERSION_ROUTE + API_ROUTE, router);
+  app.use(API_ROUTE + VERSION_ROUTE, router);
 };
 
 export default asignRoutes;
