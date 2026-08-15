@@ -8,6 +8,7 @@ import managementRoutes from './docugen-web/managementRoutes.js';
 import utilsRoutes from './utilsRoutes.js';
 import lookupRoutes from './lookupRoutes.js';
 import templateRoutes from './docugen-app/templateRoutes.js';
+import apiTokenRoutes from './docugen-app/apiTokenRoutes.js';
 import { SERVICES } from '../constants/services.js';
 
 const router = express.Router();
@@ -27,6 +28,7 @@ router.use(ADMINISTRATION_ROUTE, securityMiddleware, administrationRoutes); // A
 router.use(MANAGEMENT_ROUTE, securityMiddleware, managementRoutes); // Management
 // docugen-app
 router.use(DOCUGEN_APP_ROUTE, securityMiddleware, templateRoutes);
+router.use(DOCUGEN_APP_ROUTE, securityMiddleware, apiTokenRoutes);
 
 // Utils
 router.use(UTILS_ROUTE, securityMiddleware, utilsRoutes);

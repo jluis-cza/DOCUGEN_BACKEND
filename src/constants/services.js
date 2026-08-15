@@ -84,6 +84,17 @@ export const SERVICES = {
         templates: {
           base: '/templates',
           id: '/:template_id',
+          parameters: '/parameters',
+        },
+        documents: {
+          base: '/documents',
+          generate: '/generate',
+          availability: '/availability',
+        },
+        api_tokens: {
+          base: '/api-tokens',
+          id: '/:token_id',
+          usage: '/usage',
         },
         render: '/render',
       },

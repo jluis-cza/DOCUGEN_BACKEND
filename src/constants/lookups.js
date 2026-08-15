@@ -222,6 +222,120 @@ export const LOOKUPS = {
             description: 'Recibiendo notificación',
           },
         ],
+      }, // Edition processes
+      {
+        code: 'P0401',
+        name: 'Creación de plantilla',
+        alias: 'template_creator',
+        stages: 1,
+        activities: [
+          {
+            stage: 1,
+            name: 'Creación de plantilla',
+            alias: 'template_creator',
+            description: 'Creando nueva plantilla.',
+          },
+        ],
+      },
+      {
+        code: 'P0402',
+        name: 'Actualización de plantilla',
+        alias: 'template_updater',
+        stages: 1,
+        activities: [
+          {
+            stage: 1,
+            name: 'Actualización de plantilla',
+            alias: 'template_updater',
+            description: 'Guardando cambios de la plantilla.',
+          },
+        ],
+      },
+      {
+        code: 'P0403',
+        name: 'Eliminación de plantilla',
+        alias: 'template_deleter',
+        stages: 1,
+        activities: [
+          {
+            stage: 1,
+            name: 'Eliminación de plantilla',
+            alias: 'template_deleter',
+            description: 'Eliminando plantilla.',
+          },
+        ],
+      },
+      // Processing processes
+      {
+        code: 'P0701',
+        name: 'Generación de documento PDF',
+        alias: 'pdf_document_generator',
+        stages: 1,
+        activities: [
+          {
+            stage: 1,
+            name: 'Generación de documento PDF',
+            alias: 'pdf_document_generator',
+            description: 'Generando documento PDF a partir de la plantilla.',
+          },
+        ],
+      },
+      // API token processes
+      {
+        code: 'P0801',
+        name: 'Creación de token de API',
+        alias: 'api_token_creator',
+        stages: 1,
+        activities: [
+          {
+            stage: 1,
+            name: 'Creación de token de API',
+            alias: 'api_token_creator',
+            description: 'Creando token de acceso programático a la API.',
+          },
+        ],
+      },
+      {
+        code: 'P0802',
+        name: 'Actualización de token de API',
+        alias: 'api_token_updater',
+        stages: 1,
+        activities: [
+          {
+            stage: 1,
+            name: 'Actualización de token de API',
+            alias: 'api_token_updater',
+            description: 'Actualizando configuración del token de API.',
+          },
+        ],
+      },
+      {
+        code: 'P0803',
+        name: 'Revocación de token de API',
+        alias: 'api_token_revoker',
+        stages: 1,
+        activities: [
+          {
+            stage: 1,
+            name: 'Revocación de token de API',
+            alias: 'api_token_revoker',
+            description: 'Revocando acceso del token de API.',
+          },
+        ],
+      },
+      {
+        code: 'P0804',
+        name: 'Eliminación de token de API',
+        alias: 'api_token_deleter',
+        stages: 1,
+        activities: [
+          {
+            stage: 1,
+            name: 'Eliminación de token de API',
+            alias: 'api_token_deleter',
+            description: 'Eliminando token de API del sistema.',
+          },
+        ],
       },
     ],
   },

@@ -92,6 +92,11 @@ export const registerProcess = async (code, sessionId, accountId) => {
   if (!code || !sessionId || !accountId) throw new Error('E1111');
   const newProcess = new Process();
   const selectedProcess = LOOKUPS.docugen_web.processes.find((p) => p.code === code);
+
+  if (!selectedProcess) {
+    throw new Error(`E1110: Process lookup not found for code ${code}`);
+  }
+
   const { activities, ...processData } = selectedProcess;
   const process = await newProcess.createProcess({ ...processData }, sessionId, accountId);
   return process._id;
@@ -116,6 +121,11 @@ export const registerActivity = async (stage, processId) => {
   // Searching the related process
   const process = await Process.findProcess(processId);
   const selectedProcess = LOOKUPS.docugen_web.processes.find((p) => p.code === process.code);
+
+  if (!selectedProcess) {
+    throw new Error(`E1008: Process lookup not found for code ${process.code}`);
+  }
+
   // Extracting the activity data in: (stage, code)
   const { activities } = selectedProcess;
   const selectedActivity = activities.find((a) => a.stage === stage);
