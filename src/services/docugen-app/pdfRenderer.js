@@ -154,9 +154,14 @@ const drawElement = async (doc, element, payload = {}) => {
   }
 
   if (element.type === 'image') {
-    if (!element.src) return;
+    const imageSource = element.placeholderKey
+      ? resolveFieldValue(element.placeholderKey, payload, element.src || '')
+      : resolveTemplateString(element.src || '', payload);
+
+    if (!imageSource) return;
+
     try {
-      const imageBuffer = await readExternalResource(element.src);
+      const imageBuffer = await readExternalResource(imageSource);
       if (imageBuffer) doc.image(imageBuffer, x, y, { fit: [width, height] });
     } catch (error) {
       console.warn('Image could not be embedded in PDF:', error.message);
@@ -165,12 +170,9 @@ const drawElement = async (doc, element, payload = {}) => {
   }
 
   if (element.type === 'qr') {
-    const qrTarget = resolveTemplateString(
-      element.qrValue || element.placeholderKey
-        ? resolveFieldValue(element.placeholderKey, payload, element.text || '')
-        : element.text || '',
-      payload
-    );
+    const qrTarget = element.placeholderKey
+      ? resolveFieldValue(element.placeholderKey, payload, element.qrValue || element.text || '')
+      : resolveTemplateString(element.qrValue || element.text || '', payload);
 
     if (!qrTarget) return;
 
