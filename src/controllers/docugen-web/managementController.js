@@ -204,11 +204,11 @@ export const notificationAcknowledger = async (req, res, next) => {
   const processId = await registerProcess('P0303', req.sess.id, req.user.id);
   let activity = {};
   const id = req.params['notification_id'];
-  // const role = req.user.role;
-  // if (role !== USERS.server.role.developer) throw new Error('E1315'); // Checking user's role (dev needed)
+  const accountId = req.user.id;
+
   try {
     activity = await registerActivity(1, processId);
-    const response = await managementServices.notificationAcknowledger(id);
+    const response = await managementServices.notificationAcknowledger(id, accountId);
     await setActivitySuccess(activity._id, true);
     const code = 'S1304';
     const status = successMessage[code]?.status || 200;

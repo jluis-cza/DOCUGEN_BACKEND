@@ -59,9 +59,11 @@ export const notificationCreator = async (config) => {
   return { notification: created_notification };
 };
 
-export const notificationAcknowledger = async (id) => {
+export const notificationAcknowledger = async (id, accountId) => {
   if (!id) throw new Error('E1314');
-  const updated_notification = await Notification.acknowledgeNotification(id);
+  if (!accountId) throw new Error('E1315');
+
+  const updated_notification = await Notification.acknowledgeNotification(id, accountId);
   return { notification: updated_notification };
 };
 

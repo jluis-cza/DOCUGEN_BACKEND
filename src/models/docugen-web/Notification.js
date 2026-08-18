@@ -78,15 +78,17 @@ NotificationSchema.statics.getNotifications = async function (pagination, filter
   return notifications;
 };
 
-NotificationSchema.statics.acknowledgeNotification = async function (id) {
+NotificationSchema.statics.acknowledgeNotification = async function (id, accountId) {
   if (!mongoose.Types.ObjectId.isValid(id)) throw new Error('E1312');
+  if (!mongoose.Types.ObjectId.isValid(accountId)) throw new Error('E1313');
+
   const notificationsModel = this;
   const notification = await notificationsModel.findOneAndUpdate(
-    { _id: id },
+    { _id: id, to: accountId },
     { $set: { status: 'received' } },
     { new: true }
   );
-  if (!notification) throw new Error('E1313');
+  if (!notification) throw new Error('E1314');
   return notification;
 };
 
