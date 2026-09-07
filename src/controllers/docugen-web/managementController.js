@@ -68,7 +68,11 @@ export const processesGetter = async (req, res, next) => {
       data: { processes: response.processes },
       metadata: {
         processes: {
-          query: response.query,
+          // query: response.query,
+          cursor: response.cursor,
+          limit: response.limit,
+          hasNextChunk: response.hasNextChunk,
+          total: response.total
         },
       },
     });
@@ -160,6 +164,7 @@ export const notificationsGetter = async (req, res, next) => {
           cursor: response.cursor,
           limit: response.limit,
           hasNextChunk: response.hasNextChunk,
+          total: response.total
         },
       },
     });

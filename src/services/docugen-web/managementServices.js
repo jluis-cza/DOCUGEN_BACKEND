@@ -24,8 +24,24 @@ export const activityGetter = async (id) => {
 // ************* PROCESSES *************
 export const processesGetter = async (query) => {
   if (!query) throw new Error('E1113');
-  const processes = await Process.getProcesses(query);
-  return { processes, query };
+  const { cursor, limit, ...filter } = query;
+  const pagination = {};
+  pagination.cursor = cursor && cursor !== 'null' && cursor !== 'undefined' ? cursor : null;
+  pagination.limit = parseInt(limit) + 1;
+  const response = await Process.getCustomizedProcesses(pagination, filter);
+  const processes = response.processes
+  pagination.total = response.total
+  pagination.hasNextChunk = processes.length > limit;
+  if (pagination.hasNextChunk) processes.pop();
+  if (processes.length > 0) {
+    pagination.cursor = processes[processes.length - 1]['_id'];
+  } else {
+    pagination.cursor = null;
+  }
+  return { processes, cursor: pagination.cursor, limit, hasNextChunk: pagination.hasNextChunk, total: pagination.total };
+
+  // const processes = await Process.getProcesses(query);
+  // return { processes, query };
 };
 
 export const processGetter = async (id) => {
@@ -41,7 +57,9 @@ export const notificationsGetter = async (query) => {
   const pagination = {};
   pagination.cursor = cursor && cursor !== 'null' && cursor !== 'undefined' ? cursor : null;
   pagination.limit = parseInt(limit) + 1;
-  const notifications = await Notification.getNotifications(pagination, filter);
+  const response = await Notification.getNotifications(pagination, filter);
+  const notifications = response.notifications
+  pagination.total = response.total
   pagination.hasNextChunk = notifications.length > limit;
   if (pagination.hasNextChunk) notifications.pop();
   if (notifications.length > 0) {
@@ -49,7 +67,7 @@ export const notificationsGetter = async (query) => {
   } else {
     pagination.cursor = null;
   }
-  return { notifications, cursor: pagination.cursor, limit, hasNextChunk: pagination.hasNextChunk };
+  return { notifications, cursor: pagination.cursor, limit, hasNextChunk: pagination.hasNextChunk, total: pagination.total };
 };
 
 export const notificationCreator = async (config) => {

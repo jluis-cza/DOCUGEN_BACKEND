@@ -97,8 +97,8 @@ ProcessSchema.statics.getProcesses = async function (query) {
         filters.push({ code: new RegExp(`^${prefix}`) });
       }
       processedQuery = { $or: filters };
-    } 
-    // else {  
+    }
+    // else {
     //   prefix = identifyModuleProcessPrefix(query['requestedModules']);
     //   processedQuery = { code: new RegExp(`^${prefix}`) };
     // }
@@ -107,6 +107,45 @@ ProcessSchema.statics.getProcesses = async function (query) {
   const processes = await processesModel.find(processedQuery).sort({ createdAt: -1 });
   if (!processes) throw new Error('E1010');
   return processes;
+};
+
+ProcessSchema.statics.getCustomizedProcesses = async function (pagination, filter) {
+  if (!pagination || !filter) throw new Error('E1117');
+  const processesModel = this;
+  // let processedFilter = filter;
+
+  // Base filter
+  const query = {};
+  if (filter.associated_account) query.associated_account = filter.associated_account;
+  if (filter['requestedModules']) {
+    let prefix = '';
+    if (Array.isArray(filter['requestedModules'])) {
+      let filters = [];
+      for (const module of filter['requestedModules']) {
+        prefix = identifyModuleProcessPrefix(module);
+        filters.push({ code: new RegExp(`^${prefix}`) });
+      }
+      // processedFilter = { $or: filters };
+      query['$or'] = filters;
+    }
+
+    // else {
+    //   prefix = identifyModuleProcessPrefix(filter['requestedModules']);
+    //   processedFilter = { code: new RegExp(`^${prefix}`) };
+    // }
+  }
+
+  // Paginated query
+  const paginatedQuery = { ...query };
+  if (pagination.cursor && mongoose.Types.ObjectId.isValid(pagination.cursor))
+    paginatedQuery['_id'] = { $lt: pagination.cursor };
+
+  const [processes, total] = await Promise.all([
+    processesModel.find(paginatedQuery).sort({ _id: -1 }).limit(pagination.limit).lean(),
+    processesModel.countDocuments(query),
+  ]);
+  if (!processes) throw new Error('E1118');
+  return { processes, total };
 };
 
 ProcessSchema.methods.createProcess = async function (data, sessionId, accountId) {

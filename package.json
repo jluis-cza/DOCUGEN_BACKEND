@@ -8,7 +8,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon server.js",
     "start": "node server.js",
-    "lint": "eslint . --ext js,jsx,ts,tsx",
+    "lint": "eslint .",
     "format": "prettier --write .",
     "seed": "node src/config/seeder.js",
     "reset": "node src/config/resetter.js"
@@ -35,8 +35,10 @@
     "swagger-ui-express": "^5.0.1"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "eslint": "^10.8.0",
     "eslint-config-prettier": "^10.1.8",
+    "globals": "^17.11.0",
     "nodemon": "^3.1.10",
     "prettier": "^3.7.4"
   }

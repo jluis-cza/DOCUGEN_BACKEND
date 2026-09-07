@@ -781,6 +781,17 @@ export const MESSAGES = {
       message: 'El argumento "activityId" no es válido.',
     },
     {
+      code: 'E1117',
+      status: 500,
+      message:
+        'El argumento "pagination" o "filter" en el método "getCustomizedProcesses" no es válido.',
+    },
+    {
+      code: 'E1118',
+      status: 500,
+      message: 'Un error surgió en la cunsulta de procesos.',
+    },
+    {
       code: 'E1301',
       status: 500,
       message:
